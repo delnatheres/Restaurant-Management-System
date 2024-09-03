@@ -1,0 +1,190 @@
+{% load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background: url("{% static 'images/dashboard-bg.jpg' %}") no-repeat center center/cover;
+            background-size: cover;
+        }
+
+        /* Header Styling */
+        header {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: #ecf0f1;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: color 0.3s ease, text-decoration 0.3s ease;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+            color: #f39c12;
+        }
+
+        /* Main Content Styling */
+        main {
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.95); /* Slightly opaque background */
+            margin: 30px auto;
+            border-radius: 12px;
+            max-width: 1200px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Dashboard Sections */
+        .dashboard-section {
+            margin-bottom: 30px;
+        }
+
+        .dashboard-section h3 {
+            margin-top: 0;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            padding: 15px;
+            border-radius: 8px;
+            color: #ecf0f1;
+            font-size: 24px;
+            font-weight: 600;
+            border-bottom: 4px solid #2980b9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .statistics, .recent-activity, .quick-links, .notifications, .settings {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .statistics ul, .recent-activity ul, .quick-links ul, .notifications ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .statistics li, .recent-activity li, .quick-links li, .notifications li {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        /* Quick Links */
+        .quick-links a {
+            text-decoration: none;
+            color: #2980b9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .quick-links a:hover {
+            text-decoration: underline;
+            color: #3498db;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav {
+                margin-top: 10px;
+            }
+
+            nav a {
+                display: block;
+                margin-left: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <nav>
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'login' %}">Logout</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Welcome, Admin!</h2>
+
+        <!-- Statistics Section -->
+        <div class="dashboard-section statistics">
+            <h3>Statistics Overview</h3>
+            <ul>
+                <li>Total Sales: $4,500</li>
+                <li>Number of Reservations: 125</li>
+                <li>Current Staff Shifts: 8</li>
+            </ul>
+        </div>
+
+        <!-- Recent Activity Section -->
+        <div class="dashboard-section recent-activity">
+            <h3>Recent Activity</h3>
+            <ul>
+                <li>Order #1234 placed by John Doe</li>
+                <li>Reservation #5678 for 4 people</li>
+                <li>Staff member Jane Smith clocked in</li>
+            </ul>
+        </div>
+
+        <!-- Quick Links Section -->
+        <div class="dashboard-section quick-links">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="#">Manage Menus</a></li>
+                <li><a href="#">View Reservations</a></li>
+                <li><a href="#">Manage Staff</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </div>
+
+        <!-- Notifications Section -->
+        <div class="dashboard-section notifications">
+            <h3>Notifications</h3>
+            <ul>
+                <li>New menu item added: Spicy Tuna Roll</li>
+                <li>Reminder: Staff meeting at 3 PM</li>
+                <li>System update scheduled for tonight</li>
+            </ul>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="dashboard-section settings">
+            <h3>Settings</h3>
+            <ul>
+                <li><a href="#">Update Restaurant Information</a></li>
+                <li><a href="#">Change Admin Password</a></li>
+                <li><a href="#">System Preferences</a></li>
+            </ul>
+        </div>
+    </main>
+</body>
+</html>

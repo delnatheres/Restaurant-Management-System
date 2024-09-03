@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling with Background Image */
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background: url("{% static 'images/back4.webp' %}") no-repeat center center/cover;
+            color: #333;
+            padding: 20px;
+        }
+
+        /* Header Styling */
+        header {
+            background-color: rgba(51, 51, 51, 0.8);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: #f8f9fa;
+            padding: 10px;
+            text-align: center; /* Center the navbar items */
+        }
+
+        .navbar a {
+            color: #343a40;
+            text-decoration: none;
+            margin: 0 15px; /* Add space between links */
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            color: #ff4081; /* Hover effect */
+        }
+
+        /* Section Styling */
+        section {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        section p {
+            font-size: 1.2em;
+            line-height: 1.8;
+        }
+
+        /* Additional Content Styling */
+        .history, .team, .mission, .contact {
+            margin-bottom: 30px;
+        }
+
+        .history h2, .team h2, .mission h2, .contact h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .history p, .team p, .mission p, .contact p {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .team img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        /* Contact Info Styling */
+        .contact-info {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .contact-info p {
+            font-size: 1em;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>About Our Modern Feast</h1>
+        <nav class="navbar">
+            <a href="{%url 'index' %}">Home</a>
+            <a href="{%url 'contact' %}">Contact/Feedback</a>
+            <a href="{%url 'sign_in' %}">Sign In</a>
+            <a href="{%url 'login' %}">Login</a>
+        </nav>
+    </header>
+    
+    <section>
+        <div class="history">
+            <h2>Our History</h2>
+            <p>Founded in 2024, our restaurant has been dedicated to bringing you the best dining experience with a focus on quality and freshness. Our journey began with a passion for food and a commitment to excellence.</p>
+        </div>
+
+        <div class="team">
+            <h2>Meet Our Team</h2>
+            <p>Our team is composed of skilled chefs and dedicated staff who work together to create a memorable dining experience. Each member brings their unique expertise to the table.</p>
+            <img src="{% static 'images/team.webp' %}" alt="Our Team">
+        </div>
+
+        <div class="mission">
+            <h2>Our Mission</h2>
+            <p>We are committed to providing exceptional service and high-quality dishes that bring joy to our guests. Our mission is to create a warm and inviting atmosphere where everyone feels at home.</p>
+        </div>
+     </section>
+</body>
+</html>
