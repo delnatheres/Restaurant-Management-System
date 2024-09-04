@@ -52,10 +52,6 @@ def contact_view(request):
 def menu_view(request):
     return render(request, 'menu.html')
 
-def admin_dashboard_view(request):
-    return render(request, 'admin/admin_dashboard.html')
-
-
 
 
 def forgot_password(request):
@@ -110,3 +106,8 @@ def reset_password(request, token):
             messages.error(request, 'Passwords do not match or are not long enough')
     
     return render(request, 'password_reset.html')
+
+
+
+def admin_dashboard_view(request):
+    return render(request, 'admin/admin_dashboard.html')

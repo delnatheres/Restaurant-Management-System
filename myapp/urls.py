@@ -10,6 +10,5 @@ urlpatterns = [
     path('admin_dashboard/', admin_dashboard_view, name='admin_dashboard'),
     path('forgot_password/', forgot_password, name= 'forgot_password'),
     path('reset-password/<str:token>/', reset_password, name='reset_password'), 
- 
-        # Other URLs...
+    # Other URLs...
 ]
