@@ -29,6 +29,16 @@ class SignIn(models.Model):
     def __str__(self):
         return f"{self.name} - {self.email}"
 
+class Employee(models.Model):
+    employee_id = models.AutoField(primary_key=True)
+    first_name = models.CharField(max_length=15)
+    last_name = models.CharField(max_length=15)
+    phone = models.CharField(max_length=10)
+    joinedon = models.DateTimeField(auto_now_add=True)
+    login = models.OneToOneField(Login, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
 
 
 

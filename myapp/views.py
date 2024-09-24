@@ -4,7 +4,8 @@ from .models import Login, User,SignIn
 from .forms import PasswordResetRequestForm  # Import both forms
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
-
+from .forms import EmployeeForm
+from .models import Employee, Login
 def index_view(request):
     return render(request, 'index.html')
 
@@ -115,4 +116,30 @@ def admin_dashboard_view(request):
 def viewuser(request):
     person=SignIn.objects.all()
     return render(request,'admin/view_user.html',{"person":person})
+
+
+# views.py
+
+def add_employee(request):
+    if request.method == "POST":
+        form = EmployeeForm(request.POST)
+        if form.is_valid():
+            # Save the email and password to the Login model
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+            login = Login.objects.create(email=email, password=password)
+            
+            # Now save the employee with the associated login
+            employee = form.save(commit=False)  # Delay saving Employee
+            employee.login = login  # Associate login with employee
+            employee.save()  # Save the employee instance
+            
+            return redirect('employee_success')  # Redirect after successful form submission
+    else:
+        form = EmployeeForm()
+    
+    return render(request, 'admin/add_employee.html', {'form': form})
+
+def employee_success(request):
+    return render(request, 'admin/employee_success.html')
 
