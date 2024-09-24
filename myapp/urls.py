@@ -1,14 +1,14 @@
 from django.urls import path
-from .views import *
+from . import views
 urlpatterns = [
-    path('', index_view, name='index'),  # Root URL for index
-    path('about/', about_view, name='about'),
-    path('contact/', contact_view, name='contact'),
-    path('menu/', menu_view, name='menu'),
-    path('sign_in/', sign_in_view, name='sign_in'),
-    path('login/', login_view, name='login'),
-    path('admin_dashboard/', admin_dashboard_view, name='admin_dashboard'),
-    path('forgot_password/', forgot_password, name= 'forgot_password'),
-    path('reset-password/<str:token>/', reset_password, name='reset_password'), 
-    # Other URLs...
-]
+    path('', views.index_view, name='index'),  # Root URL for index
+    path('about/', views.about_view, name='about'),
+    path('contact/', views.contact_view, name='contact'),
+    path('menu/', views.menu_view, name='menu'),
+    path('sign_in/', views.sign_in_view, name='sign_in'),
+    path('login/', views.login_view, name='login'),
+    path('admin_dashboard/', views.admin_dashboard_view, name='admin_dashboard'),
+    path('forgot_password/', views.forgot_password, name= 'forgot_password'),
+    path('reset-password/<str:token>/', views.reset_password, name='reset_password'), 
+    path('viewuser/',views.viewuser,name='view_user'),
+   ]

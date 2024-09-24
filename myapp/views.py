@@ -111,3 +111,8 @@ def reset_password(request, token):
 
 def admin_dashboard_view(request):
     return render(request, 'admin/admin_dashboard.html')
+
+def viewuser(request):
+    person=SignIn.objects.all()
+    return render(request,'admin/view_user.html',{"person":person})
+

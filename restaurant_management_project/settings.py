@@ -136,5 +136,5 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'delnatheres2025@mca.ajce.in'
-EMAIL_HOST_PASSWORD = '####'
+EMAIL_HOST_PASSWORD = 'delna@2023'
 DEFAULT_FROM_EMAIL = 'delnatheres2025@mca.ajce.in'  # Email sender's address
