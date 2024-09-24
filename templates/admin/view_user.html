@@ -91,14 +91,15 @@
 <body>
     <h1>Sign In Details</h1>
     <table>
-        <thead>
+        <head>
             <tr>
                 <th>Name</th>
                 <th>Place</th>
                 <th>Email</th>
             </tr>
-        </thead>
-        <tbody>
+            <p><center><b><a href="{% url 'admin_dashboard' %}">Back</a></p></center></b>
+        </head>
+        <body>
             {% for signin in person %}
                 <tr>
                     <td>{{ signin.name }}</td>
@@ -110,7 +111,7 @@
                     <td colspan="3">No sign-in records found.</td>
                 </tr>
             {% endfor %}
-        </tbody>
+        </body>
     </table>
 </body>
 </html>

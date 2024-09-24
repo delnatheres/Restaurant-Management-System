@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Reservation</title>
+</head>
+<body>
+    <h1>Make a Reservation</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <label for="date">Date:</label>
+        <input type="date" name="date" id="date" required>
+
+        <label for="time">Time:</label>
+        <input type="time" name="time" id="time" required>
+
+        <label for="guests">Number of Guests:</label>
+        <input type="number" name="guests" id="guests" required min="1">
+
+        <button type="submit">Reserve</button>
+    </form>
+</body>
+</html>
