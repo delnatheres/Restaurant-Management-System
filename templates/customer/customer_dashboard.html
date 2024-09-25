@@ -4,32 +4,178 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Dashboard</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        /* Page Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Title Styling */
+        h1, h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #2980b9;
+            margin-bottom: 15px;
+        }
+
+        /* Styling for the list items */
+        ul {
+            list-style-type: none;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            color: #16a085;
+        }
+
+        .card p {
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        /* Order Now button */
+        .order-button {
+            display: inline-block;
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .order-button:hover {
+            background-color: #c0392b;
+        }
+
+        /* Reservations and Feedback links */
+        .action-links {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .action-links a {
+            text-decoration: none;
+            color: white;
+            padding: 12px 25px;
+            margin: 10px;
+            border-radius: 30px;
+            background-color: #3498db;
+            display: inline-block;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .action-links a:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+
+            .card h3 {
+                font-size: 1.3rem;
+            }
+
+            .card p {
+                font-size: 1rem;
+            }
+
+            .order-button {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome, {{ user.username }}!</h1>
+    <div class="container">
+        <h1>Welcome, {{ user.username }}!</h1>
 
-    <h2>Available Menu Items</h2>
-    <ul>
-        {% for item in menu_items %}
-        <li>
-            {{ item.name }} - ${{ item.price }}
-            <a href="{% url 'place_order' item.id %}">Order Now</a>
-        </li>
-        {% endfor %}
-    </ul>
+        <h2>Available Menu Items</h2>
+        <ul>
+            {% for item in menu_items %}
+            <li class="card">
+                <h3>{{ item.name }}</h3>
+                <p>Price: ${{ item.price }}</p>
+                <a href="{% url 'place_order' item.id %}" class="order-button">Order Now</a>
+            </li>
+            {% endfor %}
+        </ul>
 
-    <h2>Your Orders</h2>
-    <ul>
-        {% for order in orders %}
-        <li>
-            {{ order.menu_item.name }} (Quantity: {{ order.quantity }}) - Status: {{ order.status }}
-        </li>
-        {% empty %}
-        <li>No orders yet.</li>
-        {% endfor %}
-    </ul>
+        <h2>Your Orders</h2>
+        <ul>
+            {% for order in orders %}
+            <li class="card">
+                <h3>{{ order.menu_item.name }}</h3>
+                <p>Quantity: {{ order.quantity }}</p>
+                <p>Status: {{ order.status }}</p>
+            </li>
+            {% empty %}
+            <li class="card">
+                <h3>No orders yet.</h3>
+            </li>
+            {% endfor %}
+        </ul>
 
-    <a href="{% url 'make_reservation' %}">Make a Reservation</a> | 
-    <a href="{% url 'submit_feedback' %}">Submit Feedback</a>
+        <div class="action-links">
+            <a href="{% url 'make_reservation' %}">Make a Reservation</a>
+            <a href="{% url 'submit_feedback' %}">Submit Feedback</a>
+        </div>
+    </div>
 </body>
 </html>

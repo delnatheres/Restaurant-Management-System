@@ -9,6 +9,7 @@ from .models import Employee, Login
 
 
 
+
 from django.contrib.auth.decorators import login_required
 from .models import MenuItem, Order, Reservation, Feedback
 
@@ -37,6 +38,14 @@ def sign_in_view(request):
     return render(request, 'sign_in.html')
 
 
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from .models import Login  # Make sure to import your Login model
+
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from .models import Login  # Make sure to import your Login model
+
 def login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -49,19 +58,17 @@ def login_view(request):
         
         # Attempt to retrieve the user by email and password
         try:
-            login_obj = Login.objects.get(email=email, password=password)
-            user = login_obj.user
-
+            login_obj = SignIn.objects.get(email=email, password=password)
+            if login_obj:
             # For regular users
-            messages.success(request, f'Welcome, {user.name}!')
-            return redirect('index')  # Redirect to user homepage
+                messages.success(request, f'Welcome, {login_obj.name}!')
+                return render (request,'customer/customer_dashboard.html') # Redirect to user homepage
 
-        except Login.DoesNotExist:
+        except SignIn.DoesNotExist:
             messages.error(request, 'Invalid email or password.')
             return redirect('login')
     else:
         return render(request, 'login.html')
-
 
 def about_view(request):
     return render(request, 'about.html')
@@ -173,6 +180,7 @@ def employee_success(request):
 def customer_dashboard(request):
     menu_items = MenuItem.objects.filter(available=True)  # Show only available items
     orders = Order.objects.filter(customer=request.user).order_by('-created_at')  # Show user's orders
+    
     return render(request, 'customer/customer_dashboard.html', {'menu_items': menu_items, 'orders': orders})
 
 # Place an Order
