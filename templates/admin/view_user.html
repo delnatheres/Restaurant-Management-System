@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +9,7 @@
     <style>
         /* Global styles for body */
         body {
+            background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
@@ -71,6 +74,27 @@
             overflow: hidden;
         }
 
+        /* Button styling */
+        .btn-back {
+            display: inline-block; /* Changed to inline-block for smaller button */
+            margin: 20px auto;
+            padding: 10px 20px; /* Smaller padding for a compact button */
+            background-color: #f3b820;
+            color: white;
+            text-align: center;
+            font-size: 16px; /* Font size similar to Add Employee button */
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-back:hover {
+            background-color: #e5a500;
+            transform: translateY(-2px); /* Slight hover effect */
+        }
+
         /* Media query for mobile responsiveness */
         @media (max-width: 768px) {
             table {
@@ -85,21 +109,27 @@
                 font-size: 16px;
                 padding: 10px;
             }
+
+            .btn-back {
+                font-size: 14px; /* Adjusted font size for smaller screens */
+                padding: 8px 16px; /* Adjusted padding for smaller screens */
+            }
         }
     </style>
 </head>
 <body>
     <h1>Sign In Details</h1>
+
+    <!-- Table to display sign-in records -->
     <table>
-        <head>
+        <thead>
             <tr>
                 <th>Name</th>
                 <th>Place</th>
                 <th>Email</th>
             </tr>
-            <p><center><b><a href="{% url 'admin_dashboard' %}">Back</a></p></center></b>
-        </head>
-        <body>
+        </thead>
+        <tbody>
             {% for signin in person %}
                 <tr>
                     <td>{{ signin.name }}</td>
@@ -111,7 +141,10 @@
                     <td colspan="3">No sign-in records found.</td>
                 </tr>
             {% endfor %}
-        </body>
+        </tbody>
     </table>
+
+    <!-- Back to Dashboard button -->
+    <center><a href="{% url 'admin_dashboard' %}" class="btn-back">Back to Dashboard</a></center>
 </body>
 </html>

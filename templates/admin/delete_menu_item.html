@@ -1,0 +1,77 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Menu Item - Restaurant Management</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #d9534f; /* Bootstrap danger color */
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            border-bottom: 3px solid #F3B820;
+            padding-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+            width: 100%; /* Full width buttons */
+        }
+
+        .btn-danger {
+            background-color: #d9534f; /* Danger color */
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #c9302c; /* Darker red on hover */
+        }
+
+        .btn-secondary {
+            background-color: #F3B820; /* Secondary color */
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0a800; /* Secondary color hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Delete Menu Item</h1>
+        <p>Are you sure you want to delete "{{ menu_item.name }}"?</p>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Confirm Delete</button>
+            <a href="{% url 'menu_item_list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>

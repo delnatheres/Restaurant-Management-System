@@ -247,8 +247,44 @@ def add_menu_item(request):
     return render(request, 'admin/add_menu_items.html', {'form': form})
 
 
+def customer_orders(request):
+    # Your logic to fetch and display orders
+    return render(request, 'orders.html')
+
+
+def view_menu(request):
+    # Fetch all menu items from the database
+    menu_items = MenuItem.objects.all()  # You can filter or order the menu if needed
+    return render(request, 'admin/view_menu.html', {'menu_items': menu_items})
+
+
+# myapp/views.py
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import MenuItem
+
+def edit_menu_item(request, id):
+    menu_item = get_object_or_404(MenuItem, id=id)
+
+    if request.method == 'POST':
+        # Assuming you have a form to update the item's name
+        menu_item.name = request.POST.get('name')
+        menu_item.save()
+        return redirect('menu_item_list')  # Redirect after saving
+
+    return render(request, 'admin/edit_menu_item.html', {'menu_item': menu_item})
 
 
 
+def menu_item_list(request):
+    menu_items = MenuItem.objects.all()  # Query to get all menu items
+    return render(request, 'admin/menu_item_list.html', {'menu_items': menu_items})
 
+def delete_menu_item(request, id):
+    menu_item = get_object_or_404(MenuItem, id=id)
 
+    if request.method == 'POST':
+        menu_item.delete()
+        return redirect('menu_item_list')  # Redirect to the menu item list after deletion
+
+    return render(request, 'admin/delete_menu_item.html', {'menu_item': menu_item})

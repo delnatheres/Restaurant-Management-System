@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Dashboard</title>
+    <!-- Google Font Link for Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
         /* General Reset */
         * {
@@ -13,61 +16,110 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f8;
+            font-family: 'Arial', sans-serif;
+            background-color: #fdfdfd;
             color: #333;
-            padding: 20px;
-            line-height: 1.6;
+            padding: 0;
+            margin: 0;
         }
 
-        /* Page Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        /* Style the sidebar */
+        #sidebar {
+            background-color: #1e2a38;
+            color: white;
+            width: 250px;
+            position: fixed;
+            height: 100%;
+            overflow: auto;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Title Styling */
-        h1, h2 {
+        #sidebar a {
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            color: white;
+            display: block;
+            transition: background 0.3s, padding-left 0.3s;
+        }
+
+        #sidebar a:hover {
+            background-color: #3b4d63;
+            padding-left: 30px;
+        }
+
+        /* Updated Sidebar Header Styling */
+        #sidebar h1 {
+            font-size: 26px;
             text-align: center;
+            padding: 20px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Gradient background */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; /* Apply gradient to text */
+            background-clip: text;
+            text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle shadow */
+            font-weight: bold;
+            font-family: 'Poppins', sans-serif; /* Modern and clean font */
+            letter-spacing: 2px;
+            line-height: 1.2;
+        }
+
+        /* Add a hover effect to the heading */
+        #sidebar h1:hover {
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5); /* Stronger shadow on hover */
+            transform: scale(1.05); /* Slight zoom effect on hover */
+            transition: all 0.3s ease;
+        }
+
+        /* Style the content area */
+        #content {
+            margin-left: 260px;
+            padding: 30px;
+            background-color: #fdfdfd;
+        }
+
+        h1, h2 {
             color: #2c3e50;
             margin-bottom: 20px;
+            font-weight: 700;
         }
 
         h1 {
             font-size: 2.5rem;
-            margin-bottom: 30px;
         }
 
         h2 {
             font-size: 1.8rem;
-            color: #2980b9;
-            margin-bottom: 15px;
+            color: #3b4d63;
         }
 
         /* Styling for the list items */
         ul {
             list-style-type: none;
             margin-bottom: 40px;
+            padding: 0;
         }
 
         .card {
             background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 25px;
             margin-bottom: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
         .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         .card h3 {
-            font-size: 1.5rem;
-            color: #16a085;
+            font-size: 1.6rem;
+            color: #27ae60;
+            margin-bottom: 10px;
         }
 
         .card p {
@@ -78,21 +130,23 @@
         /* Order Now button */
         .order-button {
             display: inline-block;
-            background-color: #e74c3c;
+            background-color: #3498db;
             color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
+            padding: 12px 25px;
+            border-radius: 25px;
             text-decoration: none;
             font-weight: bold;
-            transition: background-color 0.3s ease;
+            font-size: 1rem;
+            transition: background-color 0.3s, transform 0.3s;
             margin-top: 10px;
         }
 
         .order-button:hover {
-            background-color: #c0392b;
+            background-color: #2980b9;
+            transform: translateY(-2px);
         }
 
-        /* Reservations and Feedback links */
+        /* Action Links for Reservations and Feedback */
         .action-links {
             text-align: center;
             margin-top: 40px;
@@ -100,23 +154,25 @@
 
         .action-links a {
             text-decoration: none;
-            color: white;
-            padding: 12px 25px;
+            color: #fff;
+            padding: 12px 30px;
             margin: 10px;
             border-radius: 30px;
-            background-color: #3498db;
+            background-color: #8e44ad;
             display: inline-block;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-size: 1.1rem;
+            transition: background-color 0.3s, transform 0.3s;
         }
 
         .action-links a:hover {
-            background-color: #2980b9;
-            transform: translateY(-3px);
+            background-color: #7d3c98;
+            transform: translateY(-2px);
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .container {
+            #content {
+                margin-left: 0;
                 padding: 10px;
             }
 
@@ -139,13 +195,40 @@
             .order-button {
                 font-size: 0.9rem;
             }
+
+            #sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            #sidebar a {
+                text-align: center;
+                float: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <h1>Customer Dashboard</h1>
+        <ul>
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'customer_orders' %}">Your Orders</a></li>
+            <li><a href="{% url 'menu' %}">Menu</a></li>
+            <li><a href="{% url 'make_reservation' %}">Reservations</a></li>
+            <li><a href="{% url 'submit_feedback' %}">Feedback</a></li>
+            <li><a href="{% url 'login' %}">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div id="content">
         <h1>Welcome, {{ user.username }}!</h1>
 
+        <!-- Available Menu Items Section -->
         <h2>Available Menu Items</h2>
         <ul>
             {% for item in menu_items %}
@@ -157,6 +240,7 @@
             {% endfor %}
         </ul>
 
+        <!-- Your Orders Section -->
         <h2>Your Orders</h2>
         <ul>
             {% for order in orders %}
@@ -172,10 +256,12 @@
             {% endfor %}
         </ul>
 
+        <!-- Action Links (Reservations, Feedback) -->
         <div class="action-links">
             <a href="{% url 'make_reservation' %}">Make a Reservation</a>
             <a href="{% url 'submit_feedback' %}">Submit Feedback</a>
         </div>
     </div>
+
 </body>
 </html>
