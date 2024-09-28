@@ -43,12 +43,6 @@ class Employee(models.Model):
 
 
 
-
-
-
-
-
-
 from django.contrib.auth.models import User
 
 # Model for Menu Item
@@ -91,3 +85,7 @@ class Feedback(models.Model):
 
     def __str__(self):
         return f"Feedback from {self.customer.username}"
+
+
+
+

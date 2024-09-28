@@ -18,4 +18,6 @@ urlpatterns = [
     path('order/<int:item_id>/', views.place_order, name='place_order'),
     path('reservation/', views.make_reservation, name='make_reservation'),
     path('feedback/', views.submit_feedback, name='submit_feedback'),
+    path('add_menu_item/', views.add_menu_item, name='add_menu_item'),
+
    ]

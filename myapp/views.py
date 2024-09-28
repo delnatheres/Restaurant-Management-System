@@ -6,12 +6,12 @@ from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 from .forms import EmployeeForm
 from .models import Employee, Login
-
-
-
-
 from django.contrib.auth.decorators import login_required
 from .models import MenuItem, Order, Reservation, Feedback
+
+
+
+
 
 
 
@@ -171,10 +171,6 @@ def employee_success(request):
 
 
 
-
-
-
-
 # Customer Dashboard
 @login_required
 def customer_dashboard(request):
@@ -213,3 +209,46 @@ def submit_feedback(request):
         Feedback.objects.create(customer=request.user, comments=comments, rating=rating)
         return redirect('customer_dashboard')
     return render(request, 'customer/submit_feedback.html')
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django import forms
+from .models import MenuItem
+
+# Define the MenuItemForm directly in views.py
+class MenuItemForm(forms.ModelForm):
+    class Meta:
+        model = MenuItem
+        fields = ['name', 'description', 'price', 'available']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4, 'cols': 40}),
+        }
+        labels = {
+            'name': 'Menu Item Name',
+            'description': 'Description',
+            'price': 'Price',
+            'available': 'Available?',
+        }
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+def add_menu_item(request):
+    if request.method == 'POST':
+        form = MenuItemForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Menu item added successfully!')
+           
+    else:
+        form = MenuItemForm()
+
+    return render(request, 'admin/add_menu_items.html', {'form': form})
+
+
+
+
+
+
+
