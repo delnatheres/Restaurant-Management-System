@@ -23,7 +23,31 @@ urlpatterns = [
     path('menu_items/', views.menu_item_list, name='menu_item_list'),
     path('edit_menu_item/<int:id>/', views.edit_menu_item, name='edit_menu_item'),  # Correct this line
     path('add_menu_item/', views.add_menu_item, name='add_menu_item'),
-    path('delete_menu_item/<int:id>/', views.delete_menu_item, name='delete_menu_item'),  # Note the underscore
+    path('delete_menu_item/<int:id>/', views.delete_menu_item, name='delete_menu_item'), 
+    path('categories/', views.view_category, name='view_category'),
+    path('categories/add/', views.add_category, name='add_category'),
+    path('categories/edit/<int:cid>/', views.edit_category, name='edit_category'),
+    path('categories/delete/<int:cid>/', views.delete_category, name='delete_category'),
+    path('subcategories/', views.view_subcategory, name='view_subcategory'),
+    path('subcategories/add/', views.add_subcategory, name='add_subcategory'),
+    path('subcategories/edit/<int:subcategory_id>/', views.edit_subcategory, name='edit_subcategory'),
+    path('subcategories/delete/<int:subcategory_id>/', views.delete_subcategory, name='delete_subcategory'),
+    
+    
+    
+    path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
+    
+    
+    
+    path('orders/', views.view_orders, name='view_orders'),
+    path('orders/add/', views.add_order, name='add_order'),
+    path('orders/edit/<int:order_id>/', views.edit_order, name='edit_order'),
+    path('orders/delete/<int:order_id>/', views.delete_order, name='delete_order'),
+    path('orders/<int:order_id>/', views.order_details, name='order_details'),
+ 
+    
+    
+    
 
 
    ]

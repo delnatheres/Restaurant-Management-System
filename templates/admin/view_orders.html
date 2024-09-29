@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Orders</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Your Orders</h2>
+        <a href="{% url 'add_order' %}" class="btn btn-primary">Add New Order</a>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Menu Item</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.menu_item.name }}</td>
+                    <td>{{ order.quantity }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>
+                        <a href="{% url 'edit_order' order.id %}" class="btn btn-warning">Edit</a>
+                        <a href="{% url 'delete_order' order.id %}" class="btn btn-danger">Delete</a>
+                        <a href="{% url 'order_details' order.id %}" class="btn btn-info">Details</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

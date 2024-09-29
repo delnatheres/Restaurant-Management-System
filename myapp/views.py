@@ -8,9 +8,13 @@ from .forms import EmployeeForm
 from .models import Employee, Login
 from django.contrib.auth.decorators import login_required
 from .models import MenuItem, Order, Reservation, Feedback
+from .models import Category
+from .models import Category, SubCategory
 
 
 
+from .models import Order
+from django.shortcuts import render, redirect, get_object_or_404
 
 
 
@@ -275,7 +279,6 @@ def edit_menu_item(request, id):
     return render(request, 'admin/edit_menu_item.html', {'menu_item': menu_item})
 
 
-
 def menu_item_list(request):
     menu_items = MenuItem.objects.all()  # Query to get all menu items
     return render(request, 'admin/menu_item_list.html', {'menu_items': menu_items})
@@ -288,3 +291,165 @@ def delete_menu_item(request, id):
         return redirect('menu_item_list')  # Redirect to the menu item list after deletion
 
     return render(request, 'admin/delete_menu_item.html', {'menu_item': menu_item})
+
+
+
+
+def delete_user(request, user_id):
+    try:
+        user = get_object_or_404(User, id=user_id)
+        user.delete()
+        messages.success(request, 'User deleted successfully.')
+    except User.DoesNotExist:
+        messages.error(request, 'User does not exist.')
+    
+    return redirect('view_user')  # Redirect to the page where you want to show the result
+
+
+
+# View to display all categories
+def view_category(request):
+    categories = Category.objects.all()  # Fetch all categories
+    return render(request, 'admin/view_category.html', {'categories': categories})
+
+# View to add a new category
+def add_category(request):
+    if request.method == 'POST':
+        cname = request.POST.get('cname')
+        status = request.POST.get('status') == 'on'
+        if cname:
+            Category.objects.create(cname=cname, status=status)
+            messages.success(request, 'Category added successfully!')
+            return redirect('view_category')
+        else:
+            messages.error(request, 'Category name is required.')
+    return render(request, 'admin/add_category.html')
+
+# View to edit an existing category
+def edit_category(request, cid):
+    category = get_object_or_404(Category, cid=cid)
+    if request.method == 'POST':
+        category.cname = request.POST.get('cname')
+        category.status = request.POST.get('status') == 'on'
+        if category.cname:
+            category.save()
+            messages.success(request, 'Category updated successfully!')
+            return redirect('view_category')
+        else:
+            messages.error(request, 'Category name is required.')
+    return render(request, 'admin/edit_category.html', {'category': category})
+
+# View to delete a category
+def delete_category(request, cid):
+    category = get_object_or_404(Category, cid=cid)
+    if request.method == 'POST':
+        category.delete()
+        messages.success(request, 'Category deleted successfully!')
+        return redirect('view_category')
+    return render(request, 'admin/delete_category.html', {'category': category})
+
+
+
+# View for listing all subcategories
+def view_subcategory(request):
+    subcategories = SubCategory.objects.all()
+    return render(request, 'admin/view_subcategory.html', {'subcategories': subcategories})
+
+# View for adding a new subcategory
+def add_subcategory(request):
+    if request.method == 'POST':
+        scname = request.POST.get('scname')
+        cid = request.POST.get('cid')
+        status = request.POST.get('status') == 'on'  # Checkbox value handling
+        SubCategory.objects.create(scname=scname, cid_id=cid, status=status)
+        messages.success(request, 'Subcategory added successfully.')
+        return redirect('view_subcategory')
+    
+    categories = Category.objects.all()
+    return render(request, 'admin/add_subcategory.html', {'categories': categories})
+
+# View for editing a subcategory
+def edit_subcategory(request, subcategory_id):
+    subcategory = get_object_or_404(SubCategory, id=subcategory_id)
+
+    if request.method == 'POST':
+        subcategory.scname = request.POST.get('scname')
+        subcategory.cid_id = request.POST.get('cid')
+        subcategory.status = request.POST.get('status') == 'on'
+        subcategory.save()
+        messages.success(request, 'Subcategory updated successfully.')
+        return redirect('view_subcategory')
+
+    categories = Category.objects.all()
+    return render(request, 'admin/edit_subcategory.html', {'subcategory': subcategory, 'categories': categories})
+
+# View for deleting a subcategory
+def delete_subcategory(request, subcategory_id):
+    subcategory = get_object_or_404(SubCategory, id=subcategory_id)
+
+    if request.method == 'POST':
+        subcategory.delete()
+        messages.success(request, 'Subcategory deleted successfully.')
+        return redirect('view_subcategory')
+
+    return render(request, 'admin/delete_subcategory.html', {'subcategory': subcategory})
+
+
+
+
+
+
+
+
+
+# View for listing orders
+@login_required
+def view_orders(request):
+    orders = Order.objects.filter(customer=request.user)
+    return render(request, 'admin/view_orders.html', {'orders': orders})
+
+# View for creating a new order
+@login_required
+def add_order(request):
+    if request.method == 'POST':
+        menu_item_id = request.POST.get('menu_item')
+        quantity = request.POST.get('quantity')
+        menu_item = get_object_or_404(MenuItem, id=menu_item_id)
+        order = Order(customer=request.user, menu_item=menu_item, quantity=quantity)
+        order.save()
+        messages.success(request, 'Order created successfully!')
+        return redirect('view_orders')
+    
+    menu_items = MenuItem.objects.all()
+    return render(request, 'admin/add_order.html', {'menu_items': menu_items})
+
+# View for updating an order
+@login_required
+def edit_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, customer=request.user)
+    if request.method == 'POST':
+        order.menu_item = get_object_or_404(MenuItem, id=request.POST.get('menu_item'))
+        order.quantity = request.POST.get('quantity')
+        order.save()
+        messages.success(request, 'Order updated successfully!')
+        return redirect('view_orders')
+    
+    menu_items = MenuItem.objects.all()
+    return render(request, 'admin/edit_order.html', {'order': order, 'menu_items': menu_items})
+
+# View for deleting an order
+@login_required
+def delete_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, customer=request.user)
+    if request.method == 'POST':
+        order.delete()
+        messages.success(request, 'Order deleted successfully!')
+        return redirect('view_orders')
+    return render(request, 'admin/delete_order.html', {'order': order})
+
+# View for order details
+@login_required
+def order_details(request, order_id):
+    order = get_object_or_404(Order, id=order_id, customer=request.user)
+    return render(request, 'admin/order_details.html', {'order': order})
+

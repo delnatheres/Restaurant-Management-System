@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Subcategories</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Global body styling with background image */
+        body {
+            background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        /* Container styling */
+        .container {
+            background-color: rgba(255, 255, 255, 0.85); /* Semi-transparent white background */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Header styling */
+        h2 {
+            color: #333;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #F3B820;
+            padding-bottom: 10px;
+        }
+
+        /* Button styling */
+        .btn-primary {
+            background-color: #F3B820;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border: none;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            background-color: white;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            table th, table td {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Subcategories</h2>
+        
+        <!-- Back to Dashboard Button -->
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-primary mb-3">Back to Dashboard</a>
+        
+        <a href="{% url 'add_subcategory' %}" class="btn btn-primary mb-3">Add New Subcategory</a>
+        
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Subcategory Name</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subcategory in subcategories %}
+                <tr>
+                    <td>{{ subcategory.id }}</td>
+                    <td>{{ subcategory.scname }}</td>
+                    <td>{{ subcategory.cid.cname }}</td>
+                    <td>{{ subcategory.status|yesno:"Active,Inactive" }}</td>
+                    <td>
+                        <a href="{% url 'edit_subcategory' subcategory.id %}" class="btn btn-warning">Edit</a>
+                        <a href="{% url 'delete_subcategory' subcategory.id %}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

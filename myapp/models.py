@@ -88,4 +88,33 @@ class Feedback(models.Model):
 
 
 
+class Category(models.Model):
+    cid = models.AutoField(primary_key=True)  # Auto-incremented ID for category
+    cname = models.CharField(max_length=10, null=False)  # Category name
+    status = models.BooleanField(default=True)  # Status of category (True/False)
 
+    def __str__(self):
+        return self.cname  # Show the category name in admin panel
+
+
+
+
+
+
+class Category(models.Model):
+    cid = models.AutoField(primary_key=True)
+    cname = models.CharField(max_length=10, null=False)
+    status = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.cname
+
+
+class SubCategory(models.Model):
+    id = models.AutoField(primary_key=True)
+    cid = models.ForeignKey(Category, on_delete=models.CASCADE)  # Foreign Key to Category
+    scname = models.CharField(max_length=10, null=False)
+    status = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.scname
