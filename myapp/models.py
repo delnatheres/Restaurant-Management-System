@@ -132,3 +132,44 @@ class Order(models.Model):
     
     
     
+    
+    
+    
+
+
+class Order(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('preparing', 'Preparing'),
+        ('served', 'Served'),
+    ]
+    
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    ordered_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Order by {self.customer.username} - {self.menu_item.name}"
+    
+    
+    
+class Leave(models.Model):
+    staff_member = models.ForeignKey(User, on_delete=models.CASCADE, related_name="leave_requests")
+    leave_reason = models.CharField(max_length=255)
+    leave_days = models.PositiveIntegerField()
+    applied_on = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.staff_member.username} - {self.leave_reason} ({self.leave_days} days)"
+    
+    
+    
+class StaffProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    position = models.CharField(max_length=100)
+    date_joined = models.DateField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.user.username

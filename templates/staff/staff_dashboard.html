@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard</title>
+    <!-- Google Font Link for Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif; /* Updated font */
+            background-color: #f4f4f4; /* Light background color */
+            color: #333; /* Dark text color */
+        }
+
+        /* Style the sidebar */
+        #sidebar {
+            background-color: #343a40; /* Dark sidebar */
+            color: white;
+            width: 250px;
+            position: fixed;
+            height: 100%;
+            overflow: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: width 0.3s; /* Smooth transition */
+        }
+
+        #sidebar a {
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 16px;
+            color: white;
+            display: block;
+            transition: background 0.3s;
+        }
+
+        #sidebar a:hover {
+            background-color: #495057; /* Lighter on hover */
+        }
+
+        /* Enhanced Sidebar Header Styling */
+        #sidebar h1 {
+            font-size: 28px; /* Increased font size */
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #007bff, #6c757d); /* Gradient background */
+            border-radius: 8px;
+            color: white; /* White text for contrast */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Subtle shadow effect */
+        }
+
+        /* Style the content area */
+        #content {
+            margin-left: 260px; /* Spacing for the sidebar */
+            padding: 30px;
+            background-color: #ffffff; /* White content area */
+            min-height: 100vh; /* Full height for the content area */
+            transition: margin-left 0.3s; /* Smooth transition */
+        }
+
+        h1, h2 {
+            color: #495057; /* Updated heading color */
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #6c757d; /* Secondary color for subheadings */
+        }
+
+        /* Styling for the list items */
+        ul {
+            list-style-type: none;
+            margin-bottom: 40px;
+            padding: 0;
+        }
+
+        .card {
+            background-color: #f8f9fa; /* Light card background */
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            color: #007bff; /* Primary button color */
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 1rem;
+            color: #495057; /* Secondary text color */
+        }
+
+        /* Action Links for Orders and Leave */
+        .action-links {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .action-links a {
+            text-decoration: none;
+            color: white;
+            padding: 12px 30px;
+            margin: 10px;
+            border-radius: 30px;
+            background-color: #28a745; /* Green button */
+            display: inline-block;
+            font-size: 1.1rem;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .action-links a:hover {
+            background-color: #218838; /* Darker green on hover */
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #content {
+                margin-left: 0;
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+
+            .card h3 {
+                font-size: 1.3rem;
+            }
+
+            .card p {
+                font-size: 0.9rem;
+            }
+            
+            .action-links a {
+                font-size: 1rem; /* Adjust size for smaller screens */
+            }
+
+            #sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            #sidebar a {
+                text-align: center;
+                float: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <h1>Staff Dashboard</h1>
+        <ul>
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="#">Orders List</a></li>
+            <li><a href="#">Apply for Leave</a></li>
+            <li><a href="#">Staff Details</a></li>
+            <li><a href="#">View Reservation</a></li>
+            <li><a href="{% url 'login' %}">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div id="content">
+        <h1>Welcome, {{ user.username }}!</h1>
+
+        <!-- Available Orders Section -->
+        <h2>Your Orders</h2>
+        <ul>
+            {% for order in orders %}
+            <li class="card">
+                <h3>{{ order.menu_item.name }}</h3>
+                <p>Quantity: {{ order.quantity }}</p>
+                <p>Status: {{ order.status }}</p>
+            </li>
+            {% empty %}
+            <li class="card">
+                <h3>No orders yet.</h3>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Action Links (Leave, Staff Details) -->
+        <div class="action-links">
+            <a href="{% url 'staff_leave' %}">Apply for Leave</a>
+            <a href="{% url 'staff_details' %}">View Your Details</a>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -15,6 +15,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 
 
+from .models import Order, Leave, StaffProfile
+
+
+
 
 
 def index_view(request):
@@ -428,3 +432,45 @@ def activate_user(request, id):
     )
 
     return redirect('view_user')  # Redirect to the sign-in details page
+
+
+
+
+
+
+
+
+
+
+@login_required
+def staff_dashboard(request):
+    staff_member = request.user  # Assuming staff is logged in
+    context = {'staff_member': staff_member}
+    return render(request, 'staff/staff_dashboard.html', context)
+
+@login_required
+def staff_orders(request):
+    orders = Order.objects.all()  # You might want to filter based on the staff member's assignments
+    context = {'orders': orders}
+    return render(request, 'staff/staff_orders.html', context)
+
+@login_required
+def apply_leave(request):
+    if request.method == 'POST':
+        # Handle leave application logic here
+        return redirect('staff_dashboard')
+    return render(request, 'staff/apply_leave.html')
+
+@login_required
+def staff_details(request):
+    staff_member = request.user  # Assuming staff is logged in
+    context = {'staff_member': staff_member}
+    return render(request, 'staff/staff_details.html', context)
+
+def staff_dashboard_view(request):
+    # You may want to retrieve data related to staff, like their orders, etc.
+    return render(request, 'staff/staff_dashboard.html', {})  # Render your staff dashboard template
+
+def staff_leave_view(request):
+    # Your logic for handling the leave application
+    return render(request, 'staff/staff_leave.html')
