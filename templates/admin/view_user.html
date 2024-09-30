@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -127,22 +126,27 @@
                 <th>Name</th>
                 <th>Place</th>
                 <th>Email</th>
-                <th>Action</th> <!-- Added action column for delete button -->
+                <th>Action</th> <!-- Added action column for delete/restore button -->
             </tr>
         </thead>
         <tbody>
-            {% for signin in person %}
+            {% for user in person %}
                 <tr>
-                    <td>{{ signin.name }}</td>
-                    <td>{{ signin.place }}</td>
-                    <td>{{ signin.email }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.place }}</td>
+                    <td>{{ user.email }}</td>
                     <td>
-                        <a href="{% url 'delete_user' signin.id %}" class="btn-delete" onclick="return confirm('Are you sure you want to delete this user?');">Delete User</a>
+                        <!-- Action button based on user status -->
+                        {% if user.status %}
+                            <a href="{% url 'deactivate_user' user.id %}" class="btn-delete" onclick="return confirm('Are you sure you want to deactivate this user?');">Deactivate</a>
+                        {% else %}
+                            <a href="{% url 'activate_user' user.id %}" class="btn-delete" onclick="return confirm('Are you sure you want to reactivate this user?');">Activate</a>
+                        {% endif %}
                     </td>
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="4">No sign-in records found.</td> <!-- Updated colspan to 4 -->
+                    <td colspan="4">No sign-in records found.</td>
                 </tr>
             {% endfor %}
         </tbody>

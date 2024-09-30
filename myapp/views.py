@@ -10,9 +10,6 @@ from django.contrib.auth.decorators import login_required
 from .models import MenuItem, Order, Reservation, Feedback
 from .models import Category
 from .models import Category, SubCategory
-
-
-
 from .models import Order
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -50,6 +47,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from .models import Login  # Make sure to import your Login model
 
+
 def login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -73,6 +71,8 @@ def login_view(request):
             return redirect('login')
     else:
         return render(request, 'login.html')
+
+
 
 def about_view(request):
     return render(request, 'about.html')
@@ -190,8 +190,10 @@ def place_order(request, item_id):
     if request.method == 'POST':
         quantity = int(request.POST.get('quantity'))
         Order.objects.create(customer=request.user, menu_item=item, quantity=quantity)
+        messages.success(request, 'Order placed successfully!')
         return redirect('customer_dashboard')
     return render(request, 'customer/menu_item.html', {'item': item})
+
 
 # Make a Reservation
 @login_required
@@ -295,15 +297,9 @@ def delete_menu_item(request, id):
 
 
 
-def delete_user(request, user_id):
-    try:
-        user = get_object_or_404(User, id=user_id)
-        user.delete()
-        messages.success(request, 'User deleted successfully.')
-    except User.DoesNotExist:
-        messages.error(request, 'User does not exist.')
-    
-    return redirect('view_user')  # Redirect to the page where you want to show the result
+
+from django.shortcuts import render, get_object_or_404, redirect
+
 
 
 
@@ -397,59 +393,38 @@ def delete_subcategory(request, subcategory_id):
 
 
 
-
-
-
-
-
-# View for listing orders
-@login_required
-def view_orders(request):
-    orders = Order.objects.filter(customer=request.user)
-    return render(request, 'admin/view_orders.html', {'orders': orders})
-
-# View for creating a new order
-@login_required
-def add_order(request):
-    if request.method == 'POST':
-        menu_item_id = request.POST.get('menu_item')
-        quantity = request.POST.get('quantity')
-        menu_item = get_object_or_404(MenuItem, id=menu_item_id)
-        order = Order(customer=request.user, menu_item=menu_item, quantity=quantity)
-        order.save()
-        messages.success(request, 'Order created successfully!')
-        return redirect('view_orders')
+def deactivate_user(request, id):
+    user = get_object_or_404(SignIn, id=id)
     
-    menu_items = MenuItem.objects.all()
-    return render(request, 'admin/add_order.html', {'menu_items': menu_items})
+    # Deactivate the user
+    user.status = 0  # Set status to 0 (deactivated)
+    user.save()
 
-# View for updating an order
-@login_required
-def edit_order(request, order_id):
-    order = get_object_or_404(Order, id=order_id, customer=request.user)
-    if request.method == 'POST':
-        order.menu_item = get_object_or_404(MenuItem, id=request.POST.get('menu_item'))
-        order.quantity = request.POST.get('quantity')
-        order.save()
-        messages.success(request, 'Order updated successfully!')
-        return redirect('view_orders')
+    # Send email notification
+    send_mail(
+        "Account Deactivation Notice",
+        f"Hello {user.name}, your account has been deactivated. If you wish to reactivate it, please contact support.",
+        'delnatheres2025@mca.ajce.in',  # Change this to your email
+        [user.email],
+        fail_silently=False,
+    )
+
+    return redirect('view_user')  # Redirect to the sign-in details page
+
+def activate_user(request, id):
+    user = get_object_or_404(SignIn, id=id)
     
-    menu_items = MenuItem.objects.all()
-    return render(request, 'admin/edit_order.html', {'order': order, 'menu_items': menu_items})
+    # Activate the user
+    user.status = 1  # Set status to 1 (activated)
+    user.save()
 
-# View for deleting an order
-@login_required
-def delete_order(request, order_id):
-    order = get_object_or_404(Order, id=order_id, customer=request.user)
-    if request.method == 'POST':
-        order.delete()
-        messages.success(request, 'Order deleted successfully!')
-        return redirect('view_orders')
-    return render(request, 'admin/delete_order.html', {'order': order})
+    # Send email notification
+    send_mail(
+        "Account Reactivation Notice",
+        f"Hello {user.name}, your account has been reactivated. Welcome back!",
+        'delnatheres2025@mca.ajce.in',  # Change this to your email
+        [user.email],
+        fail_silently=False,
+    )
 
-# View for order details
-@login_required
-def order_details(request, order_id):
-    order = get_object_or_404(Order, id=order_id, customer=request.user)
-    return render(request, 'admin/order_details.html', {'order': order})
-
+    return redirect('view_user')  # Redirect to the sign-in details page

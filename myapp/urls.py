@@ -32,22 +32,18 @@ urlpatterns = [
     path('subcategories/add/', views.add_subcategory, name='add_subcategory'),
     path('subcategories/edit/<int:subcategory_id>/', views.edit_subcategory, name='edit_subcategory'),
     path('subcategories/delete/<int:subcategory_id>/', views.delete_subcategory, name='delete_subcategory'),
+    path('deactivate_user/<int:id>/', views.deactivate_user, name='deactivate_user'),
+    path('activate_user/<int:id>/', views.activate_user, name='activate_user'),
     
     
     
-    path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
     
     
+     
     
-    path('orders/', views.view_orders, name='view_orders'),
-    path('orders/add/', views.add_order, name='add_order'),
-    path('orders/edit/<int:order_id>/', views.edit_order, name='edit_order'),
-    path('orders/delete/<int:order_id>/', views.delete_order, name='delete_order'),
-    path('orders/<int:order_id>/', views.order_details, name='order_details'),
- 
-    
-    
-    
+     
 
 
    ]
+
+

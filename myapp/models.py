@@ -18,6 +18,8 @@ class User(models.Model):
     def __str__(self):
         return self.name
     
+    
+    
 # page1/models.py
 
 class SignIn(models.Model):
@@ -25,9 +27,13 @@ class SignIn(models.Model):
     place = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)  # Note: In practice, you should never store passwords in plaintext
-
+    status = models.BooleanField(default=True)  # True for active users, False for inactive users
+    
     def __str__(self):
         return f"{self.name} - {self.email}"
+    
+    
+    
 
 class Employee(models.Model):
     employee_id = models.AutoField(primary_key=True)
@@ -55,16 +61,7 @@ class MenuItem(models.Model):
     def __str__(self):
         return self.name
 
-# Model for Customer Orders
-class Order(models.Model):
-    customer = models.ForeignKey(User, on_delete=models.CASCADE)
-    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
-    status = models.CharField(max_length=20, default="Pending")  # Pending, Preparing, Delivered
-    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"Order {self.id} - {self.menu_item.name}"
 
 # Model for Customer Reservations
 class Reservation(models.Model):
@@ -99,8 +96,6 @@ class Category(models.Model):
 
 
 
-
-
 class Category(models.Model):
     cid = models.AutoField(primary_key=True)
     cname = models.CharField(max_length=10, null=False)
@@ -118,3 +113,22 @@ class SubCategory(models.Model):
 
     def __str__(self):
         return self.scname
+    
+    
+    
+    # Model for Customer Orders
+class Order(models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    status = models.CharField(max_length=20, default="Pending")  # Pending, Preparing, Delivered
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order {self.id} - {self.menu_item.name}"
+    
+    
+    
+    
+    
+    
