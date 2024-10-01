@@ -34,13 +34,12 @@ urlpatterns = [
     path('subcategories/delete/<int:subcategory_id>/', views.delete_subcategory, name='delete_subcategory'),
     path('deactivate_user/<int:id>/', views.deactivate_user, name='deactivate_user'),
     path('activate_user/<int:id>/', views.activate_user, name='activate_user'),
+    path('view_employees/', views.view_employees, name='view_employees'),  # New URL pattern
     
     
-    path('staff_dashboard/', views.staff_dashboard_view, name='staff_dashboard'),
-    path('staff_orders/', views.staff_orders, name='staff_orders'),
-    path('staff_leave/', views.apply_leave, name='apply_leave'),
-    path('staff_details/', views.staff_details, name='staff_details'),
-    path('staff_leave/', views.staff_leave_view, name='staff_leave'),  # Ensure this matches
+    
+    
+    
      
 
 

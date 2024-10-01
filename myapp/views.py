@@ -14,8 +14,8 @@ from .models import Order
 from django.shortcuts import render, redirect, get_object_or_404
 
 
+from .models import Employee
 
-from .models import Order, Leave, StaffProfile
 
 
 
@@ -156,26 +156,47 @@ def viewuser(request):
 
 def add_employee(request):
     if request.method == "POST":
-        form = EmployeeForm(request.POST)
-        if form.is_valid():
-            # Save the email and password to the Login model
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password')
-            login = Login.objects.create(email=email, password=password)
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        phone = request.POST.get('phone')
+        salary = request.POST.get('salary')
+        status = request.POST.get('status') == 'True'  # Convert to boolean
+        email = request.POST.get('email')  # Get email from POST data
+        password = request.POST.get('password')  # Get password from POST data
+
+        if email and password:  # Ensure email and password are not empty
+            # Create and save the Login instance
             
-            # Now save the employee with the associated login
-            employee = form.save(commit=False)  # Delay saving Employee
-            employee.login = login  # Associate login with employee
-            employee.save()  # Save the employee instance
-            
+
+            # Create and save the Employee instance
+            employee = Employee(
+                first_name=first_name,
+                last_name=last_name,
+                phone=phone,
+                salary=salary,
+                status=status,
+               # Associate the login with the employee
+            )
+            employee.save()
+
             return redirect('employee_success')  # Redirect after successful form submission
-    else:
-        form = EmployeeForm()
-    
-    return render(request, 'admin/add_employee.html', {'form': form})
+        else:
+            # Handle the case where email or password is missing
+            messages.error(request, "Email and password are required.")
+    return render(request, 'admin/add_employee.html')
+
+
 
 def employee_success(request):
     return render(request, 'admin/employee_success.html')
+
+
+
+
+def view_employees(request):
+    employees = Employee.objects.all()  # Fetch all employees
+    return render(request, 'admin/view_employees.html', {'employees': employees})
+
 
 
 
@@ -442,35 +463,5 @@ def activate_user(request, id):
 
 
 
-@login_required
-def staff_dashboard(request):
-    staff_member = request.user  # Assuming staff is logged in
-    context = {'staff_member': staff_member}
-    return render(request, 'staff/staff_dashboard.html', context)
 
-@login_required
-def staff_orders(request):
-    orders = Order.objects.all()  # You might want to filter based on the staff member's assignments
-    context = {'orders': orders}
-    return render(request, 'staff/staff_orders.html', context)
 
-@login_required
-def apply_leave(request):
-    if request.method == 'POST':
-        # Handle leave application logic here
-        return redirect('staff_dashboard')
-    return render(request, 'staff/apply_leave.html')
-
-@login_required
-def staff_details(request):
-    staff_member = request.user  # Assuming staff is logged in
-    context = {'staff_member': staff_member}
-    return render(request, 'staff/staff_details.html', context)
-
-def staff_dashboard_view(request):
-    # You may want to retrieve data related to staff, like their orders, etc.
-    return render(request, 'staff/staff_dashboard.html', {})  # Render your staff dashboard template
-
-def staff_leave_view(request):
-    # Your logic for handling the leave application
-    return render(request, 'staff/staff_leave.html')

@@ -40,8 +40,10 @@ class Employee(models.Model):
     first_name = models.CharField(max_length=15)
     last_name = models.CharField(max_length=15)
     phone = models.CharField(max_length=10)
+    salary = models.DecimalField(max_digits=10, decimal_places=2)  # Salary field
+    status = models.BooleanField(default=True)  # Status field to indicate availability (True: Available, False: Not Available)
     joinedon = models.DateTimeField(auto_now_add=True)
-    login = models.OneToOneField(Login, on_delete=models.CASCADE)
+  
     
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -129,14 +131,6 @@ class Order(models.Model):
     
     
     
-    
-    
-    
-    
-    
-    
-
-
 class Order(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -155,21 +149,5 @@ class Order(models.Model):
     
     
     
-class Leave(models.Model):
-    staff_member = models.ForeignKey(User, on_delete=models.CASCADE, related_name="leave_requests")
-    leave_reason = models.CharField(max_length=255)
-    leave_days = models.PositiveIntegerField()
-    applied_on = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-        return f"{self.staff_member.username} - {self.leave_reason} ({self.leave_days} days)"
     
     
-    
-class StaffProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    position = models.CharField(max_length=100)
-    date_joined = models.DateField(auto_now_add=True)
-    
-    def __str__(self):
-        return self.user.username

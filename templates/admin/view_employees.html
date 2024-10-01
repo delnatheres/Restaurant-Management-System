@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In Details</title>
+    <title>View Employees - Management</title>
     <style>
         /* Global styles for body */
         body {
@@ -29,6 +29,8 @@
             border-collapse: collapse;
             background-color: #fff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px; /* Added for rounded corners */
+            overflow: hidden; /* To ensure rounding works */
         }
 
         thead {
@@ -62,19 +64,13 @@
         }
 
         /* No records message */
-        td[colspan="4"] {
+        td[colspan="7"] {
             font-size: 18px; /* Reduced font size */
             color: #888;
         }
 
-        /* Add some padding and spacing around the table */
-        table {
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
         /* Button styling */
-        .btn-back, .btn-delete {
+        .btn-back {
             display: inline-block; /* Changed to inline-block for smaller button */
             margin: 20px auto;
             padding: 8px 16px; /* Reduced padding */
@@ -89,7 +85,7 @@
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
-        .btn-delete:hover, .btn-back:hover {
+        .btn-back:hover {
             background-color: #e5a500;
             transform: translateY(-2px); /* Slight hover effect */
         }
@@ -109,7 +105,7 @@
                 padding: 8px; /* Further reduced padding for mobile */
             }
 
-            .btn-back, .btn-delete {
+            .btn-back {
                 font-size: 12px; /* Further adjusted font size for smaller screens */
                 padding: 6px 12px; /* Further reduced padding for smaller screens */
             }
@@ -117,42 +113,39 @@
     </style>
 </head>
 <body>
-    <h1>Sign In Details</h1>
-
-    <!-- Table to display sign-in records -->
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Place</th>
-                <th>Email</th>
-                <th>Action</th> <!-- Added action column for delete/restore button -->
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in person %}
+    <div class="container mt-5">
+        <h1>Employee List</h1>
+        <table class="table table-bordered">
+            <thead>
                 <tr>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.place }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>
-                        <!-- Action button based on user status -->
-                        {% if user.status %}
-                            <a href="{% url 'deactivate_user' user.id %}" class="btn-delete" onclick="return confirm('Are you sure you want to deactivate this user?');">Deactivate</a>
-                        {% else %}
-                            <a href="{% url 'activate_user' user.id %}" class="btn-delete" onclick="return confirm('Are you sure you want to reactivate this user?');">Activate</a>
-                        {% endif %}
-                    </td>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Phone</th>
+                    <th>Salary</th>
+                    <th>Status</th>
+                    <th>Email</th>
                 </tr>
-            {% empty %}
+            </thead>
+            <tbody>
+                {% for employee in employees %}
                 <tr>
-                    <td colspan="4">No sign-in records found.</td>
+                    <td>{{ employee.employee_id }}</td>
+                    <td>{{ employee.first_name }}</td>
+                    <td>{{ employee.last_name }}</td>
+                    <td>{{ employee.phone }}</td>
+                    <td>{{ employee.salary }}</td>
+                    <td>{% if employee.status %}Active{% else %}Inactive{% endif %}</td>
+                    <td>{{ employee.login.email }}</td>  <!-- Assuming the login relation -->
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <!-- Back to Dashboard button -->
-    <center><a href="{% url 'admin_dashboard' %}" class="btn-back">Back to Dashboard</a></center>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">No employees found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <center><a href="{% url 'admin_dashboard' %}" class="btn-back">Back to Dashboard</a></center>
+    </div>
 </body>
 </html>

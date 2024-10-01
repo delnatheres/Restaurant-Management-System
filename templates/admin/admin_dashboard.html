@@ -1,7 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Restaurant Management</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         /* Reset some default styles for cleaner presentation */
         body, h1, ul {
@@ -111,14 +116,15 @@
     <div id="sidebar">
         <h1>Admin Dashboard</h1>
         <ul>
-            <li><a href="{% url 'index' %}">Home</a></li>  <!-- Home link -->
+            <li><a href="{% url 'index' %}">Home</a></li>
             <li><a href="{% url 'view_user' %}">View Users</a></li>
             <li><a href="{% url 'add_employee' %}">Add Employee</a></li>
+            <li><a href="{% url 'view_employees' %}">View Employees</a></li>
             <li><a href="{% url 'add_menu_item' %}">Add Items</a></li>
             <li><a href="{% url 'view_menu' %}">View Menu</a></li>
             <li><a href="{% url 'view_category' %}">View Category</a></li>
             <li><a href="{% url 'view_subcategory' %}">View Sub Category</a></li>
-            <li><a href=" #">View Orders</a></li>
+            <li><a href="#">View Orders</a></li>
             <li><a href="#">Manage Inventory</a></li>
             <li><a href="#">Reservations</a></li>
             <li><a href="#">Customer Feedback</a></li>
@@ -177,7 +183,6 @@
             </table>
         </div>
 
-        
     </div>
 </body>
 </html>
