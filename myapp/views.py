@@ -12,8 +12,6 @@ from .models import Category
 from .models import Category, SubCategory
 from .models import Order
 from django.shortcuts import render, redirect, get_object_or_404
-
-
 from .models import Employee, Login
 
 
@@ -199,6 +197,61 @@ def employee_success(request):
 def view_employees(request):
     employees = Employee.objects.all()  # Fetch all employees
     return render(request, 'admin/view_employees.html', {'employees': employees})
+
+
+
+
+def edit_employee(request, employee_id):
+    employee = get_object_or_404(Employee, employee_id=employee_id)
+
+    if request.method == 'POST':
+        employee.first_name = request.POST.get('first_name')
+        employee.last_name = request.POST.get('last_name')
+        employee.phone = request.POST.get('phone')
+        employee.salary = request.POST.get('salary')
+        employee.status = request.POST.get('status') == 'True'
+        employee.save()
+        return redirect('view_employees')
+
+    return render(request, 'admin/edit_employee.html', {'employee': employee})
+
+
+
+
+
+
+
+def delete_employee(request, employee_id):
+    employee = get_object_or_404(Employee, employee_id=employee_id)
+
+    if request.method == 'POST':
+        employee.delete()
+        return redirect('view_employees')
+
+    return render(request, 'admin/delete_employee.html', {'employee': employee})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
