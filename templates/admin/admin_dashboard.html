@@ -14,9 +14,17 @@
             padding: 0;
         }
 
+        /* Set full-screen background image */
+        body {
+            background: url("{% static 'images/back4.webp' %}") no-repeat center center fixed;
+            background-size: cover; /* Cover the entire viewport */
+            height: 100vh; /* Full height */
+            color: white; /* Change text color if needed */
+        }
+
         /* Style the sidebar */
         #sidebar {
-            background-color: #333;
+            background-color: rgba(51, 51, 51, 0.8); /* Semi-transparent background */
             color: white;
             width: 250px;
             position: fixed;
@@ -51,15 +59,15 @@
 
         /* Add some dashboard style for the sections */
         .dashboard-section {
-            background-color: #f4f4f4;
+            background-color: rgba(244, 244, 244, 0.8); /* Semi-transparent fallback color */
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 8px;
+            color: #333; /* Change text color if needed */
         }
 
         .dashboard-section h2 {
             font-size: 24px;
-            color: #333;
         }
 
         .dashboard-section table {
@@ -125,7 +133,6 @@
             <li><a href="{% url 'view_category' %}">View Category</a></li>
             <li><a href="{% url 'view_subcategory' %}">View Sub Category</a></li>
             <li><a href="#">View Orders</a></li>
-            <li><a href="#">Manage Inventory</a></li>
             <li><a href="#">Reservations</a></li>
             <li><a href="#">Customer Feedback</a></li>
             <li><a href="{% url 'login' %}">Logout</a></li>
@@ -134,55 +141,10 @@
 
     <!-- Main Content -->
     <div id="content">
-        <!-- Section: Overview (e.g., Orders, Sales, Customers) -->
-        <div class="dashboard-section">
-            <h1>Admin</h1>
-            <h2>Overview</h2>
-            <p>Quick statistics of today's activity:</p>
-            <table>
-                <tr>
-                    <th>Total Orders</th>
-                    <th>Sales Today</th>
-                    <th>Total Customers</th>
-                    <th>Pending Reservations</th>
-                </tr>
-                <tr>
-                    <td>45</td>
-                    <td>$1,200</td>
-                    <td>120</td>
-                    <td>5</td>
-                </tr>
-            </table>
+        <div class="dashboard-section text-center">
+            <h2>Welcome to the Admin Dashboard</h2>
+            <!-- Additional content can be added here if needed -->
         </div>
-
-        <!-- Section: Recent Orders -->
-        <div class="dashboard-section">
-            <h2>Recent Orders</h2>
-            <table>
-                <tr>
-                    <th>Order ID</th>
-                    <th>Customer</th>
-                    <th>Items</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-                <tr>
-                    <td>1001</td>
-                    <td>John</td>
-                    <td>Pizza, Coke</td>
-                    <td>Preparing</td>
-                    <td><a href="#">View</a> | <a href="#">Update</a></td>
-                </tr>
-                <tr>
-                    <td>1002</td>
-                    <td>Aleena</td>
-                    <td>Pasta, Wine</td>
-                    <td>Delivered</td>
-                    <td><a href="#">View</a> | <a href="#">Update</a></td>
-                </tr>
-            </table>
-        </div>
-
     </div>
 </body>
 </html>

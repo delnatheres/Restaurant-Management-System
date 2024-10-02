@@ -35,16 +35,17 @@ class SignIn(models.Model):
     
     
 
+
 class Employee(models.Model):
     employee_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=15)
     last_name = models.CharField(max_length=15)
     phone = models.CharField(max_length=10)
-    salary = models.DecimalField(max_digits=10, decimal_places=2)  # Salary field
-    status = models.BooleanField(default=True)  # Status field to indicate availability (True: Available, False: Not Available)
+    salary = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.BooleanField(default=True)
     joinedon = models.DateTimeField(auto_now_add=True)
-  
-    
+    login = models.ForeignKey(Login, on_delete=models.CASCADE, null=True, blank=True)  # Temporarily allow null
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 

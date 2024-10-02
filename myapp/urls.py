@@ -34,9 +34,11 @@ urlpatterns = [
     path('subcategories/delete/<int:subcategory_id>/', views.delete_subcategory, name='delete_subcategory'),
     path('deactivate_user/<int:id>/', views.deactivate_user, name='deactivate_user'),
     path('activate_user/<int:id>/', views.activate_user, name='activate_user'),
+    
+    
     path('view_employees/', views.view_employees, name='view_employees'),  # New URL pattern
     
-    
+    path('employee-success/', views.employee_success, name='employee_success'),
     
     
     

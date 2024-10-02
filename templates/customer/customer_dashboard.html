@@ -1,12 +1,14 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Dashboard</title>
+    <title>Customer Dashboard - Restaurant Management</title>
     <!-- Google Font Link for Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         /* General Reset */
         * {
@@ -16,16 +18,18 @@
         }
 
         body {
+            background: url("{% static 'images/ccc.jpg' %}") no-repeat center center fixed; /* Fixed for full-screen */
+            background-size: cover; /* Cover the entire screen */
             font-family: 'Arial', sans-serif;
-            background-color: #fdfdfd;
             color: #333;
             padding: 0;
             margin: 0;
+            height: 100vh; /* Ensure the body takes the full height */
         }
 
         /* Style the sidebar */
         #sidebar {
-            background-color: #1e2a38;
+            background-color: rgba(30, 42, 56, 0.8); /* Semi-transparent for better visibility */
             color: white;
             width: 250px;
             position: fixed;
@@ -66,107 +70,18 @@
             line-height: 1.2;
         }
 
-        /* Add a hover effect to the heading */
-        #sidebar h1:hover {
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5); /* Stronger shadow on hover */
-            transform: scale(1.05); /* Slight zoom effect on hover */
-            transition: all 0.3s ease;
-        }
-
         /* Style the content area */
         #content {
             margin-left: 260px;
             padding: 30px;
-            background-color: #fdfdfd;
-        }
-
-        h1, h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-weight: 700;
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background for readability */
         }
 
         h1 {
-            font-size: 2.5rem;
-        }
-
-        h2 {
-            font-size: 1.8rem;
-            color: #3b4d63;
-        }
-
-        /* Styling for the list items */
-        ul {
-            list-style-type: none;
-            margin-bottom: 40px;
-            padding: 0;
-        }
-
-        .card {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 25px;
+            color: #2c3e50;
             margin-bottom: 20px;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .card h3 {
-            font-size: 1.6rem;
-            color: #27ae60;
-            margin-bottom: 10px;
-        }
-
-        .card p {
-            font-size: 1.1rem;
-            color: #555;
-        }
-
-        /* Order Now button */
-        .order-button {
-            display: inline-block;
-            background-color: #3498db;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1rem;
-            transition: background-color 0.3s, transform 0.3s;
-            margin-top: 10px;
-        }
-
-        .order-button:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-        }
-
-        /* Action Links for Reservations and Feedback */
-        .action-links {
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .action-links a {
-            text-decoration: none;
-            color: #fff;
-            padding: 12px 30px;
-            margin: 10px;
-            border-radius: 30px;
-            background-color: #8e44ad;
-            display: inline-block;
-            font-size: 1.1rem;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        .action-links a:hover {
-            background-color: #7d3c98;
-            transform: translateY(-2px);
+            font-weight: 700;
+            font-size: 2.5rem;
         }
 
         /* Responsive Design */
@@ -178,22 +93,6 @@
 
             h1 {
                 font-size: 2rem;
-            }
-
-            h2 {
-                font-size: 1.6rem;
-            }
-
-            .card h3 {
-                font-size: 1.3rem;
-            }
-
-            .card p {
-                font-size: 1rem;
-            }
-
-            .order-button {
-                font-size: 0.9rem;
             }
 
             #sidebar {
@@ -216,11 +115,11 @@
         <h1>Customer Dashboard</h1>
         <ul>
             <li><a href="{% url 'index' %}">Home</a></li>
-            <li><a href="{% url 'customer_orders' %}">Your Orders</a></li>
-            <li><a href="{% url 'menu' %}">Menu</a></li>
-            <li><a href="">Add to cart</a></li>
-            <li><a href="{% url 'make_reservation' %}">Reservations</a></li>
-            <li><a href="{% url 'submit_feedback' %}">Feedback</a></li>
+            <li><a href="#">Your Orders</a></li>
+            <li><a href="#">Menu</a></li>
+            <li><a href="#">Add to Cart</a></li>
+            <li><a href="#">Reservations</a></li>
+            <li><a href="#">Feedback</a></li>
             <li><a href="{% url 'login' %}">Logout</a></li>
         </ul>
     </div>
@@ -229,39 +128,8 @@
     <div id="content">
         <h1>Welcome, {{ user.username }}!</h1>
 
-        <!-- Available Menu Items Section -->
-        <h2>Available Menu Items</h2>
-        <ul>
-            {% for item in menu_items %}
-            <li class="card">
-                <h3>{{ item.name }}</h3>
-                <p>Price: ${{ item.price }}</p>
-                <a href="{% url 'place_order' item.id %}" class="order-button">Order Now</a>
-            </li>
-            {% endfor %}
-        </ul>
+        <!-- Other content can be added here if needed -->
 
-        <!-- Your Orders Section -->
-        <h2>Your Orders</h2>
-        <ul>
-            {% for order in orders %}
-            <li class="card">
-                <h3>{{ order.menu_item.name }}</h3>
-                <p>Quantity: {{ order.quantity }}</p>
-                <p>Status: {{ order.status }}</p>
-            </li>
-            {% empty %}
-            <li class="card">
-                <h3>No orders yet.</h3>
-            </li>
-            {% endfor %}
-        </ul>
-
-        <!-- Action Links (Reservations, Feedback) -->
-        <div class="action-links">
-            <a href="{% url 'make_reservation' %}">Make a Reservation</a>
-            <a href="{% url 'submit_feedback' %}">Submit Feedback</a>
-        </div>
     </div>
 
 </body>

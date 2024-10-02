@@ -14,7 +14,7 @@ from .models import Order
 from django.shortcuts import render, redirect, get_object_or_404
 
 
-from .models import Employee
+from .models import Employee, Login
 
 
 
@@ -152,7 +152,6 @@ def viewuser(request):
     return render(request,'admin/view_user.html',{"person":person})
 
 
-# views.py
 
 def add_employee(request):
     if request.method == "POST":
@@ -164,9 +163,14 @@ def add_employee(request):
         email = request.POST.get('email')  # Get email from POST data
         password = request.POST.get('password')  # Get password from POST data
 
+        # Validate required fields
+        if not first_name or not last_name or not phone or not salary:
+            messages.error(request, "All fields are required.")
+            return render(request, 'admin/add_employee.html')
+
         if email and password:  # Ensure email and password are not empty
             # Create and save the Login instance
-            
+            login = Login.objects.create(email=email, password=password)
 
             # Create and save the Employee instance
             employee = Employee(
@@ -175,7 +179,7 @@ def add_employee(request):
                 phone=phone,
                 salary=salary,
                 status=status,
-               # Associate the login with the employee
+                login=login  # Associate the login with the employee
             )
             employee.save()
 
@@ -183,13 +187,12 @@ def add_employee(request):
         else:
             # Handle the case where email or password is missing
             messages.error(request, "Email and password are required.")
+    
     return render(request, 'admin/add_employee.html')
 
 
-
 def employee_success(request):
-    return render(request, 'admin/employee_success.html')
-
+    return render(request, 'admin/employee_success.html', {'employee_added': True})  # Pass a variable to indicate success
 
 
 
