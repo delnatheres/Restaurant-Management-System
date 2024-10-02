@@ -36,12 +36,19 @@ urlpatterns = [
     path('activate_user/<int:id>/', views.activate_user, name='activate_user'),
     path('view_employees/', views.view_employees, name='view_employees'),  # New URL pattern
     path('employee-success/', views.employee_success, name='employee_success'),
-    
-    
-    
-     path('edit_employee/<int:employee_id>/', views.edit_employee, name='edit_employee'),
+    path('edit_employee/<int:employee_id>/', views.edit_employee, name='edit_employee'),
     path('delete_employee/<int:employee_id>/', views.delete_employee, name='delete_employee'),
 
+
+
+
+
+
+
+     
+    path('menu_items/', views.menu_item_list, name='menu_item_list'),
+    path('edit_menu_item/<int:id>/', views.edit_menu_item, name='edit_menu_item'),  # Ensure this line is correct
+    path('delete_menu_item/<int:id>/', views.delete_menu_item, name='delete_menu_item'),
 
    ]
 

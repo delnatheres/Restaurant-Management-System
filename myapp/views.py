@@ -16,6 +16,9 @@ from .models import Employee, Login
 
 
 
+from .models import MenuItem
+
+
 
 
 
@@ -200,7 +203,6 @@ def view_employees(request):
 
 
 
-
 def edit_employee(request, employee_id):
     employee = get_object_or_404(Employee, employee_id=employee_id)
 
@@ -217,10 +219,6 @@ def edit_employee(request, employee_id):
 
 
 
-
-
-
-
 def delete_employee(request, employee_id):
     employee = get_object_or_404(Employee, employee_id=employee_id)
 
@@ -229,30 +227,6 @@ def delete_employee(request, employee_id):
         return redirect('view_employees')
 
     return render(request, 'admin/delete_employee.html', {'employee': employee})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -362,18 +336,41 @@ def edit_menu_item(request, id):
     return render(request, 'admin/edit_menu_item.html', {'menu_item': menu_item})
 
 
-def menu_item_list(request):
-    menu_items = MenuItem.objects.all()  # Query to get all menu items
-    return render(request, 'admin/menu_item_list.html', {'menu_items': menu_items})
 
-def delete_menu_item(request, id):
+
+
+
+
+
+
+
+def edit_menu_item(request, id):
     menu_item = get_object_or_404(MenuItem, id=id)
 
     if request.method == 'POST':
-        menu_item.delete()
-        return redirect('menu_item_list')  # Redirect to the menu item list after deletion
+        # Process form submission and update the menu item
+        menu_item.name = request.POST.get('name')
+        menu_item.description = request.POST.get('description')
+        menu_item.price = request.POST.get('price')
+        menu_item.available = request.POST.get('available') == 'True'  # Convert string to boolean
+        menu_item.save()  # Save changes to the database
+        return redirect('menu_item_list')  # Redirect after editing
 
-    return render(request, 'admin/delete_menu_item.html', {'menu_item': menu_item})
+    return render(request, 'admin/edit_menu_item.html', {'menu_item': menu_item})  # Render the edit form
+
+
+
+
+def menu_item_list(request):
+    menu_items = MenuItem.objects.all()  # Retrieve all menu items from the database
+    return render(request, 'admin/menu_item_list.html', {'menu_items': menu_items})  # Render the menu items template
+
+
+def delete_menu_item(request, id):
+    menu_item = get_object_or_404(MenuItem, id=id)  # Retrieve the menu item by its ID
+    menu_item.delete()  # Delete the menu item from the database
+    return redirect('menu_item_list')  # Redirect to the menu item list view
+
 
 
 
