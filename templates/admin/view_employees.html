@@ -123,6 +123,9 @@
 <body>
     <div class="container mt-5">
         <h1>Employee List</h1>
+        <!-- Back to Dashboard button -->
+        <a href="{% url 'admin_dashboard' %}" class="btn-back">Back to Dashboard</a></center>
+
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -157,7 +160,6 @@
                 {% endfor %}
             </tbody>
         </table>
-        <center><a href="{% url 'admin_dashboard' %}" class="btn-back">Back to Dashboard</a></center>
     </div>
 </body>
 </html>

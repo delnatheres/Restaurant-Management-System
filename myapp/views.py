@@ -13,10 +13,13 @@ from .models import Category, SubCategory
 from .models import Order
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Employee, Login
-
-
-
 from .models import MenuItem
+
+
+
+from .models import Employee, EmployeeDashboard
+from .models import EmployeeDashboard, Employee, LeaveRequest, Order, Reservation
+
 
 
 
@@ -66,16 +69,19 @@ def login_view(request):
         # Attempt to retrieve the user by email and password
         try:
             login_obj = SignIn.objects.get(email=email, password=password)
-            if login_obj:
-            # For regular users
+            if login_obj.role=='Employee':
+                messages.success(request, 'Welcome Employee!')
+                employee=Employee.objects.get(email=email)
+                return render(request,'employee/employee_dashboard.html',{'employee':employee})  
+            else:
                 messages.success(request, f'Welcome, {login_obj.name}!')
                 return render (request,'customer/customer_dashboard.html') # Redirect to user homepage
-
+            
         except SignIn.DoesNotExist:
             messages.error(request, 'Invalid email or password.')
             return redirect('login')
     else:
-        return render(request, 'login.html')
+            return render(request, 'login.html')
 
 
 
@@ -154,6 +160,12 @@ def viewuser(request):
 
 
 
+
+
+
+
+
+
 def add_employee(request):
     if request.method == "POST":
         first_name = request.POST.get('first_name')
@@ -163,7 +175,9 @@ def add_employee(request):
         status = request.POST.get('status') == 'True'  # Convert to boolean
         email = request.POST.get('email')  # Get email from POST data
         password = request.POST.get('password')  # Get password from POST data
-
+        
+        login = SignIn(email=email,password=password,role="Employee")
+        login.save()
         # Validate required fields
         if not first_name or not last_name or not phone or not salary:
             messages.error(request, "All fields are required.")
@@ -171,8 +185,7 @@ def add_employee(request):
 
         if email and password:  # Ensure email and password are not empty
             # Create and save the Login instance
-            login = Login.objects.create(email=email, password=password)
-
+            
             # Create and save the Employee instance
             employee = Employee(
                 first_name=first_name,
@@ -180,7 +193,8 @@ def add_employee(request):
                 phone=phone,
                 salary=salary,
                 status=status,
-                login=login  # Associate the login with the employee
+                email=email,
+                password=password
             )
             employee.save()
 
@@ -190,6 +204,13 @@ def add_employee(request):
             messages.error(request, "Email and password are required.")
     
     return render(request, 'admin/add_employee.html')
+
+
+
+
+
+
+
 
 
 def employee_success(request):
@@ -514,6 +535,70 @@ def activate_user(request, id):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+def employee_dashboard(request):
+    # Ensure the user is authenticated
+    if not request.user.is_authenticated:
+        # Redirect to login if the user is not authenticated
+        return redirect('login')  # Change 'login' to the name of your login URL pattern
+
+    # Get the logged-in user's associated employee
+    employee = get_object_or_404(Employee, login=request.user.login)
+
+    # Fetch or create the associated employee dashboard
+    dashboard, created = EmployeeDashboard.objects.get_or_create(employee=employee)
+
+    context = {
+        'employee': employee,
+        'dashboard': dashboard,
+        'orders': dashboard.orders.all(),
+        'reservations': dashboard.reservations.all(),
+        'leave_requests': dashboard.leave_requests.all(),
+    }
+    return render(request, 'employee/employee_dashboard.html', context)
+
+
+
+
+
+
+# Leave request creation view
+def create_leave_request(request, employee_id):
+    employee = get_object_or_404(Employee, pk=employee_id)
+
+    if request.method == 'POST':
+        leave_type = request.POST.get('leave_type')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        reason = request.POST.get('reason')
+
+        # Create the leave request
+        leave_request = LeaveRequest.objects.create(
+            employee=employee,
+            leave_type=leave_type,
+            start_date=start_date,
+            end_date=end_date,
+            reason=reason,
+        )
+
+        # Add the leave request to the dashboard
+        employee_dashboard = EmployeeDashboard.objects.get(employee=employee)
+        employee_dashboard.leave_requests.add(leave_request)
+
+        return redirect('employee_dashboard', employee_id=employee_id)
+
+    return render(request, 'employee/create_leave_request.html', {'employee': employee})
 
 
 

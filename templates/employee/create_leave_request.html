@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Apply for Leave</title>
+</head>
+<body>
+    <h1>Apply for Leave</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <label for="leave_type">Leave Type:</label>
+        <input type="text" name="leave_type" required><br>
+
+        <label for="start_date">Start Date:</label>
+        <input type="date" name="start_date" required><br>
+
+        <label for="end_date">End Date:</label>
+        <input type="date" name="end_date" required><br>
+
+        <label for="reason">Reason:</label>
+        <textarea name="reason" required></textarea><br>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

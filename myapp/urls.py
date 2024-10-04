@@ -38,17 +38,21 @@ urlpatterns = [
     path('employee-success/', views.employee_success, name='employee_success'),
     path('edit_employee/<int:employee_id>/', views.edit_employee, name='edit_employee'),
     path('delete_employee/<int:employee_id>/', views.delete_employee, name='delete_employee'),
-
-
-
-
-
-
-
-     
     path('menu_items/', views.menu_item_list, name='menu_item_list'),
     path('edit_menu_item/<int:id>/', views.edit_menu_item, name='edit_menu_item'),  # Ensure this line is correct
     path('delete_menu_item/<int:id>/', views.delete_menu_item, name='delete_menu_item'),
+
+
+
+
+
+    path('dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
+    path('employee_dashboard/', views.employee_dashboard, name='employee_dashboard'),
+    path('leave_request/<int:employee_id>/', views.create_leave_request, name='create_leave_request'),
+    path('employee_dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
+    
+  
+    path('login/', views.login_view, name='login'),  # Your login view
 
    ]
 

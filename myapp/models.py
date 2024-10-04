@@ -4,7 +4,7 @@ class Login(models.Model):
     email = models.EmailField(unique=True,default="")
     password = models.CharField(max_length=255,default="")
     reset_token = models.CharField(max_length=100, blank=True, null=True)
-
+    role=models.CharField(max_length=255,default="")
 
     def __str__(self):
         return self.email
@@ -24,11 +24,11 @@ class User(models.Model):
 
 class SignIn(models.Model):
     name = models.CharField(max_length=100)
-    place = models.CharField(max_length=100)
+    place = models.CharField(max_length=100,default="")
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)  # Note: In practice, you should never store passwords in plaintext
     status = models.BooleanField(default=True)  # True for active users, False for inactive users
-    
+    role=models.CharField(max_length=255,default="")
     def __str__(self):
         return f"{self.name} - {self.email}"
     
@@ -49,10 +49,6 @@ class Employee(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-
-
-
-from django.contrib.auth.models import User
 
 # Model for Menu Item
 class MenuItem(models.Model):
@@ -150,5 +146,51 @@ class Order(models.Model):
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+class Employee(models.Model):
+    employee_id = models.AutoField(primary_key=True)
+    first_name = models.CharField(max_length=15)
+    last_name = models.CharField(max_length=15)
+    phone = models.CharField(max_length=10)
+    salary = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.BooleanField(default=True)
+    joinedon = models.DateTimeField(auto_now_add=True)
+    email=models.CharField(max_length=100)
+    password=models.CharField(max_length=150)
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+# Employee Dashboard model (changed to refer to Employee)
+class EmployeeDashboard(models.Model):
+    employee = models.OneToOneField(Employee, on_delete=models.CASCADE)
+    orders = models.ManyToManyField('Order', blank=True)  # Link orders with the dashboard
+    reservations = models.ManyToManyField('Reservation', blank=True)  # Link reservations with the dashboard
+    leave_requests = models.ManyToManyField('LeaveRequest', blank=True)
+
+    def __str__(self):
+        return f"{self.employee.first_name} {self.employee.last_name}'s Dashboard"
+
+# Leave Request model
+class LeaveRequest(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    leave_type = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    reason = models.TextField()
+    status = models.CharField(max_length=20, default='Pending')
+
+    def __str__(self):
+        return f"{self.leave_type} leave request by {self.employee.first_name} {self.employee.last_name}" 
     
     
