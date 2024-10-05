@@ -14,7 +14,13 @@ from .models import Order
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Employee, Login
 from .models import MenuItem
+import re
 
+from .models import Feedback
+
+
+
+from .models import Login, User, SignIn
 
 
 from .models import Employee, EmployeeDashboard
@@ -161,11 +167,6 @@ def viewuser(request):
 
 
 
-
-
-
-
-
 def add_employee(request):
     if request.method == "POST":
         first_name = request.POST.get('first_name')
@@ -176,16 +177,30 @@ def add_employee(request):
         email = request.POST.get('email')  # Get email from POST data
         password = request.POST.get('password')  # Get password from POST data
         
-        login = SignIn(email=email,password=password,role="Employee")
-        login.save()
         # Validate required fields
         if not first_name or not last_name or not phone or not salary:
             messages.error(request, "All fields are required.")
             return render(request, 'admin/add_employee.html')
-
-        if email and password:  # Ensure email and password are not empty
+        
+        # Validate first name and last name (only letters)
+        if not re.match("^[A-Za-z]+$", first_name):
+            messages.error(request, "First name should contain only letters.")
+            return render(request, 'admin/add_employee.html')
+        
+        if not re.match("^[A-Za-z]+$", last_name):
+            messages.error(request, "Last name should contain only letters.")
+            return render(request, 'admin/add_employee.html')
+        
+        # Validate password requirements
+        if not re.match(r'^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$', password):
+            messages.error(request, "Password must contain at least 1 uppercase letter, 1 special character, 1 digit, and be at least 8 characters long.")
+            return render(request, 'admin/add_employee.html')
+        
+        if email:  # Ensure email is not empty
             # Create and save the Login instance
-            
+            login = SignIn(email=email, password=password, role="Employee")
+            login.save()
+
             # Create and save the Employee instance
             employee = Employee(
                 first_name=first_name,
@@ -200,16 +215,9 @@ def add_employee(request):
 
             return redirect('employee_success')  # Redirect after successful form submission
         else:
-            # Handle the case where email or password is missing
-            messages.error(request, "Email and password are required.")
+            messages.error(request, "Email is required.")
     
     return render(request, 'admin/add_employee.html')
-
-
-
-
-
-
 
 
 
@@ -283,14 +291,33 @@ def make_reservation(request):
     return render(request, 'customer/make_reservation.html')
 
 # Submit Feedback
-@login_required
 def submit_feedback(request):
     if request.method == 'POST':
-        comments = request.POST['comments']
-        rating = request.POST['rating']
-        Feedback.objects.create(customer=request.user, comments=comments, rating=rating)
-        return redirect('customer_dashboard')
+        # Here you would typically process the feedback data
+        feedback_data = request.POST.get('feedback')  # Example of getting feedback data
+        # You can save this data to your database or handle it as needed
+        
+        # Optionally, add a success message (if you want to notify the user)
+        messages.success(request, 'Feedback submitted successfully!')
+
+        # Redirect to the feedback success page
+        return redirect('feedback_success')  # Use the name of your success URL pattern
+
+    # Render the feedback submission form for GET requests
     return render(request, 'customer/submit_feedback.html')
+
+
+
+
+
+def feedback_success(request):
+    return render(request, 'customer/feedback_success.html')
+
+
+
+
+
+
 
 
 from django.shortcuts import render, redirect
@@ -527,14 +554,6 @@ def activate_user(request, id):
     )
 
     return redirect('view_user')  # Redirect to the sign-in details page
-
-
-
-
-
-
-
-
 
 
 
