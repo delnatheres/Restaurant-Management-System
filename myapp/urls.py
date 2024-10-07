@@ -41,11 +41,20 @@ urlpatterns = [
     path('menu_items/', views.menu_item_list, name='menu_item_list'),
     path('edit_menu_item/<int:id>/', views.edit_menu_item, name='edit_menu_item'),  # Ensure this line is correct
     path('delete_menu_item/<int:id>/', views.delete_menu_item, name='delete_menu_item'),
+    path('menu_item/', views.menu_item, name='menu_item'),  # Add this
+    path('order/<int:item_id>/', views.place_order, name='place_order'),
+    path('wishlist/add/<int:item_id>/', views.add_to_wishlist, name='add_to_wishlist'),
+   
+    
+    
+    
     
     
     path('feedback/', views.submit_feedback, name='submit_feedback'),  # URL for submitting feedback
-    path('feedback/success/', views.feedback_success, name='feedback_success'),  # URL for success page
+    path('feedback_success/', views.feedback_success, name='feedback_success'),  # URL for success page
     path('dashboard/', views.customer_dashboard, name='customer_dashboard'),  # URL for the customer dashboard
+   
+     
 
 
 
@@ -54,15 +63,14 @@ urlpatterns = [
     path('employee_dashboard/', views.employee_dashboard, name='employee_dashboard'),
     path('leave_request/<int:employee_id>/', views.create_leave_request, name='create_leave_request'),
     path('employee_dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
-    path('login/', views.login_view, name='login'),  # Your login view
-
-
-
-
     
 
 
-    
+
+
+
+
+   
    ]
 
 

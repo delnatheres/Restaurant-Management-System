@@ -13,10 +13,11 @@ from .models import Category, SubCategory
 from .models import Order
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Employee, Login
-from .models import MenuItem
+from .models import MenuItem,Wishlist
 import re
 
 from .models import Feedback
+from .models import Customer, Order
 
 
 
@@ -290,6 +291,10 @@ def make_reservation(request):
         return redirect('customer_dashboard')
     return render(request, 'customer/make_reservation.html')
 
+
+
+
+
 # Submit Feedback
 def submit_feedback(request):
     if request.method == 'POST':
@@ -387,11 +392,6 @@ def edit_menu_item(request, id):
 
 
 
-
-
-
-
-
 def edit_menu_item(request, id):
     menu_item = get_object_or_404(MenuItem, id=id)
 
@@ -421,13 +421,7 @@ def delete_menu_item(request, id):
 
 
 
-
-
-
 from django.shortcuts import render, get_object_or_404, redirect
-
-
-
 
 # View to display all categories
 def view_category(request):
@@ -518,7 +512,6 @@ def delete_subcategory(request, subcategory_id):
 
 
 
-
 def deactivate_user(request, id):
     user = get_object_or_404(SignIn, id=id)
     
@@ -554,8 +547,6 @@ def activate_user(request, id):
     )
 
     return redirect('view_user')  # Redirect to the sign-in details page
-
-
 
 
 
@@ -618,6 +609,42 @@ def create_leave_request(request, employee_id):
         return redirect('employee_dashboard', employee_id=employee_id)
 
     return render(request, 'employee/create_leave_request.html', {'employee': employee})
+
+
+
+
+
+
+
+
+
+def menu_item(request):
+    # Fetch all menu items from the database
+    menu_items = MenuItem.objects.all()  # Optionally filter or order the menu
+    return render(request, 'customer/menu_item.html', {'menu_items': menu_items})
+
+
+
+def add_to_wishlist(request, item_id):
+    # Fetch the menu item based on the item_id
+    menu_item = get_object_or_404(MenuItem, id=item_id)
+    
+    # Assuming you have a Wishlist model and a user logged in
+    if request.user.is_authenticated:
+        # Check if the item is already in the user's wishlist
+        wishlist, created = Wishlist.objects.get_or_create(user=request.user, menu_item=menu_item)
+        
+        if created:
+            messages.success(request, f'{menu_item.name} has been added to your wishlist.')
+        else:
+            messages.info(request, f'{menu_item.name} is already in your wishlist.')
+    else:
+        messages.error(request, 'You need to log in to add items to your wishlist.')
+        return redirect('login')  # Redirect to login if not authenticated
+    
+    return redirect('menu_item')  # Redirect back to the menu page after adding
+
+
 
 
 

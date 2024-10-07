@@ -147,3 +147,15 @@ class LeaveRequest(models.Model):
     def __str__(self):
         return f"{self.leave_type} leave request by {self.employee.first_name} {self.employee.last_name}" 
     
+    
+    
+    
+    
+    
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    added_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s wishlist item: {self.menu_item.name}"
