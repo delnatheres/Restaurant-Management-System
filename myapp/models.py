@@ -91,8 +91,8 @@ class Order(models.Model):
         return f"Order by {self.customer.name} - {self.menu_item.name}"
 
 class Feedback(models.Model):
-    customer = models.ForeignKey('Customer', on_delete=models.CASCADE)  # Updated to use Customer
-    comments = models.TextField()
+    customer = models.CharField(max_length=100)  # Updated to use Customer
+    comments = models.CharField(max_length=1000)
     rating = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 

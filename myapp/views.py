@@ -71,24 +71,35 @@ def login_view(request):
         # Check for admin credentials
         if email == 'admin@gmail.com' and password == 'admin123':
             messages.success(request, 'Welcome Admin!')
+            request.session['user_id'] = 'admin' 
             return redirect('admin_dashboard')  # Redirect to admin dashboard
         
         # Attempt to retrieve the user by email and password
         try:
             login_obj = SignIn.objects.get(email=email, password=password)
-            if login_obj.role=='Employee':
-                messages.success(request, 'Welcome Employee!')
-                employee=Employee.objects.get(email=email)
-                return render(request,'employee/employee_dashboard.html',{'employee':employee})  
+            if login_obj.role == 'Employee':
+                    # Fetch the employee data if the user is an employee
+                    employee = Employee.objects.get(email=email)
+                    request.session['employee_id'] = employee.employee_id
+                    messages.success(request, 'Welcome Employee!')
+                    return render(request, 'employee/employee_dashboard.html', {'employee': employee})
+        
             else:
+                # If the user is not an employee, they are treated as a customer
                 messages.success(request, f'Welcome, {login_obj.name}!')
-                return render (request,'customer/customer_dashboard.html') # Redirect to user homepage
+                request.session['customer_id'] = login_obj.id 
+                return render(request, 'customer/customer_dashboard.html')  # Redirect to customer dashboard
             
         except SignIn.DoesNotExist:
+            # If SignIn record does not exist
             messages.error(request, 'Invalid email or password.')
             return redirect('login')
-    else:
-            return render(request, 'login.html')
+    
+    # If request method is not POST, simply return the login page
+    return render(request, 'login.html')
+
+
+
 
 
 
@@ -299,14 +310,17 @@ def make_reservation(request):
 def submit_feedback(request):
     if request.method == 'POST':
         # Here you would typically process the feedback data
-        feedback_data = request.POST.get('feedback')  # Example of getting feedback data
+        customer_id = request.session.get('customer_id')
+        feedback_data = request.POST.get('comments')  # Example of getting feedback data
+        ratings=request.POST.get('rating')
+        print("Ratings : ",ratings)
         # You can save this data to your database or handle it as needed
-        
+        feedback= Feedback(customer=customer_id,comments=feedback_data,rating=ratings)
         # Optionally, add a success message (if you want to notify the user)
-        messages.success(request, 'Feedback submitted successfully!')
-
-        # Redirect to the feedback success page
-        return redirect('feedback_success')  # Use the name of your success URL pattern
+        feedback.save()
+        if feedback:
+            messages.success(request, 'Feedback submitted successfully!')
+            return redirect('feedback_success')  # Use the name of your success URL pattern
 
     # Render the feedback submission form for GET requests
     return render(request, 'customer/submit_feedback.html')
@@ -551,6 +565,35 @@ def activate_user(request, id):
 
 
 
+def menu_item(request):
+    # Fetch all menu items from the database
+    menu_items = MenuItem.objects.all()  # Optionally filter or order the menu
+    return render(request, 'customer/menu_item.html', {'menu_items': menu_items})
+
+
+
+def add_to_wishlist(request, item_id):
+    # Fetch the menu item based on the item_id
+    menu_item = get_object_or_404(MenuItem, id=item_id)
+    
+    # Assuming you have a Wishlist model and a user logged in
+    if request.user.is_authenticated:
+        # Check if the item is already in the user's wishlist
+        wishlist, created = Wishlist.objects.get_or_create(user=request.user, menu_item=menu_item)
+        
+        if created:
+            messages.success(request, f'{menu_item.name} has been added to your wishlist.')
+        else:
+            messages.info(request, f'{menu_item.name} is already in your wishlist.')
+    else:
+        messages.error(request, 'You need to log in to add items to your wishlist.')
+        return redirect('login')  # Redirect to login if not authenticated
+    
+    return redirect('menu_item')  # Redirect back to the menu page after adding
+
+
+
+
 
 
 
@@ -616,33 +659,6 @@ def create_leave_request(request, employee_id):
 
 
 
-
-
-def menu_item(request):
-    # Fetch all menu items from the database
-    menu_items = MenuItem.objects.all()  # Optionally filter or order the menu
-    return render(request, 'customer/menu_item.html', {'menu_items': menu_items})
-
-
-
-def add_to_wishlist(request, item_id):
-    # Fetch the menu item based on the item_id
-    menu_item = get_object_or_404(MenuItem, id=item_id)
-    
-    # Assuming you have a Wishlist model and a user logged in
-    if request.user.is_authenticated:
-        # Check if the item is already in the user's wishlist
-        wishlist, created = Wishlist.objects.get_or_create(user=request.user, menu_item=menu_item)
-        
-        if created:
-            messages.success(request, f'{menu_item.name} has been added to your wishlist.')
-        else:
-            messages.info(request, f'{menu_item.name} is already in your wishlist.')
-    else:
-        messages.error(request, 'You need to log in to add items to your wishlist.')
-        return redirect('login')  # Redirect to login if not authenticated
-    
-    return redirect('menu_item')  # Redirect back to the menu page after adding
 
 
 
