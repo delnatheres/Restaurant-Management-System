@@ -64,7 +64,7 @@
         }
 
         /* No records message */
-        td[colspan="9"] {
+        td[colspan="8"] {
             font-size: 16px; /* Reduced font size */
             color: #888;
         }
@@ -98,6 +98,33 @@
             transform: translateY(-2px); /* Slight hover effect */
         }
 
+        /* Styling for the search form */
+        .search-form {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .search-form input[type="text"] {
+            padding: 6px;
+            font-size: 14px;
+            width: 200px;
+            margin-right: 10px;
+        }
+
+        .search-form button {
+            padding: 6px 12px;
+            background-color: #f3b820;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .search-form button:hover {
+            background-color: #e5a500;
+        }
+
         /* Media query for mobile responsiveness */
         @media (max-width: 768px) {
             table {
@@ -117,6 +144,14 @@
                 font-size: 10px; /* Further adjusted font size for smaller screens */
                 padding: 6px 12px; /* Further reduced padding for smaller screens */
             }
+
+            .search-form input[type="text"] {
+                width: 150px;
+            }
+
+            .search-form button {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -125,6 +160,15 @@
         <h1>Employee List</h1>
         <!-- Back to Dashboard button -->
         <a href="{% url 'admin_dashboard' %}" class="btn-back">Back to Dashboard</a></center>
+        
+        <!-- Search Form -->
+        <div class="search-form">
+            <form method="GET" action="{% url 'view_employees' %}">
+                <input type="text" name="first_name" placeholder="First Name">
+                <input type="text" name="last_name" placeholder="Last Name">
+                <button type="submit">Search</button>
+            </form>
+        </div>
 
         <table class="table table-bordered">
             <thead>
@@ -135,7 +179,6 @@
                     <th>Phone</th>
                     <th>Salary</th>
                     <th>Status</th>
-                    <th>Email</th>
                     <th>Edit</th>
                     <th>Delete</th>
                 </tr>
@@ -149,13 +192,12 @@
                     <td>{{ employee.phone }}</td>
                     <td>{{ employee.salary }}</td>
                     <td>{% if employee.status %}Active{% else %}Inactive{% endif %}</td>
-                    <td>{{ employee.login.email }}</td>
                     <td><a href="{% url 'edit_employee' employee.employee_id %}" class="btn-edit">Edit</a></td>
                     <td><a href="{% url 'delete_employee' employee.employee_id %}" class="btn-delete" onclick="return confirm('Are you sure you want to delete this employee?');">Delete</a></td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="9" class="text-center">No employees found.</td>
+                    <td colspan="8" class="text-center">No employees found.</td>
                 </tr>
                 {% endfor %}
             </tbody>

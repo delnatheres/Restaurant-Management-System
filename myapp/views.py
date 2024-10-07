@@ -239,8 +239,21 @@ def employee_success(request):
 
 
 def view_employees(request):
-    employees = Employee.objects.all()  # Fetch all employees
-    return render(request, 'admin/view_employees.html', {'employees': employees})
+    first_name = request.GET.get('first_name', '')
+    last_name = request.GET.get('last_name', '')
+
+    # Filter employees based on the search query
+    employees = Employee.objects.all()
+
+    if first_name:
+        employees = employees.filter(first_name__icontains=first_name)
+    if last_name:
+        employees = employees.filter(last_name__icontains=last_name)
+
+    context = {
+        'employees': employees
+    }
+    return render(request, 'admin/view_employees.html', context)
 
 
 
@@ -422,7 +435,6 @@ def edit_menu_item(request, id):
 
 
 
-
 def menu_item_list(request):
     menu_items = MenuItem.objects.all()  # Retrieve all menu items from the database
     return render(request, 'admin/menu_item_list.html', {'menu_items': menu_items})  # Render the menu items template
@@ -566,9 +578,18 @@ def activate_user(request, id):
 
 
 def menu_item(request):
-    # Fetch all menu items from the database
-    menu_items = MenuItem.objects.all()  # Optionally filter or order the menu
-    return render(request, 'customer/menu_item.html', {'menu_items': menu_items})
+    query = request.GET.get('q', '')
+    if query:
+        menu_items = MenuItem.objects.filter(name__icontains=query)  # Adjust based on your model
+    else:
+        menu_items = MenuItem.objects.all()
+
+    context = {
+        'menu_items': menu_items,
+        'query': query,
+    }
+    return render(request, 'customer/menu_item.html', context) 
+
 
 
 

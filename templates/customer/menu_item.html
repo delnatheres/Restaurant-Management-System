@@ -77,16 +77,13 @@
             color: white;
         }
 
-        .btn-edit, .btn-delete, .btn-order, .btn-wishlist {
-            margin-top: 10px;
-            text-transform: uppercase;
-            font-size: 12px;
-            padding: 10px 15px;
-            font-weight: bold;
+        .btn-custom {
+            background-color: #ff5733; /* Change this to your desired color */
+            color: white; /* Text color */
         }
 
-        .btn-edit:hover, .btn-delete:hover, .btn-order:hover, .btn-wishlist:hover {
-            opacity: 0.8;
+        .btn-custom:hover {
+            background-color: #c0392b; /* Darker shade for hover effect */
         }
 
         .menu-card-actions {
@@ -122,9 +119,26 @@
         </div>
     {% endif %}
 
-    <!-- Menu List Heading -->
     <h1 class="text-center mb-4">Menu List</h1>
+    <br>
 
+    <!-- Search Form -->
+    <form method="GET" action="{% url 'menu_item' %}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Search Menu Items" value="{{ request.GET.q }}">
+            <button class="btn btn-custom" type="submit">Search</button>
+        </div>
+    </form>
+    <br>
+
+    <!-- Back Button: Only shown if there is a search query -->
+    {% if request.GET.q %}
+        <div class="text-center mb-4">
+            <a href="{% url 'menu_item' %}" class="btn btn-secondary">Back</a>
+        </div>
+    {% endif %}
+
+    <br>
     <!-- Menu Cards -->
     <div class="row">
         {% for item in menu_items %}
@@ -142,11 +156,21 @@
                 {% elif item.name == "Porota" %}
                     <img src="{% static 'images/porota.jpg' %}" alt="Porota" class="card-img-top">
                 {% elif item.name == "Beef Curry" %}
-                    <img src="{% static 'images/beef curry.jpg' %}" alt="beef curry" class="card-img-top">
-                {% elif item.name == "Sushi" %}
-                    <img src="{% static 'images/sushi.jpg' %}" alt="Sushi" class="card-img-top">
+                    <img src="{% static 'images/beef curry.jpg' %}" alt="Beef Curry" class="card-img-top">
+                {% elif item.name == "Vegitable Curry" %}
+                    <img src="{% static 'images/vegitable curry.jpg' %}" alt="Vegitable Curry" class="card-img-top">
                 {% elif item.name == "Burger" %}
                     <img src="{% static 'images/burger.webp' %}" alt="Burger" class="card-img-top">
+                {% elif item.name == "Chicken Biriyani" %}
+                    <img src="{% static 'images/chicken biriyani.jpg' %}" alt="Chicken Biriyani" class="card-img-top">
+                {% elif item.name == "Salad" %}
+                    <img src="{% static 'images/salad.jpg' %}" alt="Salad" class="card-img-top">
+                {% elif item.name == "Tacos" %}
+                    <img src="{% static 'images/tacos.jpg' %}" alt="Tacos" class="card-img-top">
+                {% elif item.name == "Fried Rice" %}
+                    <img src="{% static 'images/fried_rice.jpg' %}" alt="Fried Rice" class="card-img-top">
+                {% elif item.name == "Steak" %}
+                    <img src="{% static 'images/steak.jpg' %}" alt="Steak" class="card-img-top">
                 {% else %}
                     <img src="{% static 'images/default-food.jpg' %}" alt="Food" class="card-img-top">
                 {% endif %}

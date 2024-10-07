@@ -47,9 +47,7 @@ urlpatterns = [
    
     
     
-    
-    
-    
+
     path('feedback/', views.submit_feedback, name='submit_feedback'),  # URL for submitting feedback
     path('feedback_success/', views.feedback_success, name='feedback_success'),  # URL for success page
     path('dashboard/', views.customer_dashboard, name='customer_dashboard'),  # URL for the customer dashboard
