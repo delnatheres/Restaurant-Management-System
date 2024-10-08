@@ -292,16 +292,7 @@ def customer_dashboard(request):
     
     return render(request, 'customer/customer_dashboard.html', {'menu_items': menu_items, 'orders': orders})
 
-# Place an Order
-@login_required
-def place_order(request, item_id):
-    item = MenuItem.objects.get(id=item_id)
-    if request.method == 'POST':
-        quantity = int(request.POST.get('quantity'))
-        Order.objects.create(customer=request.user, menu_item=item, quantity=quantity)
-        messages.success(request, 'Order placed successfully!')
-        return redirect('customer_dashboard')
-    return render(request, 'customer/menu_item.html', {'item': item})
+
 
 
 # Make a Reservation
@@ -592,7 +583,6 @@ def menu_item(request):
 
 
 
-
 def add_to_wishlist(request, item_id):
     # Fetch the menu item based on the item_id
     menu_item = get_object_or_404(MenuItem, id=item_id)
@@ -615,7 +605,31 @@ def add_to_wishlist(request, item_id):
 
 
 
+# Place an Order
+@login_required
+def place_order(request, item_id):
+    item = MenuItem.objects.get(id=item_id)
+    if request.method == 'POST':
+        quantity = int(request.POST.get('quantity'))
+        Order.objects.create(customer=request.user, menu_item=item, quantity=quantity)
+        messages.success(request, 'Order placed successfully!')
+        return redirect('customer_dashboard')
+    return render(request, 'customer/menu_item.html', {'item': item})
 
+
+
+def menu_item_new(request):
+    query = request.GET.get('q', '')
+    if query:
+        menu_items = MenuItem.objects.filter(name__icontains=query)
+    else:
+        menu_items = MenuItem.objects.all()
+
+    context = {
+        'menu_items': menu_items,
+        'query': query,
+    }
+    return render(request, 'employee/menu_item_new.html', context)
 
 
 
@@ -624,7 +638,6 @@ def add_to_wishlist(request, item_id):
 def employee_dashboard(request):
     # Ensure the user is authenticated
     if not request.user.is_authenticated:
-        # Redirect to login if the user is not authenticated
         return redirect('login')  # Change 'login' to the name of your login URL pattern
 
     # Get the logged-in user's associated employee

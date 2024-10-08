@@ -59,29 +59,22 @@
             font-weight: bold;
         }
 
-        .btn-order {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .btn-wishlist {
-            background-color: #ff9f43;
-            color: white;
-        }
-
         .btn-custom {
-            background-color: #ff5733;
+            background-color: #007bff; /* Button color */
             color: white;
+            padding: 5px 12px; /* Reduced size */
+            font-size: 14px; /* Slightly smaller font size */
+            border-radius: 5px;
         }
 
         .btn-custom:hover {
-            background-color: #c0392b;
+            background-color: #0056b3; /* Darker shade for hover */
         }
 
-        .menu-card-actions {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 15px;
+        /* Custom size for the search input */
+        .input-group .form-control {
+            max-width: 400px; /* Increased width for the search box */
+            font-size: 16px;  /* Slightly larger font size */
         }
 
         /* Responsive grid */
@@ -94,20 +87,13 @@
                 padding: 10px;
             }
         }
-
-        /* Search Box Custom Style */
-        .search-box {
-            width: 60%; /* Adjusted width */
-            margin: 0 auto;
-        }
-
     </style>
 </head>
 <body>
 
 <div class="menu-container">
     <!-- Back to Dashboard button -->
-    <a href="{% url 'customer_dashboard' %}" class="btn btn-warning mb-3">Back to Dashboard</a>
+    <a href="{% url 'employee_dashboard' %}" class="btn btn-warning mb-3">Back to Dashboard</a>
 
     <!-- Alert for success messages -->
     {% if messages %}
@@ -120,23 +106,24 @@
 
     <h1 class="text-center mb-4">Menu List</h1>
     <br>
-
-    <!-- Search Form -->
-    <form method="GET" action="{% url 'menu_item' %}" class="mb-4">
-        <div class="input-group search-box">
-            <input type="text" name="q" class="form-control" placeholder="Search Menu Items" value="{{ request.GET.q }}">
-            <button class="btn btn-custom" type="submit">Search</button>
-        </div>
-    </form>
+    
+    <!-- Center the Search Form -->
+    <div class="d-flex justify-content-center">
+        <form method="GET" action="{% url 'menu_item_new' %}" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search Menu Items" value="{{ request.GET.q }}">
+                <button class="btn btn-custom" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
 
     <!-- Back Button: Only shown if there is a search query -->
     {% if request.GET.q %}
         <div class="text-center mb-4">
-            <a href="{% url 'menu_item' %}" class="btn btn-secondary">Back</a>
+            <a href="{% url 'menu_item_new' %}" class="btn btn-secondary">Back</a>
         </div>
     {% endif %}
 
-    <br>
     <!-- Menu Cards -->
     <div class="row">
         {% for item in menu_items %}
@@ -178,12 +165,6 @@
                     <p>{{ item.description }}</p>
                     <p class="price">{{ item.price }}</p>
                     <p>{{ item.available|yesno:"Available,Not Available" }}</p>
-                    <div class="menu-card-actions">
-                        <!-- Order Button -->
-                        <a href="{% url 'place_order' item.id %}" class="btn btn-order">Order</a>
-                        <!-- Add to Wishlist Button -->
-                        <a href="{% url 'add_to_wishlist' item.id %}" class="btn btn-wishlist">Add to Wishlist</a>
-                    </div>
                 </div>
             </div>
         </div>
