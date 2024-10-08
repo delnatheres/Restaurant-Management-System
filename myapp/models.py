@@ -135,17 +135,17 @@ class EmployeeDashboard(models.Model):
     
     
     
-    
+
 class LeaveRequest(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    leave_type = models.CharField(max_length=100)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='leave_requests')
+    leave_type = models.CharField(max_length=50)  # Adjust the length as needed
     start_date = models.DateField()
     end_date = models.DateField()
     reason = models.TextField()
-    status = models.CharField(max_length=20, default='Pending')
+    status = models.BooleanField(default=False)  # You can change default as per your requirement
 
     def __str__(self):
-        return f"{self.leave_type} leave request by {self.employee.first_name} {self.employee.last_name}" 
+        return f"Leave Request from {self.employee.first_name} {self.employee.last_name} - {self.leave_type}"
     
     
     

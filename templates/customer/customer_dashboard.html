@@ -118,7 +118,9 @@
             <li><a href="{% url 'menu_item' %}"> View Menu</a></li>
             <li><a href="#">Your Orders</a></li>
             <li><a href="#">View Whishlist</a></li>
-            <li><a href="#">Reservations</a></li>
+
+            {% comment %} <li><a href="#">Reservations</a></li> {% endcomment %}
+            
             <li><a href="{% url 'submit_feedback' %}">Feedback</a></li>
             <li><a href="{% url 'login' %}">Logout</a></li>
         </ul>

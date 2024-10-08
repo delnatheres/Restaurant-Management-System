@@ -635,34 +635,26 @@ def menu_item_new(request):
 
 
 
-def employee_dashboard(request):
-    # Ensure the user is authenticated
-    if not request.user.is_authenticated:
-        return redirect('login')  # Change 'login' to the name of your login URL pattern
 
-    # Get the logged-in user's associated employee
-    employee = get_object_or_404(Employee, login=request.user.login)
+from django.shortcuts import render, get_object_or_404
+from .models import Employee  # Ensure you import your models
 
-    # Fetch or create the associated employee dashboard
-    dashboard, created = EmployeeDashboard.objects.get_or_create(employee=employee)
+def employee_dashboard(request, employee_id):
+    employee = get_object_or_404(Employee, employee_id=employee_id)  # Fetch the employee instance
 
-    context = {
-        'employee': employee,
-        'dashboard': dashboard,
-        'orders': dashboard.orders.all(),
-        'reservations': dashboard.reservations.all(),
-        'leave_requests': dashboard.leave_requests.all(),
-    }
-    return render(request, 'employee/employee_dashboard.html', context)
+    return render(request, 'employee/employee_dashboard.html', {'employee': employee})
 
 
 
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from .models import LeaveRequest, Employee  # Ensure you import your models
 
-# Leave request creation view
 def create_leave_request(request, employee_id):
-    employee = get_object_or_404(Employee, pk=employee_id)
+    # Retrieve the employee or return a 404 error if not found
+    employee = get_object_or_404(Employee, employee_id=employee_id)  # Use `employee_id` as the field name
 
     if request.method == 'POST':
         leave_type = request.POST.get('leave_type')
@@ -670,26 +662,21 @@ def create_leave_request(request, employee_id):
         end_date = request.POST.get('end_date')
         reason = request.POST.get('reason')
 
-        # Create the leave request
-        leave_request = LeaveRequest.objects.create(
-            employee=employee,
+        # Create a new leave request instance
+        leave_request = LeaveRequest(
+            employee=employee,  # Assign the employee object
             leave_type=leave_type,
             start_date=start_date,
             end_date=end_date,
-            reason=reason,
+            reason=reason
         )
+        leave_request.save()  # Save the leave request to the database
 
-        # Add the leave request to the dashboard
-        employee_dashboard = EmployeeDashboard.objects.get(employee=employee)
-        employee_dashboard.leave_requests.add(leave_request)
+        # Redirect to a success page or the employee dashboard
+        return redirect('employee_dashboard', employee_id=employee_id)  # Adjust if necessary
 
-        return redirect('employee_dashboard', employee_id=employee_id)
-
+    # Render the leave request form if GET request
     return render(request, 'employee/create_leave_request.html', {'employee': employee})
-
-
-
-
 
 
 

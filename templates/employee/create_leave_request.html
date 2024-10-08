@@ -1,7 +1,80 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apply for Leave</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5; /* Light gray background */
+            color: #333; /* Dark text color */
+            padding: 20px; /* Add some padding */
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50; /* Dark blue color */
+            margin-bottom: 30px; /* Space below the heading */
+        }
+
+        form {
+            background: #fff; /* White background for the form */
+            padding: 20px; /* Padding inside the form */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            max-width: 600px; /* Limit the width of the form */
+            margin: 0 auto; /* Center the form */
+        }
+
+        label {
+            display: block; /* Labels should take full width */
+            margin-bottom: 5px; /* Space below labels */
+            font-weight: bold; /* Bold text for labels */
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%; /* Full width for inputs */
+            padding: 10px; /* Padding inside inputs */
+            border: 1px solid #ccc; /* Light gray border */
+            border-radius: 4px; /* Slightly rounded corners */
+            margin-bottom: 20px; /* Space below inputs */
+        }
+
+        textarea {
+            resize: vertical; /* Allow vertical resizing */
+        }
+
+        button {
+            background-color: #5cb85c; /* Green button */
+            color: white; /* White text */
+            border: none; /* No border */
+            padding: 10px 15px; /* Padding for button */
+            border-radius: 5px; /* Rounded corners for button */
+            cursor: pointer; /* Pointer cursor on hover */
+            font-size: 16px; /* Slightly larger font */
+        }
+
+        button:hover {
+            background-color: #4cae4c; /* Darker green on hover */
+        }
+
+        a {
+            display: inline-block; /* Make the link block-level */
+            margin-top: 20px; /* Space above the link */
+            text-align: center; /* Center text */
+            color: #007bff; /* Bootstrap primary blue */
+            text-decoration: none; /* No underline */
+            font-weight: bold; /* Bold text */
+        }
+
+        a:hover {
+            text-decoration: underline; /* Underline on hover */
+        }
+    </style>
 </head>
 <body>
     <h1>Apply for Leave</h1>
@@ -20,7 +93,9 @@
         <label for="reason">Reason:</label>
         <textarea name="reason" required></textarea><br>
 
-        <button type="submit">Submit</button>
+        <center><button type="submit">Submit</button></center>
     </form>
+
+    <center><a href="{% url 'employee_dashboard' employee.employee_id %}">Back to Dashboard</a></center>
 </body>
 </html>

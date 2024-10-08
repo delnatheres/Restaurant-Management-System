@@ -48,23 +48,18 @@ urlpatterns = [
     path('dashboard/', views.customer_dashboard, name='customer_dashboard'),  # URL for the customer dashboard
    
     
+    path('dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
+    path('employee_dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
+    path('create_leave_request/<int:employee_id>/', views.create_leave_request, name='create_leave_request'),
+    
+    
+    
     path('order/<int:item_id>/', views.place_order, name='place_order'),
     path('wishlist/add/<int:item_id>/', views.add_to_wishlist, name='add_to_wishlist'),
-   
     
-
-
-    path('dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
-    path('employee_dashboard/', views.employee_dashboard, name='employee_dashboard'),
-    path('leave_request/<int:employee_id>/', views.create_leave_request, name='create_leave_request'),
-    path('employee_dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
     
-
-
-
-
-
-
+    
+    
    
    ]
 
