@@ -60,7 +60,12 @@ urlpatterns = [
      path('wishlist/', views.wishlist, name='wishlist'),
     
     
-    
+  path('add_menu_item/', views.add_menu_item, name='add_menu_item'),
+    path('add_menu_item_success/', views.add_menu_item_success, name='add_menu_item_success'),
+  
+  
+  
+  
    
    ]
 

@@ -59,22 +59,49 @@
             font-weight: bold;
         }
 
-        .btn-custom {
-            background-color: #007bff; /* Button color */
+        .menu-card .btn {
+            margin-top: 10px;
+            text-transform: uppercase;
+            font-size: 12px;
+            padding: 10px 15px;
+            font-weight: bold;
+        }
+
+        .btn-edit {
+            background-color: #007bff;
             color: white;
-            padding: 5px 12px; /* Reduced size */
-            font-size: 14px; /* Slightly smaller font size */
-            border-radius: 5px;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-edit:hover, .btn-delete:hover {
+            opacity: 0.8;
+        }
+
+        .menu-card-actions {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+
+        /* Custom button style */
+        .btn-custom {
+            background-color: #f3b820;
+            color: white;
         }
 
         .btn-custom:hover {
-            background-color: #0056b3; /* Darker shade for hover */
+            background-color: #d9a310;
+            color: white;
         }
 
-        /* Custom size for the search input */
-        .input-group .form-control {
-            max-width: 400px; /* Increased width for the search box */
-            font-size: 16px;  /* Slightly larger font size */
+        /* Reduced search box size */
+        .search-box {
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         /* Responsive grid */
@@ -86,6 +113,10 @@
             .menu-container {
                 padding: 10px;
             }
+
+            .search-box {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -94,13 +125,12 @@
 <div class="menu-container">
 
 
-
     {% comment %} <!-- Back to Dashboard button -->
     <a href="{% url 'employee_dashboard' %}" class="btn btn-warning mb-3">Back to Dashboard</a> {% endcomment %}
 
 
-
     
+
     <!-- Alert for success messages -->
     {% if messages %}
         <div class="alert alert-success">
@@ -110,58 +140,31 @@
         </div>
     {% endif %}
 
+    <!-- Menu List Heading -->
     <h1 class="text-center mb-4">Menu List</h1>
+
+<br>
+
+ <!-- Search Box -->
+ <div class="search-box">
+    <form method="GET" action="{% url 'menu_item_new' %}">
+        <input type="text" name="search" class="form-control" placeholder="Search Menu Items" aria-label="Search Menu Items">
+       <center> <button type="submit" class="btn btn-primary mt-2">Search</button></center>
+    </form>
+</div>
+
+
+    <br>
     <br>
     
-    <!-- Center the Search Form -->
-    <div class="d-flex justify-content-center">
-        <form method="GET" action="{% url 'menu_item_new' %}" class="mb-4">
-            <div class="input-group">
-                <input type="text" name="q" class="form-control" placeholder="Search Menu Items" value="{{ request.GET.q }}">
-                <button class="btn btn-custom" type="submit">Search</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Back Button: Only shown if there is a search query -->
-    {% if request.GET.q %}
-        <div class="text-center mb-4">
-            <a href="{% url 'menu_item_new' %}" class="btn btn-secondary">Back</a>
-        </div>
-    {% endif %}
-
     <!-- Menu Cards -->
     <div class="row">
         {% for item in menu_items %}
         <div class="col-md-4">
             <div class="card menu-card">
                 <!-- Dynamically set the image based on menu item -->
-                {% if item.name == "Biriyani" %}
-                    <img src="{% static 'images/biriyani.jpg' %}" alt="Biriyani" class="card-img-top">
-                {% elif item.name == "Dosa" %}
-                    <img src="{% static 'images/dosa.jpg' %}" alt="Dosa" class="card-img-top">
-                {% elif item.name == "Meals" %}
-                    <img src="{% static 'images/meals.jpg' %}" alt="Meals" class="card-img-top">
-                {% elif item.name == "Pizza" %}
-                    <img src="{% static 'images/pizza.avif' %}" alt="Pizza" class="card-img-top">
-                {% elif item.name == "Porota" %}
-                    <img src="{% static 'images/porota.jpg' %}" alt="Porota" class="card-img-top">
-                {% elif item.name == "Beef Curry" %}
-                    <img src="{% static 'images/beef curry.jpg' %}" alt="Beef Curry" class="card-img-top">
-                {% elif item.name == "Vegitable Curry" %}
-                    <img src="{% static 'images/vegitable curry.jpg' %}" alt="Vegitable Curry" class="card-img-top">
-                {% elif item.name == "Burger" %}
-                    <img src="{% static 'images/burger.webp' %}" alt="Burger" class="card-img-top">
-                {% elif item.name == "Chicken Biriyani" %}
-                    <img src="{% static 'images/chicken biriyani.jpg' %}" alt="Chicken Biriyani" class="card-img-top">
-                {% elif item.name == "Salad" %}
-                    <img src="{% static 'images/salad.jpg' %}" alt="Salad" class="card-img-top">
-                {% elif item.name == "Tacos" %}
-                    <img src="{% static 'images/tacos.jpg' %}" alt="Tacos" class="card-img-top">
-                {% elif item.name == "Fried Rice" %}
-                    <img src="{% static 'images/fried_rice.jpg' %}" alt="Fried Rice" class="card-img-top">
-                {% elif item.name == "Steak" %}
-                    <img src="{% static 'images/steak.jpg' %}" alt="Steak" class="card-img-top">
+                {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.name }}" class="card-img-top">
                 {% else %}
                     <img src="{% static 'images/default-food.jpg' %}" alt="Food" class="card-img-top">
                 {% endif %}
@@ -171,6 +174,7 @@
                     <p>{{ item.description }}</p>
                     <p class="price">{{ item.price }}</p>
                     <p>{{ item.available|yesno:"Available,Not Available" }}</p>
+                    
                 </div>
             </div>
         </div>

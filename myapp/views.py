@@ -365,18 +365,53 @@ class MenuItemForm(forms.ModelForm):
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
-
 def add_menu_item(request):
     if request.method == 'POST':
-        form = MenuItemForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Menu item added successfully!')
-           
-    else:
-        form = MenuItemForm()
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        available = request.POST.get('available') == 'on'
+        image = request.FILES.get('image')  # Get the uploaded image file
 
-    return render(request, 'admin/add_menu_items.html', {'form': form})
+        # Validation: Check if name and description contain numbers
+        if re.search(r'\d', name):
+            messages.error(request, 'Name must not contain numbers.')
+            return render(request, 'admin/add_menu_items.html')
+
+        if re.search(r'\d', description):
+            messages.error(request, 'Description must not contain numbers.')
+            return render(request, 'admin/add_menu_items.html')
+
+        # Validation: Check if price is a valid number and not negative
+        try:
+            price = float(price)  # Convert price to float
+            if price < 0:  # Check for negative price
+                messages.error(request, 'Price must not be a negative number.')
+                return render(request, 'admin/add_menu_items.html')
+        except ValueError:
+            messages.error(request, 'Price must be a valid number.')
+            return render(request, 'admin/add_menu_items.html')
+
+        # Create MenuItem
+        MenuItem.objects.create(
+            name=name,
+            description=description,
+            price=price,
+            available=available,
+            image=image  # Save the image
+        )
+
+        messages.success(request, 'Menu item added successfully.')
+        return redirect('add_menu_item_success')  # Redirect to the success page
+
+    return render(request, 'admin/add_menu_items.html')
+
+
+def add_menu_item_success(request):
+    # Optional: You can add a message if needed
+    messages.info(request, 'You have successfully added a menu item.')
+    return render(request, 'admin/add_menu_item_success.html') 
+
 
 
 def customer_orders(request):

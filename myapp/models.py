@@ -45,9 +45,13 @@ class MenuItem(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
     available = models.BooleanField(default=True)
-
+    image = models.ImageField(upload_to='menu_items/', blank=True, null=True)  # Image field
+    
     def __str__(self):
         return self.name
+    
+    
+    
 
 class Reservation(models.Model):
     customer = models.ForeignKey('Customer', on_delete=models.CASCADE)  # Updated to use Customer

@@ -134,64 +134,33 @@
             {% endfor %}
         </div>
     {% endif %}
+
     <!-- Menu List Heading -->
     <h1 class="text-center mb-4">Menu List</h1>
-    <br>
 
-    
+
+
 
     {% comment %} <!-- Search Form -->
-    <form method="GET" action="{% url 'view_menu' %}" class="mb-4 search-box">
+    <form method="GET" action="{% url 'menu_item' %}" class="mb-4">
         <div class="input-group">
-            <input type="text" name="q" class="form-control" placeholder="Search Menu Items" value="{{ request.GET.q }}">
-            <button class="btn btn-custom" type="submit">Search</button>
+            <input type="text" name="q" class="form-control search-box" placeholder="Search menu items..." aria-label="Search menu items">
+            <button class="btn btn-primary" type="submit">Search</button>
         </div>
-    </form>
-
-    <!-- Back Button: Only shown if there is a search query -->
-    {% if request.GET.q %}
-        <div class="text-center mb-4">
-            <a href="{% url 'view_menu' %}" class="btn btn-secondary">Back</a>
-        </div>
-    {% endif %}
-    <br> {% endcomment %}
+    </form> {% endcomment %}
 
 
 
-
-
+    
+    
     <!-- Menu Cards -->
     <div class="row">
         {% for item in menu_items %}
         <div class="col-md-4">
             <div class="card menu-card">
                 <!-- Dynamically set the image based on menu item -->
-                {% if item.name == "Biriyani" %}
-                    <img src="{% static 'images/biriyani.jpg' %}" alt="Biriyani" class="card-img-top">
-                {% elif item.name == "Dosa" %}
-                    <img src="{% static 'images/dosa.jpg' %}" alt="Dosa" class="card-img-top">
-                {% elif item.name == "Meals" %}
-                    <img src="{% static 'images/meals.jpg' %}" alt="Meals" class="card-img-top">
-                {% elif item.name == "Pizza" %}
-                    <img src="{% static 'images/pizza.avif' %}" alt="Pizza" class="card-img-top">
-                {% elif item.name == "Porota" %}
-                    <img src="{% static 'images/porota.jpg' %}" alt="Porota" class="card-img-top">
-                {% elif item.name == "Beef Curry" %}
-                    <img src="{% static 'images/beef curry.jpg' %}" alt="Beef Curry" class="card-img-top">
-                {% elif item.name == "Vegitable Curry" %}
-                    <img src="{% static 'images/vegitable curry.jpg' %}" alt="Vegitable Curry" class="card-img-top">
-                {% elif item.name == "Burger" %}
-                    <img src="{% static 'images/burger.webp' %}" alt="Burger" class="card-img-top">
-                {% elif item.name == "Chicken Biriyani" %}
-                    <img src="{% static 'images/chicken biriyani.jpg' %}" alt="Chicken Biriyani" class="card-img-top">
-                {% elif item.name == "Salad" %}
-                    <img src="{% static 'images/salad.jpg' %}" alt="Salad" class="card-img-top">
-                {% elif item.name == "Tacos" %}
-                    <img src="{% static 'images/tacos.jpg' %}" alt="Tacos" class="card-img-top">
-                {% elif item.name == "Fried Rice" %}
-                    <img src="{% static 'images/fried_rice.jpg' %}" alt="Fried Rice" class="card-img-top">
-                {% elif item.name == "Steak" %}
-                    <img src="{% static 'images/steak.jpg' %}" alt="Steak" class="card-img-top">
+                {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.name }}" class="card-img-top">
                 {% else %}
                     <img src="{% static 'images/default-food.jpg' %}" alt="Food" class="card-img-top">
                 {% endif %}
