@@ -42,6 +42,7 @@ urlpatterns = [
     path('edit_menu_item/<int:id>/', views.edit_menu_item, name='edit_menu_item'),  # Ensure this line is correct
     path('delete_menu_item/<int:id>/', views.delete_menu_item, name='delete_menu_item'),
     path('menu_item/', views.menu_item, name='menu_item'),  # Add this
+    path('menu_item/<int:menu_item_id>/', views.menu_item, name='menu_item_with_id'),
     path('menu_item_new/', views.menu_item_new, name='menu_item_new'),
     path('feedback/', views.submit_feedback, name='submit_feedback'),  # URL for submitting feedback
     path('feedback_success/', views.feedback_success, name='feedback_success'),  # URL for success page
@@ -55,8 +56,8 @@ urlpatterns = [
     
     
     path('order/<int:item_id>/', views.place_order, name='place_order'),
-    path('wishlist/add/<int:item_id>/', views.add_to_wishlist, name='add_to_wishlist'),
     
+     path('wishlist/', views.wishlist, name='wishlist'),
     
     
     

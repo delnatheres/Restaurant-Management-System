@@ -29,7 +29,7 @@
 
         /* Style the sidebar */
         #sidebar {
-            background-color: rgba(30, 42, 56, 0.8); /* Semi-transparent for better visibility */
+            background-color: #1e2a38; /* Solid color for better visibility */
             color: white;
             width: 250px;
             position: fixed;
@@ -43,6 +43,7 @@
             text-decoration: none;
             font-size: 16px;
             color: white;
+            font-weight: bold; /* Make the font bold */
             display: block;
             transition: background 0.3s, padding-left 0.3s;
         }
@@ -63,7 +64,7 @@
             -webkit-text-fill-color: transparent; /* Apply gradient to text */
             background-clip: text;
             text-fill-color: transparent;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle shadow */
+            text-shadow: none; /* Removed shadow for clarity */
             font-weight: bold;
             font-family: 'Poppins', sans-serif; /* Modern and clean font */
             letter-spacing: 2px;
@@ -117,10 +118,10 @@
             <li><a href="{% url 'index' %}">Home</a></li>
             <li><a href="{% url 'menu_item' %}"> View Menu</a></li>
             <li><a href="#">Your Orders</a></li>
-            <li><a href="#">View Whishlist</a></li>
+            <li><a href="{% url 'wishlist' %}">View Wishlist</a></li>
 
             {% comment %} <li><a href="#">Reservations</a></li> {% endcomment %}
-            
+
             <li><a href="{% url 'submit_feedback' %}">Feedback</a></li>
             <li><a href="{% url 'login' %}">Logout</a></li>
         </ul>

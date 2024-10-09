@@ -180,9 +180,9 @@
                     <p>{{ item.available|yesno:"Available,Not Available" }}</p>
                     <div class="menu-card-actions">
                         <!-- Order Button -->
-                        <a href="{% url 'place_order' item.id %}" class="btn btn-order">Order</a>
+                        <a href="{% url 'place_order' item.id %}" class="btn btn-order">Order Now</a>
                         <!-- Add to Wishlist Button -->
-                        <a href="{% url 'add_to_wishlist' item.id %}" class="btn btn-wishlist">Add to Wishlist</a>
+                        <a href="{% url 'wishlist' %}" class="btn btn-wishlist">Add to Wishlist</a>
                     </div>
                 </div>
             </div>

@@ -92,9 +92,15 @@
 <body>
 
 <div class="menu-container">
-    <!-- Back to Dashboard button -->
-    <a href="{% url 'employee_dashboard' %}" class="btn btn-warning mb-3">Back to Dashboard</a>
 
+
+
+    {% comment %} <!-- Back to Dashboard button -->
+    <a href="{% url 'employee_dashboard' %}" class="btn btn-warning mb-3">Back to Dashboard</a> {% endcomment %}
+
+
+
+    
     <!-- Alert for success messages -->
     {% if messages %}
         <div class="alert alert-success">

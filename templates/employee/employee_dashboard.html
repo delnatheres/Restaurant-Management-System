@@ -18,18 +18,18 @@
         }
 
         body {
-            background: url("{% static 'images/back2.jpg' %}") no-repeat center center fixed; /* Fixed for full-screen */
-            background-size: cover; /* Cover the entire screen */
+            background: url("{% static 'images/back2.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
             font-family: 'Arial', sans-serif;
             color: #333;
             padding: 0;
             margin: 0;
-            height: 100vh; /* Ensure the body takes the full height */
+            height: 100vh;
         }
 
         /* Style the sidebar */
         #sidebar {
-            background-color: rgba(30, 42, 56, 0.8); /* Semi-transparent for better visibility */
+            background-color: #1e2a38; /* Removed transparency for clarity */
             color: white;
             width: 250px;
             position: fixed;
@@ -42,6 +42,7 @@
             padding: 15px 20px;
             text-decoration: none;
             font-size: 16px;
+            font-weight: bold; /* Make the font bold */
             color: white;
             display: block;
             transition: background 0.3s, padding-left 0.3s;
@@ -58,14 +59,12 @@
             text-align: center;
             padding: 20px;
             margin-bottom: 10px;
-            background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Gradient background */
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent; /* Apply gradient to text */
-            background-clip: text;
-            text-fill-color: transparent;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle shadow */
+            -webkit-text-fill-color: transparent;
+            text-shadow: none; /* Removed the shadow for clarity */
             font-weight: bold;
-            font-family: 'Poppins', sans-serif; /* Modern and clean font */
+            font-family: 'Poppins', sans-serif;
             letter-spacing: 2px;
             line-height: 1.2;
         }
@@ -74,7 +73,7 @@
         #content {
             margin-left: 260px;
             padding: 30px;
-            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background for readability */
+            background-color: rgba(255, 255, 255, 0.9);
         }
 
         h1 {
@@ -152,13 +151,7 @@
             <li><a href="{% url 'index' %}">Home</a></li>
             <li><a href="{% url 'menu_item_new' %}">View Menu</a></li>
             <li><a href="#">View Orders</a></li>
-
-   
             <li><a href="{% url 'create_leave_request' employee.employee_id %}">Apply Leave Requests</a></li>
-
-
-
-
             <li><a href="{% url 'login' %}">Logout</a></li>
         </ul>
     </div>
@@ -166,8 +159,6 @@
     <!-- Main Content -->
     <div id="content">
         <h1>Welcome, {{ employee.first_name }}!</h1>
-
-        
     </div>
 
 </body>

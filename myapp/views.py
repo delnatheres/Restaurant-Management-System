@@ -568,39 +568,72 @@ def activate_user(request, id):
 
 
 
-def menu_item(request):
-    query = request.GET.get('q', '')
-    if query:
-        menu_items = MenuItem.objects.filter(name__icontains=query)  # Adjust based on your model
+
+def menu_item(request, menu_item_id=None):
+    # Fetch a specific menu item if an ID is provided, otherwise list all or search
+    if menu_item_id:
+        menu_item_instance = get_object_or_404(MenuItem, id=menu_item_id)
     else:
-        menu_items = MenuItem.objects.all()
+        query = request.GET.get('q', '')
+        if query:
+            menu_items = MenuItem.objects.filter(name__icontains=query)
+        else:
+            menu_items = MenuItem.objects.all()
+
+    # Handle wishlist logic in POST request
+    if request.method == 'POST':
+        if 'add_to_wishlist' in request.POST:
+            user_id = request.session.get('user_id')  # Assuming session stores user ID
+            if user_id:
+                user = User.objects.get(id=user_id)
+                menu_item_instance = get_object_or_404(MenuItem, id=menu_item_id)
+                wishlist_item, created = Wishlist.objects.get_or_create(user=user, menu_item=menu_item_instance)
+
+                if created:
+                    messages.success(request, 'Menu item added to your wishlist!')
+                else:
+                    messages.info(request, 'Menu item is already in your wishlist.')
+            else:
+                messages.error(request, 'You need to log in to add items to your wishlist.')
 
     context = {
-        'menu_items': menu_items,
-        'query': query,
+        'menu_item_instance': menu_item_instance if menu_item_id else None,
+        'menu_items': menu_items if not menu_item_id else None,
+        'query': query if not menu_item_id else '',
     }
-    return render(request, 'customer/menu_item.html', context) 
+
+    return render(request, 'customer/menu_item.html', context)
 
 
+def wishlist(request):
+    # Retrieve user_id from the session
+    user_id = request.session.get('user_id')
 
-def add_to_wishlist(request, item_id):
-    # Fetch the menu item based on the item_id
-    menu_item = get_object_or_404(MenuItem, id=item_id)
+    if not user_id or not user_id.isdigit():  # Ensure user_id is valid
+        messages.error(request, "Invalid user session. Please log in again.")
+        return redirect('login')  # Redirect to login if invalid session
+
+    user = get_object_or_404(User, id=user_id)  # Ensure user_id is a valid integer
+
+    # Handle removing items from the wishlist
+    if request.method == 'POST':
+        menu_item_id = request.POST.get('remove_menu_item_id')
+        if menu_item_id:
+            try:
+                wishlist_item = Wishlist.objects.get(user=user, menu_item_id=menu_item_id)
+                wishlist_item.delete()  # Remove the menu item from the wishlist
+                messages.success(request, 'Item removed from your wishlist.')
+            except Wishlist.DoesNotExist:
+                messages.error(request, 'This item is not in your wishlist.')
+
+    # Get all wishlist items for the user
+    wishlist_items = Wishlist.objects.filter(user=user)
+
+    context = {
+        'wishlist': [item.menu_item for item in wishlist_items],  # List of MenuItems in the wishlist
+    }
     
-    # Assuming you have a Wishlist model and a user logged in
-    if request.user.is_authenticated:
-        # Check if the item is already in the user's wishlist
-        wishlist, created = Wishlist.objects.get_or_create(user=request.user, menu_item=menu_item)
-        
-        if created:
-            messages.success(request, f'{menu_item.name} has been added to your wishlist.')
-        else:
-            messages.info(request, f'{menu_item.name} is already in your wishlist.')
-    else:
-        messages.error(request, 'You need to log in to add items to your wishlist.')
-        return redirect('login')  # Redirect to login if not authenticated
-    
-    return redirect('menu_item')  # Redirect back to the menu page after adding
+    return render(request, 'customer/wishlist.html', context)
 
 
 

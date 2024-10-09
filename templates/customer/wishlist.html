@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist</title>
+    <link rel="stylesheet" href="{% static 'css/wishlist.css' %}">
+</head>
+<body>
+
+<div class="container">
+    <!-- Back button -->
+    <div class="back-btn-container">
+        <a href="{% url 'menu_item' %}" class="back-btn">Back</a>
+    </div>
+
+    <h1>My Wishlist</h1>
+
+    {% if wishlist_items %}
+    <ul class="wishlist-items">
+        {% for item in wishlist_items %}
+            <li class="wishlist-item">
+                <div class="menu-item-info">
+                    <h2>{{ item.menu_item.name }}</h2>
+                    <p>{{ item.menu_item.description }}</p>
+                    <span class="menu-item-price">Price: Rs.{{ item.menu_item.price }}</span>
+                </div>
+                <div class="actions">
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="remove_item_id" value="{{ item.id }}">  <!-- ID for removing the item -->
+                        <button type="submit" class="btn btn-danger">Remove</button>
+                    </form>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% else %}
+        <p class="empty-message">Your wishlist is empty.</p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

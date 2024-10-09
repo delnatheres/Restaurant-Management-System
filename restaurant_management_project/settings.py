@@ -141,3 +141,14 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'delnatheres2025@mca.ajce.in'
 EMAIL_HOST_PASSWORD = 'delna@2023'
 DEFAULT_FROM_EMAIL = 'delnatheres2025@mca.ajce.in'  # Email sender's address
+
+
+
+
+
+#Redirect to the login page if not authenticated
+LOGIN_URL = '/login/'  # Ensure this points to your custom login URL
+
+# After login, redirect to the user homepage or a relevant page
+LOGIN_REDIRECT_URL = '/customer_dashboard/'  # Adjust this to where users should land after login
+LOGOUT_REDIRECT_URL = '/index/'  # Where users go after logout

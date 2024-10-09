@@ -19,7 +19,28 @@
             text-align: center;
             color: #333;
             margin-top: 30px;
-            font-size: 28px; /* Reduced font size */
+            font-size: 36px; /* Increased font size */
+        }
+
+        /* Back to Dashboard button */
+        .btn-back {
+            display: inline-block;
+            margin: 10px auto;
+            padding: 8px 16px; /* Reduced padding */
+            background-color: #f3b820;
+            color: white;
+            text-align: center;
+            font-size: 14px; /* Reduced font size */
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-back:hover {
+            background-color: #e5a500;
+            transform: translateY(-2px); /* Slight hover effect */
         }
 
         /* Styling the table */
@@ -74,9 +95,8 @@
         }
 
         /* Button styling */
-        .btn-back, .btn-delete {
+        .btn-delete {
             display: inline-block; /* Changed to inline-block for smaller button */
-            margin: 20px auto;
             padding: 8px 16px; /* Reduced padding */
             background-color: #f3b820;
             color: white;
@@ -89,7 +109,7 @@
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
-        .btn-delete:hover, .btn-back:hover {
+        .btn-delete:hover {
             background-color: #e5a500;
             transform: translateY(-2px); /* Slight hover effect */
         }
@@ -101,7 +121,7 @@
             }
 
             h1 {
-                font-size: 24px; /* Further reduced font size for mobile */
+                font-size: 28px; /* Further reduced font size for mobile */
             }
 
             th, td {
@@ -118,6 +138,10 @@
 </head>
 <body>
     <h1>Sign In Details</h1>
+    <br>
+
+    <!-- Back to Dashboard button placed after heading -->
+    <center><a href="{% url 'admin_dashboard' %}" class="btn-back">Back to Dashboard</a></center>
 
     <!-- Table to display sign-in records -->
     <table>
@@ -151,8 +175,5 @@
             {% endfor %}
         </tbody>
     </table>
-
-    <!-- Back to Dashboard button -->
-    <center><a href="{% url 'admin_dashboard' %}" class="btn-back">Back to Dashboard</a></center>
 </body>
 </html>

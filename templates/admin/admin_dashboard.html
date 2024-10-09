@@ -24,12 +24,19 @@
 
         /* Style the sidebar */
         #sidebar {
-            background-color: rgba(51, 51, 51, 0.8); /* Semi-transparent background */
+            background-color: #333; /* Solid background color for clarity */
             color: white;
             width: 250px;
             position: fixed;
             height: 100%;
             overflow: auto;
+        }
+
+        #sidebar h1 {
+            font-weight: bold; /* Make the sidebar title bold */
+            padding: 20px; /* Add padding for aesthetics */
+            text-align: center; /* Center the title */
+            margin-bottom: 10px; /* Space below title */
         }
 
         #sidebar a {
@@ -38,6 +45,7 @@
             font-size: 18px;
             color: white;
             display: block;
+            font-weight: bold; /* Make the links bold */
         }
 
         #sidebar a:hover {
@@ -135,7 +143,7 @@
             <li><a href="#">View Orders</a></li>
 
             {% comment %} <li><a href="#">View Reservations</a></li> {% endcomment %}
-            
+
             <li><a href="#">View Customer Feedback</a></li>
             <li><a href="{% url 'login' %}">Logout</a></li>
         </ul>
