@@ -120,12 +120,13 @@
         <!-- Back to Dashboard Button -->
         <a href="{% url 'admin_dashboard' %}" class="btn btn-primary mb-3">Back to Dashboard</a>
         
+        <!-- Add New Subcategory Button -->
         <a href="{% url 'add_subcategory' %}" class="btn btn-primary mb-3">Add New Subcategory</a>
         
+        <!-- Subcategories Table -->
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Subcategory Name</th>
                     <th>Category</th>
                     <th>Status</th>
@@ -135,7 +136,6 @@
             <tbody>
                 {% for subcategory in subcategories %}
                 <tr>
-                    <td>{{ subcategory.id }}</td>
                     <td>{{ subcategory.scname }}</td>
                     <td>{{ subcategory.cid.cname }}</td>
                     <td>{{ subcategory.status|yesno:"Active,Inactive" }}</td>

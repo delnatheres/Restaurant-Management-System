@@ -438,6 +438,7 @@ def delete_menu_item(request, id):
 
 
 
+
 from django.shortcuts import render, get_object_or_404, redirect
 
 # View to display all categories
@@ -445,18 +446,24 @@ def view_category(request):
     categories = Category.objects.all()  # Fetch all categories
     return render(request, 'admin/view_category.html', {'categories': categories})
 
-# View to add a new category
 def add_category(request):
     if request.method == 'POST':
         cname = request.POST.get('cname')
         status = request.POST.get('status') == 'on'
+
+        # Validate that the category name does not contain numbers
         if cname:
-            Category.objects.create(cname=cname, status=status)
-            messages.success(request, 'Category added successfully!')
-            return redirect('view_category')
+            if cname.isalpha():  # Ensure that the category name only contains alphabetic characters
+                Category.objects.create(cname=cname, status=status)
+                messages.success(request, 'Category added successfully!')
+                return redirect('view_category')
+            else:
+                messages.error(request, 'Category name should only contain alphabetic characters.')
         else:
             messages.error(request, 'Category name is required.')
+
     return render(request, 'admin/add_category.html')
+
 
 # View to edit an existing category
 def edit_category(request, cid):
@@ -464,13 +471,21 @@ def edit_category(request, cid):
     if request.method == 'POST':
         category.cname = request.POST.get('cname')
         category.status = request.POST.get('status') == 'on'
+
+        # Validate that the category name does not contain numbers
         if category.cname:
-            category.save()
-            messages.success(request, 'Category updated successfully!')
-            return redirect('view_category')
+            if category.cname.isalpha():  # Ensure that the category name only contains alphabetic characters
+                category.save()
+                messages.success(request, 'Category updated successfully!')
+                return redirect('view_category')
+            else:
+                messages.error(request, 'Category name should only contain alphabetic characters.')
         else:
             messages.error(request, 'Category name is required.')
+
     return render(request, 'admin/edit_category.html', {'category': category})
+
+
 
 # View to delete a category
 def delete_category(request, cid):
@@ -488,33 +503,53 @@ def view_subcategory(request):
     subcategories = SubCategory.objects.all()
     return render(request, 'admin/view_subcategory.html', {'subcategories': subcategories})
 
-# View for adding a new subcategory
+
 def add_subcategory(request):
     if request.method == 'POST':
         scname = request.POST.get('scname')
         cid = request.POST.get('cid')
         status = request.POST.get('status') == 'on'  # Checkbox value handling
-        SubCategory.objects.create(scname=scname, cid_id=cid, status=status)
-        messages.success(request, 'Subcategory added successfully.')
-        return redirect('view_subcategory')
-    
+
+        # Validate that the subcategory name does not contain numbers
+        if scname:
+            if scname.isalpha():  # Ensure that the subcategory name only contains alphabetic characters
+                SubCategory.objects.create(scname=scname, cid_id=cid, status=status)
+                messages.success(request, 'Subcategory added successfully.')
+                return redirect('view_subcategory')
+            else:
+                messages.error(request, 'Subcategory name should only contain alphabetic characters.')
+        else:
+            messages.error(request, 'Subcategory name is required.')
+
     categories = Category.objects.all()
     return render(request, 'admin/add_subcategory.html', {'categories': categories})
+
 
 # View for editing a subcategory
 def edit_subcategory(request, subcategory_id):
     subcategory = get_object_or_404(SubCategory, id=subcategory_id)
 
     if request.method == 'POST':
-        subcategory.scname = request.POST.get('scname')
-        subcategory.cid_id = request.POST.get('cid')
-        subcategory.status = request.POST.get('status') == 'on'
-        subcategory.save()
-        messages.success(request, 'Subcategory updated successfully.')
-        return redirect('view_subcategory')
+        scname = request.POST.get('scname')
+        cid = request.POST.get('cid')
+        status = request.POST.get('status') == 'on'
+
+        # Validate that the subcategory name does not contain numbers
+        if scname and scname.isalpha():  # Ensure it only contains alphabetic characters
+            subcategory.scname = scname
+            subcategory.cid_id = cid
+            subcategory.status = status
+            subcategory.save()
+            messages.success(request, 'Subcategory updated successfully.')
+            return redirect('view_subcategory')
+        else:
+            messages.error(request, 'Subcategory name should only contain alphabetic characters and cannot be empty.')
 
     categories = Category.objects.all()
     return render(request, 'admin/edit_subcategory.html', {'subcategory': subcategory, 'categories': categories})
+
+
+
 
 # View for deleting a subcategory
 def delete_subcategory(request, subcategory_id):
@@ -607,7 +642,7 @@ def menu_item(request, menu_item_id=None):
 
 def wishlist(request):
     # Retrieve user_id from the session
-    user_id = request.session.get('user_id')
+    user_id = request.session.get('customer_id')
 
     if not user_id or not user_id.isdigit():  # Ensure user_id is valid
         messages.error(request, "Invalid user session. Please log in again.")
@@ -632,7 +667,6 @@ def wishlist(request):
     context = {
         'wishlist': [item.menu_item for item in wishlist_items],  # List of MenuItems in the wishlist
     }
-    
     return render(request, 'customer/wishlist.html', context)
 
 

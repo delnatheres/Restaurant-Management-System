@@ -138,12 +138,9 @@
         <!-- Link to add a new category -->
         <a href="{% url 'add_category' %}" class="btn btn-primary add-category-btn">Add New Category</a>
         
-        
-
         <!-- Categories Table -->
         <table>
             <tr>
-                <th>Category ID</th>
                 <th>Category Name</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -151,7 +148,6 @@
             <!-- Loop through all categories and display them -->
             {% for category in categories %}
             <tr>
-                <td>{{ category.cid }}</td>
                 <td>{{ category.cname }}</td>
                 <td>{{ category.status|yesno:"Active,Inactive" }}</td>
                 <td class="action-links">
