@@ -784,7 +784,17 @@ def create_leave_request(request, employee_id):
 
 
 
+def feedback_view(request):
+    if request.method == 'POST':
+        feedback_text = request.POST.get('feedback')
+        feedback = Feedback(customer=request.user, feedback_text=feedback_text)
+        feedback.save()
+        return redirect('feedback_thankyou')  # Redirect to a thank you page
+    return render(request, 'admin/feedback.html')
 
+def view_feedback(request):
+    feedback_list = Feedback.objects.all().order_by('-created_at')
+    return render(request, 'admin/view_feedback.html', {'feedback_list': feedback_list})
 
-
-
+def feedback_thankyou(request):
+    return render(request, 'admin/feedback_thankyou.html')

@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('', views.index_view, name='index'),  # Root URL for index
     path('about/', views.about_view, name='about'),
@@ -47,6 +49,9 @@ urlpatterns = [
     path('feedback/', views.submit_feedback, name='submit_feedback'),  # URL for submitting feedback
     path('feedback_success/', views.feedback_success, name='feedback_success'),  # URL for success page
     path('dashboard/', views.customer_dashboard, name='customer_dashboard'),  # URL for the customer dashboard
+    path('feedback/', views.feedback_view, name='feedback'),
+    path('view_feedback/', views.view_feedback, name='view_feedback'),
+    path('feedback_thankyou/', views.feedback_thankyou, name='feedback_thankyou'),
    
     
     path('dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
@@ -62,11 +67,22 @@ urlpatterns = [
     
   path('add_menu_item/', views.add_menu_item, name='add_menu_item'),
     path('add_menu_item_success/', views.add_menu_item_success, name='add_menu_item_success'),
+    
+    
+    
+    
+    
+    
+    
+    
+     path('feedback/', views.feedback_view, name='feedback'),
+    path('view_feedback/', views.view_feedback, name='view_feedback'),
+    
+    path('feedback_thankyou/', views.feedback_thankyou, name='feedback_thankyou'),
+    
   
   
-  
-  
-   
    ]
-
-
+if settings.DEBUG:
+  urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+  urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

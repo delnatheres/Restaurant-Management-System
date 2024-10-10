@@ -1,0 +1,169 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Customer Feedback</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* General page styling */
+        body {
+            background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background-color: #f0f4f8;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a4e69;
+            margin-bottom: 20px; /* Adjusted margin for space above button */
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        /* Back to Dashboard button */
+        .btn-back {
+            display: inline-block;
+            margin: 10px auto;
+            padding: 8px 16px; /* Adjusted padding */
+            background-color: #f3b820;
+            color: white;
+            text-align: center;
+            font-size: 14px; /* Adjusted font size */
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-back:hover {
+            background-color: #e5a500;
+            transform: translateY(-2px); /* Slight hover effect */
+        }
+
+        /* Table container styling */
+        .table-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background-color: #4a4e69;
+            color: white;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        td {
+            font-size: 16px;
+            color: #333333;
+        }
+
+        /* Add a hover effect on table rows */
+        tbody tr:hover {
+            background-color: #f7f7f7;
+        }
+
+        /* Responsive table */
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            /* Hide table headers for mobile view */
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            td {
+                padding-left: 50%;
+                position: relative;
+                text-align: left;
+            }
+
+            td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 15px;
+                width: calc(50% - 30px);
+                font-weight: bold;
+                color: #4a4e69;
+            }
+
+            td {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+
+        /* No feedback message styling */
+        .no-feedback {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <h1>Customer Feedback</h1>
+    <center><a href="{% url 'admin_dashboard' %}" class="btn-back">Back to Dashboard</a></center> <!-- Back to Dashboard button -->
+
+    <div class="table-container">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>Comments</th>
+                    <th>Rating</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for feedback in feedback_list %}
+                <tr>
+                    <td data-label="Customer">{{ feedback.customer }}</td>
+                    <td data-label="Comments">{{ feedback.comments }}</td>
+                    <td data-label="Rating">{{ feedback.rating }}</td>
+                    <td data-label="Created At">{{ feedback.created_at }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="no-feedback">No feedback available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
