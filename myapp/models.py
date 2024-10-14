@@ -23,20 +23,22 @@ class SignIn(models.Model):
         return f"{self.name} - {self.email}"   
     
     
+from django.db import models
 
 class Employee(models.Model):
     employee_id = models.AutoField(primary_key=True)
-    first_name = models.CharField(max_length=15)
-    last_name = models.CharField(max_length=15)
+    name = models.CharField(max_length=15)
+    place = models.CharField(max_length=50, default='Unknown')
     phone = models.CharField(max_length=10)
     salary = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.BooleanField(default=True)
     joinedon = models.DateTimeField(auto_now_add=True)
-    email = models.EmailField(null=True, blank=True)   # Use EmailField for better validation
-    password = models.CharField(max_length=150, null=True, blank=True) 
-    
+    email = models.EmailField(null=True, blank=True)  # Use EmailField for better validation
+    password = models.CharField(max_length=150, null=True, blank=True)
+
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.name}"
+
 
 
 
@@ -53,14 +55,6 @@ class MenuItem(models.Model):
     
     
 
-class Reservation(models.Model):
-    customer = models.ForeignKey('Customer', on_delete=models.CASCADE)  # Updated to use Customer
-    date = models.DateField()
-    time = models.TimeField()
-    guests = models.PositiveIntegerField()
-
-    def __str__(self):
-        return f"Reservation {self.id} - {self.customer.name}"
 
 class Category(models.Model):
     cid = models.AutoField(primary_key=True)
@@ -130,12 +124,10 @@ class User(models.Model):  # This class is removed as per your request
 class EmployeeDashboard(models.Model):
     employee = models.OneToOneField(Employee, on_delete=models.CASCADE)
     orders = models.ManyToManyField('Order', blank=True)  # Link orders with the dashboard
-    reservations = models.ManyToManyField('Reservation', blank=True)  # Link reservations with the dashboard
     leave_requests = models.ManyToManyField('LeaveRequest', blank=True)
 
     def __str__(self):
-        return f"{self.employee.first_name} {self.employee.last_name}'s Dashboard"
-    
+        return f"{self.employee.name}'s Dashboard"
     
     
     
@@ -146,11 +138,10 @@ class LeaveRequest(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     reason = models.TextField()
-    status = models.BooleanField(default=False)  # You can change default as per your requirement
+    status = models.CharField(max_length=20, choices=[('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected')], default='Pending') 
 
     def __str__(self):
-        return f"Leave Request from {self.employee.first_name} {self.employee.last_name} - {self.leave_type}"
-    
+        return f"Leave Request from {self.employee.name} - {self.leave_type}"
     
     
     

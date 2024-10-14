@@ -98,7 +98,7 @@
             color: white;
         }
 
-        /* Reduced search box size */
+        /* Adjust search box and button */
         .search-box {
             max-width: 800px;
             margin: 0 auto;
@@ -124,13 +124,6 @@
 
 <div class="menu-container">
 
-
-    {% comment %} <!-- Back to Dashboard button -->
-    <a href="{% url 'employee_dashboard' %}" class="btn btn-warning mb-3">Back to Dashboard</a> {% endcomment %}
-
-
-    
-
     <!-- Alert for success messages -->
     {% if messages %}
         <div class="alert alert-success">
@@ -143,20 +136,27 @@
     <!-- Menu List Heading -->
     <h1 class="text-center mb-4">Menu List</h1>
 
-<br>
+    <br>
 
- <!-- Search Box -->
- <div class="search-box">
-    <form method="GET" action="{% url 'menu_item_new' %}">
-        <input type="text" name="search" class="form-control" placeholder="Search Menu Items" aria-label="Search Menu Items">
-       <center> <button type="submit" class="btn btn-primary mt-2">Search</button></center>
-    </form>
-</div>
+    <!-- Search Box -->
+    <div class="search-box">
+        <form method="GET" action="{% url 'menu_item_new' %}">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Search Menu Items" aria-label="Search Menu Items">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+    <br>
 
+    <!-- Back to Menu List button (displayed only after a search) -->
+    {% if query %}
+        <center><a href="{% url 'menu_item_new' %}" class="btn btn-secondary mb-3">Back to Menu List</a></center>
+    {% endif %}
 
     <br>
     <br>
-    
+
     <!-- Menu Cards -->
     <div class="row">
         {% for item in menu_items %}
@@ -174,7 +174,6 @@
                     <p>{{ item.description }}</p>
                     <p class="price">{{ item.price }}</p>
                     <p>{{ item.available|yesno:"Available,Not Available" }}</p>
-                    
                 </div>
             </div>
         </div>

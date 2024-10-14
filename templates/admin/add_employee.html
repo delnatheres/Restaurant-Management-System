@@ -104,13 +104,14 @@
         <form method="post" onsubmit="return validateForm()">
             {% csrf_token %}
             <div class="form-group">
-                <label for="first_name">First Name</label>
-                <input type="text" class="form-control" id="first_name" name="first_name" required pattern="^[A-Za-z]+$" title="First name should contain only letters.">
+                <label for="name"> Name</label>
+                <input type="text" class="form-control" id="name" name="name" required pattern="^[A-Za-z]+$" title=" name should contain only letters.">
             </div>
             <div class="form-group">
-                <label for="last_name">Last Name</label>
-                <input type="text" class="form-control" id="last_name" name="last_name" required pattern="^[A-Za-z]+$" title="Last name should contain only letters.">
+                <label for="place"> Place</label>
+                <input type="text" class="form-control" id="place" name="place" required pattern="^[A-Za-z ]+$" title="Place should contain only letters and spaces.">
             </div>
+          
             <div class="form-group">
                 <label for="phone">Phone</label>
                 <input type="text" class="form-control" id="phone" name="phone" required>

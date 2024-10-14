@@ -9,6 +9,7 @@
     <!-- Google Font Link for Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         /* General Reset */
         * {
@@ -44,8 +45,13 @@
             font-size: 16px;
             font-weight: bold; /* Make the font bold */
             color: white;
-            display: block;
+            display: flex; /* Use flex to align icon and text */
+            align-items: center; /* Center align items vertically */
             transition: background 0.3s, padding-left 0.3s;
+        }
+
+        #sidebar a i {
+            margin-right: 10px; /* Space between icon and text */
         }
 
         #sidebar a:hover {
@@ -146,14 +152,14 @@
 
     <!-- Sidebar -->
     <div id="sidebar">
-        <h1>Employee Dashboard</h1>
+        <h1><i class="fas fa-user-tie"></i>Employee Dashboard</h1>
         <ul>
-            <li><a href="{% url 'index' %}">Home</a></li>
-            <li><a href="{% url 'menu_item_new' %}">View Menu</a></li>
-            <li><a href="#">View Orders</a></li>
-            <li><a href="{% url 'create_leave_request' employee.employee_id %}">Apply Leave Requests</a></li>
-            <li><a href="#">View Leave Approval</a></li>
-            <li><a href="{% url 'login' %}">Logout</a></li>
+            <li><a href="{% url 'index' %}"><i class="fas fa-home"></i>Home</a></li>
+            <li><a href="{% url 'menu_item_new' %}"><i class="fas fa-utensils"></i>View Menu</a></li>
+            <li><a href="#"><i class="fas fa-receipt"></i>View Orders</a></li>
+            <li><a href="{% url 'create_leave_request' employee.employee_id %}"><i class="fas fa-calendar-alt"></i>Apply Leave Requests</a></li>
+            <li><a href="{% url 'view_leave_status' %}"><i class="fas fa-check-circle"></i>View Leave Approval</a></li>
+            <li><a href="{% url 'login' %}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
         </ul>
     </div>
 

@@ -73,7 +73,7 @@
 <body>
     <div class="container">
         <h1>Edit Menu Item</h1>
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
                 <label for="name">Menu Item Name:</label>
@@ -94,10 +94,16 @@
                     <option value="False" {% if not menu_item.available %}selected{% endif %}>No</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="image">Image:</label>
+                <input type="file" id="image" name="image" class="form-control">
+                {% if menu_item.image %}  <!-- Show current image if available -->
+                    <img src="{{ menu_item.image.url }}" alt="Current Image" style="max-width: 200px; margin-top: 10px;">
+                {% endif %}
+            </div>
             <button type="submit" class="btn btn-primary">Save Changes</button>
             <a href="{% url 'menu_item_list' %}" class="btn btn-secondary">View Menu List</a>
             <a href="{% url 'view_menu' %}" class="btn btn-secondary">View Menu</a>
-        </form>
         </form>
     </div>
 </body>

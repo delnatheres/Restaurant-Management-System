@@ -9,6 +9,8 @@
     <!-- Google Font Link for Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome CDN for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* General Reset */
         * {
@@ -44,13 +46,19 @@
             font-size: 16px;
             color: white;
             font-weight: bold; /* Make the font bold */
-            display: block;
+            display: flex; /* Use flex for alignment */
+            align-items: center; /* Center items vertically */
             transition: background 0.3s, padding-left 0.3s;
         }
 
         #sidebar a:hover {
             background-color: #3b4d63;
             padding-left: 30px;
+        }
+
+        /* Icon Styling */
+        #sidebar a i {
+            margin-right: 10px; /* Spacing between icon and text */
         }
 
         /* Updated Sidebar Header Styling */
@@ -113,14 +121,14 @@
 
     <!-- Sidebar -->
     <div id="sidebar">
-        <h1>Customer Dashboard</h1>
+        <h1><i class="fas fa-user-tie"></i>Customer Dashboard</h1>
         <ul>
-            <li><a href="{% url 'index' %}">Home</a></li>
-            <li><a href="{% url 'menu_item' %}"> View Menu</a></li>
-            <li><a href="#">Your Orders</a></li>
-            <li><a href="{% url 'wishlist' %}">View Wishlist</a></li>
-            <li><a href="{% url 'submit_feedback' %}">Feedback</a></li>
-            <li><a href="{% url 'login' %}">Logout</a></li>
+            <li><a href="{% url 'index' %}"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="{% url 'menu_item' %}"><i class="fas fa-utensils"></i> View Menu</a></li>
+            <li><a href="#"><i class="fas fa-receipt"></i> Your Orders</a></li>
+            <li><a href="{% url 'wishlist' %}"><i class="fas fa-heart"></i> View Wishlist</a></li>
+            <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i> Feedback</a></li>
+            <li><a href="{% url 'login' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </div>
 

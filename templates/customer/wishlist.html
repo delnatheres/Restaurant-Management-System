@@ -1,47 +1,95 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Wishlist</title>
-    <link rel="stylesheet" href="{% static 'css/wishlist.css' %}">
+    <title>Your Wishlist</title>
+    <style>
+        /* Reset some default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f3; /* Light gray background */
+            color: #333;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50; /* Darker color for the title */
+            font-size: 2.5em; /* Larger font size for the title */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
+        }
+
+        ul {
+            list-style-type: none; /* Remove bullet points */
+            padding: 0;
+            max-width: 600px; /* Limit the width of the list */
+            margin: 0 auto; /* Center the list */
+        }
+
+        li {
+            background: #ffffff; /* White background for list items */
+            margin: 15px 0; /* Space between items */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
+        }
+
+        li:hover {
+            transform: translateY(-2px); /* Slight lift on hover */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+        }
+
+        p {
+            text-align: center;
+            font-size: 1.2em; /* Slightly larger font size for the empty message */
+            font-style: italic;
+            color: #777; /* Gray color for empty message */
+        }
+
+        a {
+            display: inline-block; /* Change to inline-block for centering */
+            text-align: center;
+            margin-top: 30px;
+            padding: 12px 20px;
+            background-color: #3498db; /* Blue background for the button */
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.1em; /* Slightly larger font size for button */
+            transition: background 0.3s ease, transform 0.3s ease; /* Smooth transition for hover */
+        }
+
+        a:hover {
+            background-color: #2980b9; /* Darker blue on hover */
+            transform: scale(1.05); /* Slight scale up on hover */
+        }
+    </style>
 </head>
 <body>
-
-<div class="container">
-    <!-- Back button -->
-    <div class="back-btn-container">
-        <a href="{% url 'menu_item' %}" class="back-btn">Back</a>
-    </div>
-
-    <h1>My Wishlist</h1>
-
+    <h1>Your Wishlist</h1>
+    
     {% if wishlist_items %}
-    <ul class="wishlist-items">
-        {% for item in wishlist_items %}
-            <li class="wishlist-item">
-                <div class="menu-item-info">
-                    <h2>{{ item.menu_item.name }}</h2>
-                    <p>{{ item.menu_item.description }}</p>
-                    <span class="menu-item-price">Price: Rs.{{ item.menu_item.price }}</span>
-                </div>
-                <div class="actions">
-                    <form method="POST" style="display:inline;">
-                        {% csrf_token %}
-                        <input type="hidden" name="remove_item_id" value="{{ item.id }}">  <!-- ID for removing the item -->
-                        <button type="submit" class="btn btn-danger">Remove</button>
-                    </form>
-                </div>
-            </li>
-        {% endfor %}
-    </ul>
-
+        <ul>
+            {% for item in wishlist_items %}
+                <li>{{ item.menu_item.name }} (Added on: {{ item.added_on }})</li>
+            {% endfor %}
+        </ul>
     {% else %}
-        <p class="empty-message">Your wishlist is empty.</p>
+        <p>Your wishlist is empty.</p>
     {% endif %}
-
-</div>
-
+    
+   <center> <a href="{% url 'menu_item' %}">Continue Order </a></center>
 </body>
 </html>

@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from .forms import EmployeeForm
 from .models import Employee, Login
 from django.contrib.auth.decorators import login_required
-from .models import MenuItem, Order, Reservation, Feedback
+from .models import MenuItem, Order,Feedback
 from .models import Category
 from .models import Category, SubCategory
 from .models import Order
@@ -20,12 +20,11 @@ from .models import Feedback
 from .models import Customer, Order
 
 
-
 from .models import Login, User, SignIn
 
 
 from .models import Employee, EmployeeDashboard
-from .models import EmployeeDashboard, Employee, LeaveRequest, Order, Reservation
+from .models import EmployeeDashboard, Employee, LeaveRequest, Order
 
 
 
@@ -177,12 +176,15 @@ def viewuser(request):
     return render(request,'admin/view_user.html',{"person":person})
 
 
-
+import re
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Employee, SignIn  # Ensure you import necessary models
 
 def add_employee(request):
     if request.method == "POST":
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
+        name = request.POST.get('name')
+        place = request.POST.get('place')
         phone = request.POST.get('phone')
         salary = request.POST.get('salary')
         status = request.POST.get('status') == 'True'  # Convert to boolean
@@ -190,38 +192,45 @@ def add_employee(request):
         password = request.POST.get('password')  # Get password from POST data
         
         # Validate required fields
-        if not first_name or not last_name or not phone or not salary:
+        if not name or not phone or not salary or not place or not email or not password:
             messages.error(request, "All fields are required.")
             return render(request, 'admin/add_employee.html')
         
-        # Validate first name and last name (only letters)
-        if not re.match("^[A-Za-z]+$", first_name):
-            messages.error(request, "First name should contain only letters.")
+        # Validate name (only letters and spaces)
+        if not re.match("^[A-Za-z ]+$", name):
+            messages.error(request, "Name should contain only letters and spaces.")
             return render(request, 'admin/add_employee.html')
-        
-        if not re.match("^[A-Za-z]+$", last_name):
-            messages.error(request, "Last name should contain only letters.")
+
+        # Validate place (only letters and spaces)
+        if not re.match("^[A-Za-z ]+$", place):
+            messages.error(request, "Place should contain only letters and spaces.")
             return render(request, 'admin/add_employee.html')
-        
+
         # Validate password requirements
         if not re.match(r'^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$', password):
             messages.error(request, "Password must contain at least 1 uppercase letter, 1 special character, 1 digit, and be at least 8 characters long.")
             return render(request, 'admin/add_employee.html')
-        
+
+        # Validate phone (optional, if needed)
+        # Example: only digits allowed, length between 10 and 15
+        if not re.match(r'^\d{10,15}$', phone):
+            messages.error(request, "Phone number must contain only digits and be between 10 and 15 characters long.")
+            return render(request, 'admin/add_employee.html')
+
+        # Create SignIn and Employee instances if all validations pass
         if email:  # Ensure email is not empty
-            # Create and save the Login instance
+            # Create and save the SignIn instance
             login = SignIn(email=email, password=password, role="Employee")
             login.save()
 
             # Create and save the Employee instance
             employee = Employee(
-                first_name=first_name,
-                last_name=last_name,
+                name=name,
+                place=place,  # Only pass 'place' once
                 phone=phone,
                 salary=salary,
                 status=status,
-                email=email,
-                password=password
+                email=email
             )
             employee.save()
 
@@ -233,28 +242,29 @@ def add_employee(request):
 
 
 
+
+
 def employee_success(request):
     return render(request, 'admin/employee_success.html', {'employee_added': True})  # Pass a variable to indicate success
 
 
 
 def view_employees(request):
-    first_name = request.GET.get('first_name', '')
-    last_name = request.GET.get('last_name', '')
-
+    # Get the search query from the GET request
+    search_query = request.GET.get('name', '')
+    
     # Filter employees based on the search query
-    employees = Employee.objects.all()
-
-    if first_name:
-        employees = employees.filter(first_name__icontains=first_name)
-    if last_name:
-        employees = employees.filter(last_name__icontains=last_name)
-
+    if search_query:
+        employees = Employee.objects.filter(name__icontains=search_query)  # Search by name
+    else:
+        employees = Employee.objects.all()  # Retrieve all employees if no search query
+    
+    # Prepare the context for rendering the template
     context = {
         'employees': employees
     }
+    
     return render(request, 'admin/view_employees.html', context)
-
 
 
 def edit_employee(request, employee_id):
@@ -285,7 +295,7 @@ def delete_employee(request, employee_id):
 
 
 # Customer Dashboard
-@login_required
+
 def customer_dashboard(request):
     menu_items = MenuItem.objects.filter(available=True)  # Show only available items
     orders = Order.objects.filter(customer=request.user).order_by('-created_at')  # Show user's orders
@@ -293,18 +303,6 @@ def customer_dashboard(request):
     return render(request, 'customer/customer_dashboard.html', {'menu_items': menu_items, 'orders': orders})
 
 
-
-
-# Make a Reservation
-@login_required
-def make_reservation(request):
-    if request.method == 'POST':
-        date = request.POST.get('date')
-        time = request.POST.get('time')
-        guests = request.POST.get('guests')
-        Reservation.objects.create(customer=request.user, date=date, time=time, guests=guests)
-        return redirect('customer_dashboard')
-    return render(request, 'customer/make_reservation.html')
 
 
 
@@ -330,17 +328,16 @@ def submit_feedback(request):
     return render(request, 'customer/submit_feedback.html')
 
 
+from django.shortcuts import render, redirect
+from .models import Customer  # Make sure to import your Customer model if needed
 
+def customer_dashboard(request):
+    customer_id = request.user.id  # This will give you the logged-in user's ID
+    return render(request, 'customer/customer_dashboard.html')
 
 
 def feedback_success(request):
     return render(request, 'customer/feedback_success.html')
-
-
-
-
-
-
 
 
 from django.shortcuts import render, redirect
@@ -407,6 +404,10 @@ def add_menu_item(request):
     return render(request, 'admin/add_menu_items.html')
 
 
+
+
+
+
 def add_menu_item_success(request):
     # Optional: You can add a message if needed
     messages.info(request, 'You have successfully added a menu item.')
@@ -419,10 +420,18 @@ def customer_orders(request):
     return render(request, 'orders.html')
 
 
+
 def view_menu(request):
+    # Get the search query from the request
+    query = request.GET.get('search', '')
+    
     # Fetch all menu items from the database
-    menu_items = MenuItem.objects.all()  # You can filter or order the menu if needed
-    return render(request, 'admin/view_menu.html', {'menu_items': menu_items})
+    if query:
+        menu_items = MenuItem.objects.filter(name__icontains=query)  # Filter by name (case-insensitive)
+    else:
+        menu_items = MenuItem.objects.all()  # Fetch all if no search query
+    
+    return render(request, 'admin/view_menu.html', {'menu_items': menu_items, 'query': query})
 
 
 # myapp/views.py
@@ -443,22 +452,50 @@ def edit_menu_item(request, id):
 
 
 
-
-
 def edit_menu_item(request, id):
     menu_item = get_object_or_404(MenuItem, id=id)
 
     if request.method == 'POST':
-        # Process form submission and update the menu item
-        menu_item.name = request.POST.get('name')
-        menu_item.description = request.POST.get('description')
-        menu_item.price = request.POST.get('price')
-        menu_item.available = request.POST.get('available') == 'True'  # Convert string to boolean
+        # Retrieve data from the form
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        available = request.POST.get('available') == 'True'  # Convert to boolean
+        image = request.FILES.get('image')  # Get the uploaded image file
+
+        # Validation: Check if name and description contain numbers
+        if re.search(r'\d', name):
+            messages.error(request, 'Name must not contain numbers.')
+            return render(request, 'admin/edit_menu_item.html', {'menu_item': menu_item})
+
+        if re.search(r'\d', description):
+            messages.error(request, 'Description must not contain numbers.')
+            return render(request, 'admin/edit_menu_item.html', {'menu_item': menu_item})
+
+        # Validation: Check if price is a valid number and not negative
+        try:
+            price = float(price)  # Convert price to float
+            if price < 0:  # Check for negative price
+                messages.error(request, 'Price must not be a negative number.')
+                return render(request, 'admin/edit_menu_item.html', {'menu_item': menu_item})
+        except ValueError:
+            messages.error(request, 'Price must be a valid number.')
+            return render(request, 'admin/edit_menu_item.html', {'menu_item': menu_item})
+
+        # Update MenuItem fields
+        menu_item.name = name
+        menu_item.description = description
+        menu_item.price = price
+        menu_item.available = available
+        
+        if image:  # Update image only if a new one is provided
+            menu_item.image = image
+
         menu_item.save()  # Save changes to the database
-        return redirect('menu_item_list')  # Redirect after editing
+        messages.success(request, 'Menu item updated successfully.')
+        return redirect('menu_item_list')  # Redirect after saving
 
-    return render(request, 'admin/edit_menu_item.html', {'menu_item': menu_item})  # Render the edit form
-
+    return render(request, 'admin/edit_menu_item.html', {'menu_item': menu_item}) 
 
 
 def menu_item_list(request):
@@ -644,7 +681,7 @@ def menu_item(request, menu_item_id=None):
     if menu_item_id:
         menu_item_instance = get_object_or_404(MenuItem, id=menu_item_id)
     else:
-        query = request.GET.get('q', '')
+        query = request.GET.get('search', '')
         if query:
             menu_items = MenuItem.objects.filter(name__icontains=query)
         else:
@@ -675,34 +712,44 @@ def menu_item(request, menu_item_id=None):
     return render(request, 'customer/menu_item.html', context)
 
 
-def wishlist(request):
-    # Retrieve user_id from the session
-    user_id = request.session.get('customer_id')
 
-    if not user_id or not user_id.isdigit():  # Ensure user_id is valid
-        messages.error(request, "Invalid user session. Please log in again.")
-        return redirect('login')  # Redirect to login if invalid session
 
-    user = get_object_or_404(User, id=user_id)  # Ensure user_id is a valid integer
 
-    # Handle removing items from the wishlist
+
+
+def add_to_wishlist(request, menu_item_id):
+    menu_item = get_object_or_404(MenuItem, id=menu_item_id)
+    Wishlist.objects.create(user=request.user, menu_item=menu_item)
+    return redirect('wishlist')  
+
+
+def view_wishlist(request):
+    # Get the user's ID or set to None if not authenticated
+    user_id = request.user.id if request.user.is_authenticated else None
+
+    if user_id:
+        # Retrieve wishlist items for the authenticated user
+        wishlist_items = Wishlist.objects.filter(user_id=user_id)
+    else:
+        # Set wishlist_items to an empty queryset if the user is not authenticated
+        wishlist_items = Wishlist.objects.none()
+
+    return render(request, 'customer/wishlist.html', {'wishlist_items': wishlist_items})
+
+
+def remove_from_wishlist(request):
     if request.method == 'POST':
-        menu_item_id = request.POST.get('remove_menu_item_id')
-        if menu_item_id:
-            try:
-                wishlist_item = Wishlist.objects.get(user=user, menu_item_id=menu_item_id)
-                wishlist_item.delete()  # Remove the menu item from the wishlist
-                messages.success(request, 'Item removed from your wishlist.')
-            except Wishlist.DoesNotExist:
-                messages.error(request, 'This item is not in your wishlist.')
+        remove_item_id = request.POST.get('remove_item_id')
+        try:
+            item = Wishlist.objects.get(id=remove_item_id, user=request.user)
+            item.delete()
+            messages.success(request, 'Item removed from wishlist!')
+        except Wishlist.DoesNotExist:
+            messages.error(request, 'Item not found in your wishlist.')
+    return redirect('view_wishlist')  # Redirect back to wishlist
 
-    # Get all wishlist items for the user
-    wishlist_items = Wishlist.objects.filter(user=user)
 
-    context = {
-        'wishlist': [item.menu_item for item in wishlist_items],  # List of MenuItems in the wishlist
-    }
-    return render(request, 'customer/wishlist.html', context)
+
 
 
 
@@ -721,7 +768,7 @@ def place_order(request, item_id):
 
 
 def menu_item_new(request):
-    query = request.GET.get('q', '')
+    query = request.GET.get('search', '')
     if query:
         menu_items = MenuItem.objects.filter(name__icontains=query)
     else:
@@ -798,3 +845,58 @@ def view_feedback(request):
 
 def feedback_thankyou(request):
     return render(request, 'admin/feedback_thankyou.html')
+
+
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import LeaveRequest
+
+# Admin view for listing all leave requests
+def view_leave_requests(request):
+    leave_requests = LeaveRequest.objects.all().order_by('-start_date')  # Display all leave requests
+    return render(request, 'admin/view_leave_requests.html', {'leave_requests': leave_requests})
+
+
+# Admin action to approve or reject leave requests
+def approve_leave_request(request, leave_request_id, action):
+    leave_request = get_object_or_404(LeaveRequest, id=leave_request_id)
+    
+    if action == 'approve':
+        leave_request.status = 'Approved'
+    elif action == 'reject':
+        leave_request.status = 'Rejected'
+    
+    leave_request.save()
+    return redirect('view_leave_requests') 
+
+
+
+def view_leave_status(request):
+    # Get the search query from GET parameters
+    search_query = request.GET.get('search', '')
+
+    if search_query:
+        # Filter leave requests by employee name if search query is present
+        leave_requests = LeaveRequest.objects.filter(employee__name__icontains=search_query)
+    else:
+        # Fetch all leave requests if no search query is provided
+        leave_requests = LeaveRequest.objects.all()
+
+    # Check if there are no leave requests and add a message
+    if not leave_requests.exists():
+        messages.info(request, "No leave requests found for the given search.")
+
+    # Render the template with leave requests and messages
+    return render(request, 'employee/view_leave_status.html', {
+        'leave_requests': leave_requests,
+        'messages': messages.get_messages(request)  # Pass messages to the template
+    })
+    
+    
+    
+    
+    
+    
+    

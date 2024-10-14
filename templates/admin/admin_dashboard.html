@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Restaurant Management</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome CDN for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Reset some default styles for cleaner presentation */
         body, h1, ul {
@@ -44,12 +46,18 @@
             text-decoration: none;
             font-size: 18px;
             color: white;
-            display: block;
+            display: flex; /* Use flex for alignment */
+            align-items: center; /* Center items vertically */
             font-weight: bold; /* Make the links bold */
         }
 
         #sidebar a:hover {
             background-color: #555;
+        }
+
+        /* Icon Styling */
+        #sidebar a i {
+            margin-right: 10px; /* Spacing between icon and text */
         }
 
         /* Style the content area */
@@ -130,20 +138,20 @@
 <body>
     <!-- Sidebar -->
     <div id="sidebar">
-        <h1>Admin Dashboard</h1>
+        <h1><i class="fas fa-user-tie"></i>Admin Dashboard</h1>
         <ul>
-            <li><a href="{% url 'index' %}">Home</a></li>
-            <li><a href="{% url 'view_user' %}">View Users</a></li>
-            <li><a href="{% url 'add_employee' %}">Add Employee</a></li>
-            <li><a href="{% url 'view_employees' %}">View Employees</a></li>
-            <li><a href="{% url 'add_menu_item' %}">Add Items</a></li>
-            <li><a href="{% url 'view_menu' %}">View Menu</a></li>
-            <li><a href="{% url 'view_category' %}">View Category</a></li>
-            <li><a href="{% url 'view_subcategory' %}">View Sub Category</a></li>
-            <li><a href="#">View Orders</a></li>
-            <li><a href="#">Leave Requests</a></li>
-            <li><a href="{% url 'view_feedback' %}">View Customer Feedback</a></li>
-            <li><a href="{% url 'login' %}">Logout</a></li>
+            <li><a href="{% url 'index' %}"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="{% url 'view_user' %}"><i class="fas fa-users"></i> View Users</a></li>
+            <li><a href="{% url 'add_employee' %}"><i class="fas fa-user-plus"></i> Add Employee</a></li>
+            <li><a href="{% url 'view_employees' %}"><i class="fas fa-users-cog"></i> View Employees</a></li>
+            <li><a href="{% url 'add_menu_item' %}"><i class="fas fa-utensils"></i> Add Items</a></li>
+            <li><a href="{% url 'view_menu' %}"><i class="fas fa-list-alt"></i> View Menu</a></li>
+            <li><a href="{% url 'view_category' %}"><i class="fas fa-tags"></i> View Category</a></li>
+            <li><a href="{% url 'view_subcategory' %}"><i class="fas fa-th-list"></i> View Sub Category</a></li>
+            <li><a href="#"><i class="fas fa-receipt"></i> View Orders</a></li>
+            <li><a href="{% url 'view_leave_requests' %}"><i class="fas fa-clipboard-list"></i> Leave Requests</a></li>
+            <li><a href="{% url 'view_feedback' %}"><i class="fas fa-comments"></i> View Customer Feedback</a></li>
+            <li><a href="{% url 'login' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </div>
 

@@ -17,7 +17,6 @@ urlpatterns = [
     path('employee_success/', views.employee_success, name='employee_success'),
     path('customer_dashboard/', views.customer_dashboard, name='customer_dashboard'),
     path('order/<int:item_id>/', views.place_order, name='place_order'),
-    path('reservation/', views.make_reservation, name='make_reservation'),
     path('feedback/', views.submit_feedback, name='submit_feedback'),
     path('add_menu_item/', views.add_menu_item, name='add_menu_item'),
     path('orders/', views.customer_orders, name='customer_orders'),
@@ -52,7 +51,14 @@ urlpatterns = [
     path('feedback/', views.feedback_view, name='feedback'),
     path('view_feedback/', views.view_feedback, name='view_feedback'),
     path('feedback_thankyou/', views.feedback_thankyou, name='feedback_thankyou'),
-   
+    path('add_menu_item/', views.add_menu_item, name='add_menu_item'),
+    path('add_menu_item_success/', views.add_menu_item_success, name='add_menu_item_success'),
+    path('view_leave_requests/', views.view_leave_requests, name='view_leave_requests'),
+    path('approve_leave_request/<int:leave_request_id>/<str:action>/', views.approve_leave_request, name='approve_leave_request'),
+    path('leave_requests/', views.view_leave_requests, name='view_leave_requests'),
+    path('leave_requests/<int:leave_request_id>/<str:action>/', views.approve_leave_request, name='approve_leave_request'),
+    path('view_leave_status/', views.view_leave_status, name='view_leave_status'),
+    
     
     path('dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
     path('employee_dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
@@ -62,25 +68,16 @@ urlpatterns = [
     
     path('order/<int:item_id>/', views.place_order, name='place_order'),
     
-     path('wishlist/', views.wishlist, name='wishlist'),
-    
-    
-  path('add_menu_item/', views.add_menu_item, name='add_menu_item'),
-    path('add_menu_item_success/', views.add_menu_item_success, name='add_menu_item_success'),
-    
-    
-    
-    
-    
-    
-    
-    
-     path('feedback/', views.feedback_view, name='feedback'),
-    path('view_feedback/', views.view_feedback, name='view_feedback'),
-    
-    path('feedback_thankyou/', views.feedback_thankyou, name='feedback_thankyou'),
     
   
+    
+    path('wishlist/add/<int:menu_item_id>/', views.add_to_wishlist, name='add_to_wishlist'),
+    path('wishlist/', views.view_wishlist, name='wishlist'),  # Ensure this URL is defined for viewing
+    path('wishlist/remove/',views.remove_from_wishlist, name='remove_from_wishlist'),
+    
+  
+
+   
   
    ]
 if settings.DEBUG:

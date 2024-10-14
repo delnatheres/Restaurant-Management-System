@@ -139,20 +139,20 @@
     <h1 class="text-center mb-4">Menu List</h1>
 
 
+<!-- Search Box -->
+<div class="search-box">
+    <form method="GET" action="{% url 'view_menu' %}" class="d-flex">
+        <input type="text" name="search" class="form-control" value="{{ query }}" placeholder="Search Menu Items" aria-label="Search Menu Items">
+        <button type="submit" class="btn btn-primary">Searchh</button>
+    </form>
+</div>
+<br>
+<!-- Back to Menu List button (displayed only after a search) -->
+{% if query %}
+<center> <a href="{% url 'view_menu' %}" class="btn btn-secondary mb-3">Back to Menu List</a></center>
+ {% endif %}
 
-
-    {% comment %} <!-- Search Form -->
-    <form method="GET" action="{% url 'menu_item' %}" class="mb-4">
-        <div class="input-group">
-            <input type="text" name="q" class="form-control search-box" placeholder="Search menu items..." aria-label="Search menu items">
-            <button class="btn btn-primary" type="submit">Search</button>
-        </div>
-    </form> {% endcomment %}
-
-
-
-    
-    
+    <br>
     <!-- Menu Cards -->
     <div class="row">
         {% for item in menu_items %}

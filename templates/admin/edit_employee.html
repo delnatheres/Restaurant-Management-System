@@ -94,21 +94,27 @@
 <body>
     <div class="container">
         <h2>Edit Employee</h2>
-        <form method="post">
+        <form method="POST" action="{% url 'edit_employee' employee.employee_id %}">
             {% csrf_token %}
-            <label>First Name:</label>
-            <input type="text" name="first_name" value="{{ employee.first_name }}" required>
-            <label>Last Name:</label>
-            <input type="text" name="last_name" value="{{ employee.last_name }}" required>
-            <label>Phone:</label>
-            <input type="text" name="phone" value="{{ employee.phone }}" required>
-            <label>Salary:</label>
-            <input type="text" name="salary" value="{{ employee.salary }}" required>
-            <label>Status:</label>
-            <select name="status">
+            
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" value="{{ employee.name }}" required>
+
+            <label for="place">Place:</label>
+            <input type="text" name="place" id="place" value="{{ employee.place }}" required>
+
+            <label for="phone">Phone:</label>
+            <input type="text" name="phone" id="phone" value="{{ employee.phone }}" required>
+
+            <label for="salary">Salary:</label>
+            <input type="text" name="salary" id="salary" value="{{ employee.salary }}" required>
+
+            <label for="status">Status:</label>
+            <select name="status" id="status" required>
                 <option value="True" {% if employee.status %}selected{% endif %}>Active</option>
                 <option value="False" {% if not employee.status %}selected{% endif %}>Inactive</option>
             </select>
+
             <button type="submit" class="btn btn-primary">Save Changes</button>
         </form>
         <a href="{% url 'view_employees' %}" class="btn btn-secondary">Back to Employee List</a>

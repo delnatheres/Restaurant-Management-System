@@ -27,11 +27,11 @@
             border-radius: 8px;
             overflow: hidden;
             margin-bottom: 20px;
-            transition: transform 0.2s; /* Add transition for hover effect */
+            transition: transform 0.2s;
         }
 
         .menu-card:hover {
-            transform: translateY(-5px); /* Raise card on hover */
+            transform: translateY(-5px);
         }
 
         .menu-card img {
@@ -70,30 +70,29 @@
             font-size: 12px;
             padding: 10px 15px;
             font-weight: bold;
-            border-radius: 20px; /* Rounded buttons */
-            border: none; /* Remove border */
-            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
+            border-radius: 20px;
+            border: none;
+            transition: background-color 0.3s, transform 0.3s;
         }
 
-        /* Button styles for Order Now and Add to Wishlist */
         .btn-order {
-            background-color: #28a745; /* Green */
+            background-color: #28a745;
             color: white;
         }
 
         .btn-wishlist {
-            background-color: #ff8c00; /* Orange */
+            background-color: #ff8c00;
             color: white;
         }
 
         .btn-order:hover {
-            background-color: #218838; /* Darker green */
-            transform: scale(1.05); /* Slightly enlarge button on hover */
+            background-color: #218838;
+            transform: scale(1.05);
         }
 
         .btn-wishlist:hover {
-            background-color: #e07b00; /* Darker orange */
-            transform: scale(1.05); /* Slightly enlarge button on hover */
+            background-color: #e07b00;
+            transform: scale(1.05);
         }
 
         .menu-card-actions {
@@ -102,13 +101,17 @@
             margin-top: 15px;
         }
 
-        /* Search box styles */
         .search-box {
+            display: flex;
+            justify-content: center;
             margin-bottom: 20px;
-            text-align: center;
         }
 
-        /* Responsive grid */
+        .search-box input {
+            width: 600px; /* Increase width */
+            margin-right: 10px;
+        }
+
         @media (max-width: 768px) {
             .menu-card {
                 margin-bottom: 15px;
@@ -119,23 +122,29 @@
             }
 
             .menu-card-actions {
-                flex-direction: column; /* Stack buttons vertically on smaller screens */
-                align-items: center; /* Center buttons */
+                flex-direction: column;
+                align-items: center;
             }
 
             .menu-card-actions .btn {
-                width: 100%; /* Full width buttons */
-                margin-bottom: 10px; /* Space between buttons */
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-box input, .search-box button {
+                width: 100%;
+                margin-bottom: 10px;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="menu-container">
-    <!-- Back to Dashboard button -->
-    <a href="{% url 'customer_dashboard' %}" class="btn btn-warning mb-3">Back to Dashboard</a>
-
+    
     <!-- Alert for success messages -->
     {% if messages %}
         <div class="alert alert-success">
@@ -145,18 +154,29 @@
         </div>
     {% endif %}
 
-    
+
     <!-- Menu List Heading -->
     <h1 class="text-center mb-4">Menu List</h1>
     <br>
 
     <!-- Search Box -->
     <div class="search-box">
-        <form method="GET" action="{% url 'menu_item' %}">
-            <input type="text" name="search" class="form-control" placeholder="Search Menu Items" aria-label="Search Menu Items">
-            <button type="submit" class="btn btn-primary mt-2">Search</button>
+        <form method="GET" action="{% url 'menu_item' %}" class="d-flex">
+            <input type="text" name="search" class="form-control" value="{{ query }}" placeholder="Search Menu Items" aria-label="Search Menu Items">
+            <button type="submit" class="btn btn-primary">Searchh</button>
         </form>
     </div>
+
+        <!-- Back to Customer Dashboard Button -->
+        <center><a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Customer Dashboard</a></center>
+
+    </div>
+    <br>
+
+    <!-- Back to Menu List button (displayed only after a search) -->
+    {% if query %}
+   <center> <a href="{% url 'menu_item' %}" class="btn btn-secondary mb-3">Back to Menu List</a></center>
+    {% endif %}
 
     <br>
     <!-- Menu Cards -->
@@ -164,7 +184,6 @@
         {% for item in menu_items %}
         <div class="col-md-4">
             <div class="card menu-card">
-                <!-- Dynamically set the image based on menu item -->
                 {% if item.image %}
                     <img src="{{ item.image.url }}" alt="{{ item.name }}" class="card-img-top">
                 {% else %}
@@ -178,9 +197,7 @@
                     <p>{{ item.available|yesno:"Available,Not Available" }}</p>
                 </div>
                 <div class="menu-card-actions">
-                    <!-- Order Button -->
                     <a href="{% url 'place_order' item.id %}" class="btn btn-order">Order Now</a>
-                    <!-- Add to Wishlist Button -->
                     <a href="{% url 'wishlist' %}" class="btn btn-wishlist">Add to Wishlist</a>
                 </div>
             </div>
