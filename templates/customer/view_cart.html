@@ -1,0 +1,161 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <style>
+        body {
+            background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        button {
+            padding: 6px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .btn-danger {
+            background-color: #f44336;
+        }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+
+        h3 {
+            text-align: center; /* Centering the total price */
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .total-price-button, .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text */
+            border: none; /* No border */
+            border-radius: 4px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+            margin: 20px auto; /* Center the button */
+            text-align: center; /* Center text inside the button */
+            font-size: 18px; /* Font size */
+            text-decoration: none; /* Remove underline */
+        }
+
+        .total-price-button:hover, .back-button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        p {
+            text-align: center;
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Your Cart</h1>
+
+    {% if cart_items %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Menu Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.menu_item.name }}</td>
+                    <td>${{ item.menu_item.price }}</td>
+                    <td>
+                        <!-- Update quantity form -->
+                        <form action="{% url 'update_cart' item.id %}" method="POST">
+                            {% csrf_token %}
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
+                            <button type="submit">Update</button>
+                        </form>
+                    </td>
+                    <td>${{ item.get_total_price }}</td>
+                    <td>
+                        <!-- Delete item from cart form -->
+                        <form action="{% url 'delete_from_cart' item.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Display total price as a button -->
+        <center> <a href="#" class="total-price-button">Total Price: ${{ total_price }}</a></center>
+
+
+        <!-- Back to Dashboard button -->
+        <div style="text-align: center;">
+            <a href="{% url 'customer_dashboard' %}" class="back-button">Back to Dashboard</a>
+        </div>
+    {% else %}
+        <p>Your cart is empty.</p>
+    {% endif %}
+
+</body>
+</html>

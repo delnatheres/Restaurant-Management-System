@@ -154,3 +154,25 @@ class Wishlist(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s wishlist item: {self.menu_item.name}"
+    
+    
+    
+    
+class Cart(models.Model):
+    customer = models.ForeignKey('SignIn', on_delete=models.CASCADE)  # Link to SignIn model
+    menu_item = models.ForeignKey('MenuItem', on_delete=models.CASCADE)  # Link to MenuItem model
+    quantity = models.PositiveIntegerField()
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('customer', 'menu_item')  # Prevent duplicates for the same customer and menu item
+
+    def __str__(self):
+        return f"{self.quantity} of {self.menu_item.name} in cart"
+
+    def get_total_price(self):
+        return self.quantity * self.menu_item.price  # Calculate the total price for the items in cart
+    
+    
+    
+

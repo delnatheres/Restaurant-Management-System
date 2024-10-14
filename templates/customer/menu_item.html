@@ -73,6 +73,8 @@
             border-radius: 20px;
             border: none;
             transition: background-color 0.3s, transform 0.3s;
+            width: 100%; /* Make buttons full width */
+            margin-bottom: 5px; /* Add margin for spacing */
         }
 
         .btn-order {
@@ -97,7 +99,9 @@
 
         .menu-card-actions {
             display: flex;
-            justify-content: space-around;
+            flex-direction: column; /* Stack buttons vertically */
+            justify-content: center; /* Center align buttons */
+            align-items: center; /* Center align buttons */
             margin-top: 15px;
         }
 
@@ -144,7 +148,6 @@
 </head>
 <body>
 
-    
     <!-- Alert for success messages -->
     {% if messages %}
         <div class="alert alert-success">
@@ -154,7 +157,6 @@
         </div>
     {% endif %}
 
-
     <!-- Menu List Heading -->
     <h1 class="text-center mb-4">Menu List</h1>
     <br>
@@ -163,19 +165,17 @@
     <div class="search-box">
         <form method="GET" action="{% url 'menu_item' %}" class="d-flex">
             <input type="text" name="search" class="form-control" value="{{ query }}" placeholder="Search Menu Items" aria-label="Search Menu Items">
-            <button type="submit" class="btn btn-primary">Searchh</button>
+            <button type="submit" class="btn btn-primary">Search</button>
         </form>
     </div>
 
-        <!-- Back to Customer Dashboard Button -->
-        <center><a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Customer Dashboard</a></center>
-
-    </div>
+    <!-- Back to Customer Dashboard Button -->
+    <center><a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Customer Dashboard</a></center>
     <br>
 
     <!-- Back to Menu List button (displayed only after a search) -->
     {% if query %}
-   <center> <a href="{% url 'menu_item' %}" class="btn btn-secondary mb-3">Back to Menu List</a></center>
+        <center><a href="{% url 'menu_item' %}" class="btn btn-secondary mb-3">Back to Menu List</a></center>
     {% endif %}
 
     <br>
@@ -199,6 +199,13 @@
                 <div class="menu-card-actions">
                     <a href="{% url 'place_order' item.id %}" class="btn btn-order">Order Now</a>
                     <a href="{% url 'wishlist' %}" class="btn btn-wishlist">Add to Wishlist</a>
+
+                    <form method="POST" action="{% url 'add_to_cart' item.id %}">
+                        {% csrf_token %}
+                        <label for="quantity"><b>Quantity:</b></label>
+                        <input type="number" id="quantity" name="quantity" min="1" max="{{ item.stock }}" required>
+                        <button type="submit" class="btn add-to-cart-btn">Add to Cart</button>
+                    </form>
                 </div>
             </div>
         </div>

@@ -24,7 +24,7 @@ from .models import Login, User, SignIn
 
 
 from .models import Employee, EmployeeDashboard
-from .models import EmployeeDashboard, Employee, LeaveRequest, Order
+from .models import EmployeeDashboard, Employee, LeaveRequest, Order,Cart
 
 
 
@@ -896,7 +896,126 @@ def view_leave_status(request):
     
     
     
+
     
+# Add a menu item to the cart
+def add_to_cart(request, menu_item_id):
+    # Get the customer from the session
+    customer_id = request.session.get('customer_id')
     
+    if customer_id is None:
+        messages.error(request, 'You must be logged in to add items to the cart.')
+        return redirect('login')  # Redirect to login if no customer is logged in
+
+    # Fetch the customer using the customer_id from the session
+    customer = get_object_or_404(SignIn, pk=customer_id)
+
+    # Fetch the menu item to be added to the cart
+    menu_item = get_object_or_404(MenuItem, id=menu_item_id)
+
+    # Get the quantity from the POST data (default to 1 if no quantity is provided)
+    quantity = int(request.POST.get('quantity', 1))
+
+    # Check if the menu item is already in the customer's cart
+    cart_item, created = Cart.objects.get_or_create(
+        customer=customer,  # The logged-in customer
+        menu_item=menu_item,  # The menu item to be added
+        defaults={'quantity': quantity}  # Set default quantity if it's a new entry
+    )
+
+    if not created:
+        # If the menu item already exists in the cart, update the quantity
+        cart_item.quantity += quantity  # Increment the quantity
+        cart_item.save()
+
+    # Redirect to the cart view with a success message
+    messages.success(request, 'Menu item added to cart successfully.')
+    return redirect('view_cart')  # Redirect to the cart page
+
+
+
+
+# View the cart
+def viewcart(request):
+    # Get the customer ID from the session
+    customer_id = request.session.get('customer_id')
     
+    if customer_id is None:
+        # If the customer is not logged in, redirect to the login page
+        messages.error(request, 'You must be logged in to view the cart.')
+        return redirect('login')
+
+    # Fetch the customer using the customer ID from the session
+    customer = get_object_or_404(SignIn, pk=customer_id)
+
+    # Fetch the cart items for the customer
+    cart_items = Cart.objects.filter(customer=customer)
+
+    # Calculate the total price of the cart items (assuming Cart model has a price or related field)
+    total_price = sum([item.menu_item.price * item.quantity for item in cart_items])
+
+    # Context to pass to the template
+    context = {
+        'cart_items': cart_items,
+        'total_price': total_price
+    }
+
+    # Render the cart view with the context
+    return render(request, 'customer/view_cart.html', context)
+
+
+
+
+# Update the quantity of a menu item in the cart
+def update_cart(request, cart_id):
+    if request.method == 'POST':
+        # Get the customer ID from the session
+        customer_id = request.session.get('customer_id')
+
+        if customer_id is None:
+            messages.error(request, 'You must be logged in to update your cart.')
+            return redirect('login')  # Redirect to login if not logged in
+
+        # Fetch the cart item by its ID and make sure it belongs to the logged-in customer
+        cart_item = get_object_or_404(Cart, pk=cart_id, customer_id=customer_id)
+
+        # Get the new quantity from POST data, default to 1 if not provided
+        quantity = int(request.POST.get('quantity', 1))
+
+        if quantity > 0:
+            # Update the cart item quantity if valid
+            cart_item.quantity = quantity
+            cart_item.save()  # Save the changes
+            messages.success(request, 'Cart updated successfully.')
+        else:
+            # If quantity is zero or negative, optionally remove the item
+            cart_item.delete()
+            messages.success(request, f"{cart_item.menu_item.name} removed from cart due to invalid quantity.")
+
+        return redirect('view_cart')  # Redirect to the cart view
+
+
+
+# Remove a menu item from the cart
+def delete_from_cart(request, cart_id):
+    # Get the customer ID from the session
+    customer_id = request.session.get('customer_id')
     
+    if customer_id is None:
+        messages.error(request, 'You must be logged in to modify your cart.')
+        return redirect('login')  # Redirect to login if the customer is not logged in
+
+    # Fetch the cart item by its ID and make sure it belongs to the logged-in customer
+    cart_item = get_object_or_404(Cart, pk=cart_id, customer_id=customer_id)
+    
+    # Store the name of the menu item for the success message
+    item_name = cart_item.menu_item.name
+    
+    # Delete the cart item
+    cart_item.delete()
+    
+    # Success message
+    messages.success(request, f"{item_name} removed from cart.")
+    
+    # Redirect to the cart view
+    return redirect('view_cart')

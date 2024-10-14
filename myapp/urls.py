@@ -58,6 +58,14 @@ urlpatterns = [
     path('leave_requests/', views.view_leave_requests, name='view_leave_requests'),
     path('leave_requests/<int:leave_request_id>/<str:action>/', views.approve_leave_request, name='approve_leave_request'),
     path('view_leave_status/', views.view_leave_status, name='view_leave_status'),
+    path('view_cart/', views.viewcart, name='view_cart'),  # View cart
+    path('cart/add/<int:menu_item_id>/', views.add_to_cart, name='add_to_cart'),  # Add item to cart
+    path('cart/update/<int:cart_id>/', views.update_cart, name='update_cart'),
+    path('cart/delete/<int:cart_id>/', views.delete_from_cart, name='delete_from_cart'),  # Delete item from cart
+    
+    
+    
+    
     
     
     path('dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
@@ -75,6 +83,10 @@ urlpatterns = [
     path('wishlist/', views.view_wishlist, name='wishlist'),  # Ensure this URL is defined for viewing
     path('wishlist/remove/',views.remove_from_wishlist, name='remove_from_wishlist'),
     
+  
+
+
+
   
 
    
