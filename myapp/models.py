@@ -86,7 +86,7 @@ class Order(models.Model):
     ordered_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Order by {self.customer.name} - {self.menu_item.name}"
+        return f"Order by {self.customer} - {self.menu_item.name}"
 
 class Feedback(models.Model):
     customer = models.CharField(max_length=100)  # Updated to use Customer
@@ -100,7 +100,7 @@ class Feedback(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"Feedback from {self.customer.name} - Rating: {self.rating}"
+        return f"Feedback from {self.customer} - Rating: {self.rating}"
 
 class Customer(models.Model):
     name = models.CharField(max_length=100)

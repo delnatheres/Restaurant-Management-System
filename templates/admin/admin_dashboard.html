@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Font Awesome CDN for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         /* Reset some default styles for cleaner presentation */
         body, h1, ul {
@@ -41,6 +43,10 @@
             margin-bottom: 10px; /* Space below title */
         }
 
+        #sidebar ul {
+            list-style-type: none; /* Remove bullet points */
+        }
+
         #sidebar a {
             padding: 10px 15px;
             text-decoration: none;
@@ -66,11 +72,9 @@
             padding: 20px;
         }
 
-        h3 {
-            word-spacing: 30px;
+        h2 {
             color: #F3B820;
             text-shadow: 2px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
-            float: right;
         }
 
         /* Add some dashboard style for the sections */
@@ -151,7 +155,7 @@
             <li><a href="#"><i class="fas fa-receipt"></i> View Orders</a></li>
             <li><a href="{% url 'view_leave_requests' %}"><i class="fas fa-clipboard-list"></i> Leave Requests</a></li>
             <li><a href="{% url 'view_feedback' %}"><i class="fas fa-comments"></i> View Customer Feedback</a></li>
-            <li><a href="{% url 'login' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </div>
 
@@ -162,5 +166,26 @@
             <!-- Additional content can be added here if needed -->
         </div>
     </div>
+
+    <!-- SweetAlert2 logout confirmation script -->
+    <script>
+        document.getElementById("logoutBtn").addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent the default link behavior
+
+            Swal.fire({
+                title: 'Are you sure you want to logout?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, logout!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to the logout URL after confirmation
+                    window.location.href = "{% url 'login' %}";
+                }
+            });
+        });
+    </script>
 </body>
 </html>
