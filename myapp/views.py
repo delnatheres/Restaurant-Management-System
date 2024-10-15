@@ -13,7 +13,7 @@ from .models import Category, SubCategory
 from .models import Order
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Employee, Login
-from .models import MenuItem,Wishlist
+from .models import MenuItem
 import re
 
 from .models import Feedback
@@ -675,7 +675,6 @@ def activate_user(request, id):
 
 
 
-
 def menu_item(request, menu_item_id=None):
     # Fetch a specific menu item if an ID is provided, otherwise list all or search
     if menu_item_id:
@@ -683,25 +682,11 @@ def menu_item(request, menu_item_id=None):
     else:
         query = request.GET.get('search', '')
         if query:
-            menu_items = MenuItem.objects.filter(name__icontains=query)
+            menu_items = MenuItem.objects.filter(name__icontains(query))
         else:
             menu_items = MenuItem.objects.all()
 
-    # Handle wishlist logic in POST request
-    if request.method == 'POST':
-        if 'add_to_wishlist' in request.POST:
-            user_id = request.session.get('user_id')  # Assuming session stores user ID
-            if user_id:
-                user = User.objects.get(id=user_id)
-                menu_item_instance = get_object_or_404(MenuItem, id=menu_item_id)
-                wishlist_item, created = Wishlist.objects.get_or_create(user=user, menu_item=menu_item_instance)
-
-                if created:
-                    messages.success(request, 'Menu item added to your wishlist!')
-                else:
-                    messages.info(request, 'Menu item is already in your wishlist.')
-            else:
-                messages.error(request, 'You need to log in to add items to your wishlist.')
+    # No wishlist logic is handled here anymore
 
     context = {
         'menu_item_instance': menu_item_instance if menu_item_id else None,
@@ -710,46 +695,6 @@ def menu_item(request, menu_item_id=None):
     }
 
     return render(request, 'customer/menu_item.html', context)
-
-
-
-
-
-
-
-def add_to_wishlist(request, menu_item_id):
-    menu_item = get_object_or_404(MenuItem, id=menu_item_id)
-    Wishlist.objects.create(user=request.user, menu_item=menu_item)
-    return redirect('wishlist')  
-
-
-def view_wishlist(request):
-    # Get the user's ID or set to None if not authenticated
-    user_id = request.user.id if request.user.is_authenticated else None
-
-    if user_id:
-        # Retrieve wishlist items for the authenticated user
-        wishlist_items = Wishlist.objects.filter(user_id=user_id)
-    else:
-        # Set wishlist_items to an empty queryset if the user is not authenticated
-        wishlist_items = Wishlist.objects.none()
-
-    return render(request, 'customer/wishlist.html', {'wishlist_items': wishlist_items})
-
-
-def remove_from_wishlist(request):
-    if request.method == 'POST':
-        remove_item_id = request.POST.get('remove_item_id')
-        try:
-            item = Wishlist.objects.get(id=remove_item_id, user=request.user)
-            item.delete()
-            messages.success(request, 'Item removed from wishlist!')
-        except Wishlist.DoesNotExist:
-            messages.error(request, 'Item not found in your wishlist.')
-    return redirect('view_wishlist')  # Redirect back to wishlist
-
-
-
 
 
 

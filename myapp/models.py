@@ -146,18 +146,6 @@ class LeaveRequest(models.Model):
     
     
     
-    
-class Wishlist(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
-    added_on = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user.username}'s wishlist item: {self.menu_item.name}"
-    
-    
-    
-    
 class Cart(models.Model):
     customer = models.ForeignKey('SignIn', on_delete=models.CASCADE)  # Link to SignIn model
     menu_item = models.ForeignKey('MenuItem', on_delete=models.CASCADE)  # Link to MenuItem model

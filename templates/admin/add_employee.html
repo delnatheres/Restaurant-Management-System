@@ -87,15 +87,6 @@
                 font-size: 1.8rem;
             }
         }
-
-        /* Eye icon styling */
-        .eye-icon {
-            position: absolute;
-            right: 15px;
-            top: 12px;
-            cursor: pointer;
-            color: #888;
-        }
     </style>
 </head>
 <body>
@@ -134,7 +125,6 @@
             <div class="form-group position-relative">
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required pattern="(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}" title="Password must contain at least 1 uppercase letter, 1 special character, 1 digit, and be at least 8 characters long.">
-                <span id="togglePassword" class="eye-icon" onclick="togglePasswordVisibility()">👁️</span>
             </div>
             <button type="submit" class="btn btn-primary">Add Employee</button>
             <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
@@ -150,19 +140,6 @@
     </div>
 
     <script>
-        function togglePasswordVisibility() {
-            const passwordInput = document.getElementById('password');
-            const toggleIcon = document.getElementById('togglePassword');
-
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.innerHTML = '🙈';  // Change icon to indicate password is visible
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.innerHTML = '👁️';  // Change icon back to indicate password is hidden
-            }
-        }
-
         function validateForm() {
             const passwordInput = document.getElementById('password');
             const passwordPattern = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/;

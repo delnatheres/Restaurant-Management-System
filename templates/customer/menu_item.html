@@ -73,27 +73,19 @@
             border-radius: 20px;
             border: none;
             transition: background-color 0.3s, transform 0.3s;
-            width: 100%; /* Make buttons full width */
             margin-bottom: 5px; /* Add margin for spacing */
         }
 
-        .btn-order {
-            background-color: #28a745;
+        .btn-order,
+        .btn-add-to-cart {
+            background-color: #28a745; /* Same background color */
             color: white;
+            width: 100%; /* Increased width to 100% */
         }
 
-        .btn-wishlist {
-            background-color: #ff8c00;
-            color: white;
-        }
-
-        .btn-order:hover {
-            background-color: #218838;
-            transform: scale(1.05);
-        }
-
-        .btn-wishlist:hover {
-            background-color: #e07b00;
+        .btn-order:hover,
+        .btn-add-to-cart:hover {
+            background-color: #218838; /* Same hover effect */
             transform: scale(1.05);
         }
 
@@ -105,6 +97,23 @@
             margin-top: 15px;
         }
 
+        .menu-card-actions form {
+            width: 100%; /* Ensures the form takes full width */
+            display: flex;
+            flex-direction: column; /* Arrange elements vertically */
+            align-items: center; /* Center align items */
+        }
+
+        .menu-card-actions input[type="number"] {
+            width: 50%; /* Reduced width */
+            height: 30px; /* Reduced height */
+            margin-bottom: 10px;
+            padding: 5px; /* Reduced padding */
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: center; /* Center the text inside the input */
+        }
+
         .search-box {
             display: flex;
             justify-content: center;
@@ -114,6 +123,11 @@
         .search-box input {
             width: 600px; /* Increase width */
             margin-right: 10px;
+        }
+
+        .btn-narrow {
+            width: auto; /* Change width as needed */
+            max-width: 150px; /* Set a maximum width */
         }
 
         @media (max-width: 768px) {
@@ -197,14 +211,13 @@
                     <p>{{ item.available|yesno:"Available,Not Available" }}</p>
                 </div>
                 <div class="menu-card-actions">
-                    <a href="{% url 'place_order' item.id %}" class="btn btn-order">Order Now</a>
-                    <a href="{% url 'wishlist' %}" class="btn btn-wishlist">Add to Wishlist</a>
+                    <a href="{% url 'place_order' item.id %}" class="btn btn-order btn-narrow">Order Now</a>
 
                     <form method="POST" action="{% url 'add_to_cart' item.id %}">
                         {% csrf_token %}
                         <label for="quantity"><b>Quantity:</b></label>
                         <input type="number" id="quantity" name="quantity" min="1" max="{{ item.stock }}" required>
-                        <button type="submit" class="btn add-to-cart-btn">Add to Cart</button>
+                        <center><button type="submit" class="btn btn-add-to-cart">Add to Cart</button></center>
                     </form>
                 </div>
             </div>
