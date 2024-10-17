@@ -88,6 +88,9 @@ class Order(models.Model):
     def __str__(self):
         return f"Order by {self.customer} - {self.menu_item.name}"
 
+
+
+
 class Feedback(models.Model):
     customer = models.CharField(max_length=100)  # Updated to use Customer
     comments = models.CharField(max_length=1000)
@@ -101,6 +104,8 @@ class Feedback(models.Model):
 
     def __str__(self):
         return f"Feedback from {self.customer} - Rating: {self.rating}"
+
+
 
 class Customer(models.Model):
     name = models.CharField(max_length=100)

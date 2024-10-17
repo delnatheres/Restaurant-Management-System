@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from .forms import EmployeeForm
 from .models import Employee, Login
 from django.contrib.auth.decorators import login_required
-from .models import MenuItem, Order,Feedback
+from .models import MenuItem, Order
 from .models import Category
 from .models import Category, SubCategory
 from .models import Order
@@ -16,7 +16,7 @@ from .models import Employee, Login
 from .models import MenuItem
 import re
 
-from .models import Feedback
+
 from .models import Customer, Order
 
 
@@ -24,7 +24,7 @@ from .models import Login, User, SignIn
 
 
 from .models import Employee, EmployeeDashboard
-from .models import EmployeeDashboard, Employee, LeaveRequest, Order,Cart
+from .models import EmployeeDashboard, Employee, LeaveRequest, Order,Cart,Feedback
 
 
 
@@ -775,7 +775,6 @@ def create_leave_request(request, employee_id):
 
 
 
-
 def feedback_view(request):
     if request.method == 'POST':
         feedback_text = request.POST.get('feedback')
@@ -790,8 +789,6 @@ def view_feedback(request):
 
 def feedback_thankyou(request):
     return render(request, 'admin/feedback_thankyou.html')
-
-
 
 
 
