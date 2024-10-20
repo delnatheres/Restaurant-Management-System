@@ -79,7 +79,7 @@
             margin-top: 20px;
         }
 
-        .total-price-button, .back-button {
+        .total-price-button, .back-button, .checkout-button {
             display: inline-block;
             padding: 10px 20px;
             background-color: #4CAF50; /* Green background */
@@ -93,7 +93,7 @@
             text-decoration: none; /* Remove underline */
         }
 
-        .total-price-button:hover, .back-button:hover {
+        .total-price-button:hover, .back-button:hover, .checkout-button:hover {
             background-color: #45a049; /* Darker green on hover */
         }
 
@@ -146,8 +146,14 @@
         </table>
 
         <!-- Display total price as a button -->
-        <center> <a href="#" class="total-price-button">Total Price: ${{ total_price }}</a></center>
+        <center> <a href="#" class="total-price-button">Total Price: {{ total_price }}</a></center>
+        
 
+        <!-- Checkout button -->
+        <div style="text-align: center;">
+            <a href="{% url 'menu_item' %}" class="checkout-button">View Menu</a>
+            <a href="{% url 'check_out' %}" class="checkout-button">Proceed to Checkout</a>
+        </div>
 
         <!-- Back to Dashboard button -->
         <div style="text-align: center;">

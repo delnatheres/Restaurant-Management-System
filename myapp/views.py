@@ -674,41 +674,30 @@ def activate_user(request, id):
 
 
 
-
 def menu_item(request, menu_item_id=None):
-    # Fetch a specific menu item if an ID is provided, otherwise list all or search
+    # Check if an ID for a specific menu item is provided
     if menu_item_id:
         menu_item_instance = get_object_or_404(MenuItem, id=menu_item_id)
+        menu_items = None  # Since we're fetching a specific item, no list is needed
     else:
+        # If no specific ID is provided, handle search and listing of menu items
         query = request.GET.get('search', '')
-        if query:
-            menu_items = MenuItem.objects.filter(name__icontains(query))
-        else:
-            menu_items = MenuItem.objects.all()
+        menu_items = MenuItem.objects.all()
 
-    # No wishlist logic is handled here anymore
+        # Apply search filter if a query is present
+        if query:
+            menu_items = menu_items.filter(name__icontains=query)
+
+        menu_item_instance = None  # No single menu item fetched when listing
 
     context = {
-        'menu_item_instance': menu_item_instance if menu_item_id else None,
-        'menu_items': menu_items if not menu_item_id else None,
-        'query': query if not menu_item_id else '',
+        'menu_item_instance': menu_item_instance,
+        'menu_items': menu_items,
+        'query': query,
     }
 
     return render(request, 'customer/menu_item.html', context)
 
-
-
-
-# Place an Order
-@login_required
-def place_order(request, item_id):
-    item = MenuItem.objects.get(id=item_id)
-    if request.method == 'POST':
-        quantity = int(request.POST.get('quantity'))
-        Order.objects.create(customer=request.user, menu_item=item, quantity=quantity)
-        messages.success(request, 'Order placed successfully!')
-        return redirect('customer_dashboard')
-    return render(request, 'customer/menu_item.html', {'item': item})
 
 
 
@@ -961,3 +950,179 @@ def delete_from_cart(request, cart_id):
     
     # Redirect to the cart view
     return redirect('view_cart')
+
+
+
+
+
+
+
+# Place an Order
+@login_required
+def place_order(request, item_id):
+    item = MenuItem.objects.get(id=item_id)
+    if request.method == 'POST':
+        quantity = int(request.POST.get('quantity'))
+        Order.objects.create(customer=request.user, menu_item=item, quantity=quantity)
+        messages.success(request, 'Order placed successfully!')
+        return redirect('customer_dashboard')
+    return render(request, 'customer/menu_item.html', {'item': item})
+
+
+
+
+
+
+
+
+
+
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Cart, Order, OrderItem, SignIn  # Adjust import based on your actual models
+from django.core.mail import send_mail
+from django.conf import settings
+
+def check_out(request):
+    user = None
+    try:
+        user_id = int(request.session['user_id'])  # Convert to int
+        user = SignIn.objects.get(id=user_id)  # Fetch user based on session ID
+    except (ValueError, SignIn.DoesNotExist):
+        user = None  # Set user to None if there's an error
+
+    cart_items = Cart.objects.filter(customer=user) if user else []  # Fetch cart items if user is logged in
+    total_price = sum(item.get_total_price() for item in cart_items)
+
+    if request.method == 'POST':
+        delivery_address = request.POST.get('delivery_address', '')
+        pincode = request.POST.get('pincode', '')
+        payment_method = request.POST.get('payment_method', '')
+
+        # Create the order only if the user is logged in
+        if user:
+            order = Order.objects.create(
+                customer=user,
+                name=user.name,
+                contact=request.POST['contact'],
+                email=user.email,
+                place=user.place,
+                total_price=total_price,
+                payment_method=payment_method,
+                status='pending'
+            )
+
+            # Add cart items to the order
+            for item in cart_items:
+                OrderItem.objects.create(
+                    order=order,
+                    menu_item=item.menu_item,
+                    quantity=item.quantity,
+                    price=item.menu_item.price
+                )
+
+            # Clear the cart after placing the order
+            cart_items.delete()
+
+            return redirect('order_summary', order_id=order.id)
+        else:
+            # Handle the case where the user is not logged in (e.g., show an error message)
+            error_message = "Please log in to place your order."
+            return render(request, 'check_out.html', {
+                'error_message': error_message,
+                'cart_items': cart_items,
+                'total_price': total_price
+            })
+
+    return render(request, 'customer/check_out.html', {
+        'user': user,
+        'cart_items': cart_items,
+        'total_price': total_price
+    })
+    
+    
+def place_order(request):
+    if request.method == 'POST':
+        # Fetch payment details and contact information from the POST request
+        payment_method = request.POST.get('payment_method', 'N/A')
+        contact = request.POST.get('contact', 'N/A')
+        name = request.POST.get('name', 'Guest')  # Use 'Guest' if name is not provided
+        email = request.POST.get('email', None)  # Fetch the email from the request
+
+        # Fetch the user's cart items
+        cart_items = Cart.objects.all()  # Adjust this line according to how you identify carts
+
+        # Check if there are items in the cart
+        if not cart_items.exists():
+            # If no items in the cart, redirect to the checkout page
+            return redirect('check_out')
+
+        # Calculate the total price
+        total_price = sum(item.get_total_price() for item in cart_items)
+
+        # Create a new customer record for the guest
+        if email:  # If email is provided, use it
+            customer = SignIn.objects.create(name=name, email=email)
+        else:  # If no email is provided, you might want to handle it accordingly
+            customer = SignIn.objects.create(name=name, email='guest@example.com')  # Placeholder email
+
+        # Create a new order
+        order = Order.objects.create(
+            customer=customer,  # Use the created customer
+            contact=contact,
+            total_price=total_price,
+            payment_method=payment_method,
+            status='pending'  # Set initial status
+        )
+
+        # Add cart items to the order
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                menu_item=item.menu_item,
+                quantity=item.quantity,
+                price=item.menu_item.price
+            )
+
+        # Clear the user's cart after the order is placed
+        cart_items.delete()
+
+        # Redirect to the order summary page with the order ID
+        return redirect('order_summary', order_id=order.id)  # Use 'order_id' instead of 'id'
+
+    # If not a POST request, redirect to the checkout page
+    return redirect('check_out')
+
+
+
+def send_order_confirmation_email(user_email, order):
+    subject = 'Order Confirmation'
+    message = f'Your order has been placed successfully!\n\nOrder ID: {order.id}\nTotal Price: Rs. {order.total_price}\nPayment Method: {order.payment_method}\nDelivery Address: {order.delivery_address}'
+    from_email = settings.EMAIL_HOST_USER
+
+    send_mail(
+        subject,
+        message,
+        from_email,
+        [user_email],
+        fail_silently=False,
+    )
+
+
+def order_summary(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    order_items = order.order_items.all()
+
+    total_price = sum(item.price * item.quantity for item in order_items)
+    formatted_total_price = f"{total_price:.2f}"
+
+    context = {
+        'order': order,
+        'order_items': order_items,
+        'total_price': formatted_total_price,
+        'payment_method': order.payment_method,
+    }
+
+    return render(request, 'customer/order_summary.html', context)

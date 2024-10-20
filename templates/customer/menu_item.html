@@ -184,7 +184,7 @@
     </div>
 
     <!-- Back to Customer Dashboard Button -->
-    <center><a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Customer Dashboard</a></center>
+    <center><a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a></center>
     <br>
 
     <!-- Back to Menu List button (displayed only after a search) -->
@@ -211,7 +211,7 @@
                     <p>{{ item.available|yesno:"Available,Not Available" }}</p>
                 </div>
                 <div class="menu-card-actions">
-                    <a href="{% url 'place_order' item.id %}" class="btn btn-order btn-narrow">Order Now</a>
+                    <a href="{% url 'check_out' %}" class="btn btn-order btn-narrow">Order Now</a>
 
                     <form method="POST" action="{% url 'add_to_cart' item.id %}">
                         {% csrf_token %}
@@ -233,3 +233,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+

@@ -72,23 +72,7 @@ class SubCategory(models.Model):
 
     def __str__(self):
         return self.scname
-
-class Order(models.Model):
-    STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('preparing', 'Preparing'),
-        ('served', 'Served'),
-    ]
-    customer = models.ForeignKey('Customer', on_delete=models.CASCADE, related_name="orders")  # Updated to use Customer
-    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
-    ordered_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Order by {self.customer} - {self.menu_item.name}"
-
-
+    
 
 
 class Feedback(models.Model):
@@ -128,7 +112,6 @@ class User(models.Model):  # This class is removed as per your request
 
 class EmployeeDashboard(models.Model):
     employee = models.OneToOneField(Employee, on_delete=models.CASCADE)
-    orders = models.ManyToManyField('Order', blank=True)  # Link orders with the dashboard
     leave_requests = models.ManyToManyField('LeaveRequest', blank=True)
 
     def __str__(self):
@@ -168,4 +151,44 @@ class Cart(models.Model):
     
     
     
+
+
+class Order(models.Model):
+    PAYMENT_CHOICES = (
+        ('cod', 'Cash on Delivery'),
+        ('online', 'Online Payment'),
+    )
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('ready', 'Ready'),
+    )
+
+    customer = models.ForeignKey('SignIn', on_delete=models.CASCADE)  # Link to SignIn model for customers
+    name = models.CharField(max_length=255, default="")
+    place = models.CharField(max_length=100,default="")
+    email = models.EmailField(null=True, blank=True)
+    contact = models.CharField(max_length=20, default="0000000000")  
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES, default='')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    ordered_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order {self.id} by {self.name}"
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
+    menu_item = models.ForeignKey('MenuItem', on_delete=models.CASCADE)  # Link to MenuItem model
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.menu_item.name} (x{self.quantity})"
+    
+    
+    
+    
+
 

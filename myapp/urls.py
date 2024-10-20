@@ -16,7 +16,9 @@ urlpatterns = [
     path('add_employee/', views.add_employee, name='add_employee'),
     path('employee_success/', views.employee_success, name='employee_success'),
     path('customer_dashboard/', views.customer_dashboard, name='customer_dashboard'),
+    
     path('order/<int:item_id>/', views.place_order, name='place_order'),
+    
     path('feedback/', views.submit_feedback, name='submit_feedback'),
     path('add_menu_item/', views.add_menu_item, name='add_menu_item'),
     path('orders/', views.customer_orders, name='customer_orders'),
@@ -66,8 +68,6 @@ urlpatterns = [
     
     
     
-    
-    
     path('dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
     path('employee_dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
     path('create_leave_request/<int:employee_id>/', views.create_leave_request, name='create_leave_request'),
@@ -79,9 +79,23 @@ urlpatterns = [
     
   
   
-
   
-
+  
+  
+   path('checkout/', views.check_out, name='check_out'),  # Shortened for clarity
+   path('place-order/', views.place_order, name='place_order'),
+   path('order-summary/<int:order_id>/', views.order_summary, name='order_summary'),
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
    
   
    ]
