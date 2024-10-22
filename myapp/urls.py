@@ -16,9 +16,7 @@ urlpatterns = [
     path('add_employee/', views.add_employee, name='add_employee'),
     path('employee_success/', views.employee_success, name='employee_success'),
     path('customer_dashboard/', views.customer_dashboard, name='customer_dashboard'),
-    
     path('order/<int:item_id>/', views.place_order, name='place_order'),
-    
     path('feedback/', views.submit_feedback, name='submit_feedback'),
     path('add_menu_item/', views.add_menu_item, name='add_menu_item'),
     path('orders/', views.customer_orders, name='customer_orders'),
@@ -66,6 +64,14 @@ urlpatterns = [
     path('cart/delete/<int:cart_id>/', views.delete_from_cart, name='delete_from_cart'),  # Delete item from cart
     
     
+    path('checkout/', views.check_out, name='check_out'),  # Shortened for clarity
+    path('place-order/', views.place_order, name='place_order'),
+    path('order-summary/<int:order_id>/', views.order_summary, name='order_summary'),
+    
+    path('order/<int:item_id>/', views.place_order, name='place_order'),
+  
+    
+    
     
     
     path('dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
@@ -74,29 +80,9 @@ urlpatterns = [
     
     
     
-    path('order/<int:item_id>/', views.place_order, name='place_order'),
-    
     
   
-  
-  
-  
-  
-   path('checkout/', views.check_out, name='check_out'),  # Shortened for clarity
-   path('place-order/', views.place_order, name='place_order'),
-   path('order-summary/<int:order_id>/', views.order_summary, name='order_summary'),
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-   
+
   
    ]
 if settings.DEBUG:

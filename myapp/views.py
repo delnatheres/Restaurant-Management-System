@@ -988,54 +988,71 @@ from django.conf import settings
 def check_out(request):
     user = None
     try:
-        user_id = int(request.session['user_id'])  # Convert to int
-        user = SignIn.objects.get(id=user_id)  # Fetch user based on session ID
+        # Fetch user based on session ID (convert to int if needed)
+        user_id = int(request.session.get('user_id'))
+        print("user",user_id)  
+        user = SignIn.objects.get(id=user_id)
+        print(user)
     except (ValueError, SignIn.DoesNotExist):
-        user = None  # Set user to None if there's an error
+        user = None  # Set user to None if an error occurs
 
-    cart_items = Cart.objects.filter(customer=user) if user else []  # Fetch cart items if user is logged in
+    # Fetch cart items for the logged-in user
+    cart_items = Cart.objects.filter(customer=user) if user else []
+    
+    # Calculate the total price of the items in the cart
     total_price = sum(item.get_total_price() for item in cart_items)
 
     if request.method == 'POST':
-        delivery_address = request.POST.get('delivery_address', '')
-        pincode = request.POST.get('pincode', '')
+        # Get contact and payment method from the form data
+        contact = request.POST.get('contact', '')
+        print(contact)
         payment_method = request.POST.get('payment_method', '')
 
-        # Create the order only if the user is logged in
+        # Create the order if the user is logged in
         if user:
+            # Create a new Order object
             order = Order.objects.create(
-                customer=user,
-                name=user.name,
-                contact=request.POST['contact'],
-                email=user.email,
-                place=user.place,
+                customer=user,  # Assuming customer is ForeignKey to SignIn
+                name=user.name if hasattr(user, 'name') else 'Guest',  # Ensure 'name' field exists
+                contact=contact,
+                email=user.email if hasattr(user, 'email') else '',  # Ensure 'email' field exists
+                place=user.place if hasattr(user, 'place') else '',  # Ensure 'place' field exists
                 total_price=total_price,
                 payment_method=payment_method,
-                status='pending'
+                status='pending'  # Assuming 'status' field exists in Order
             )
 
-            # Add cart items to the order
+            # Create OrderItem instances for each cart item
             for item in cart_items:
                 OrderItem.objects.create(
                     order=order,
-                    menu_item=item.menu_item,
+                    menu_item=item.menu_item,  # Assuming 'menu_item' is ForeignKey in Cart
                     quantity=item.quantity,
-                    price=item.menu_item.price
+                    price=item.menu_item.price  # Store the price at the time of order
                 )
+
+
+                
 
             # Clear the cart after placing the order
             cart_items.delete()
 
+            # Redirect to order summary after placing the order
+            messages.success(request, 'Order placed successfully!')
             return redirect('order_summary', order_id=order.id)
         else:
-            # Handle the case where the user is not logged in (e.g., show an error message)
+            # Show error message if user is not logged in
             error_message = "Please log in to place your order."
-            return render(request, 'check_out.html', {
+            return render(request, 'customer/check_out.html', {
                 'error_message': error_message,
                 'cart_items': cart_items,
                 'total_price': total_price
             })
-
+    user_id = int(request.session.get('customer_id'))
+    print("user",user_id)  
+    user = SignIn.objects.get(id=user_id)
+    print(user)
+# Render the checkout page with user and cart details
     return render(request, 'customer/check_out.html', {
         'user': user,
         'cart_items': cart_items,
@@ -1043,13 +1060,15 @@ def check_out(request):
     })
     
     
+    
 def place_order(request):
     if request.method == 'POST':
         # Fetch payment details and contact information from the POST request
         payment_method = request.POST.get('payment_method', 'N/A')
         contact = request.POST.get('contact', 'N/A')
-        name = request.POST.get('name', 'Guest')  # Use 'Guest' if name is not provided
-        email = request.POST.get('email', None)  # Fetch the email from the request
+        name = request.POST.get('customer_name', 'Guest')  # Use 'Guest' if name is not provided
+        email = request.POST.get('email', None)
+        place = request.POST.get('place', None)
 
         # Fetch the user's cart items
         cart_items = Cart.objects.all()  # Adjust this line according to how you identify carts
@@ -1062,18 +1081,32 @@ def place_order(request):
         # Calculate the total price
         total_price = sum(item.get_total_price() for item in cart_items)
 
-        # Create a new customer record for the guest
-        if email:  # If email is provided, use it
-            customer = SignIn.objects.create(name=name, email=email)
-        else:  # If no email is provided, you might want to handle it accordingly
-            customer = SignIn.objects.create(name=name, email='guest@example.com')  # Placeholder email
+        # Try to fetch or create the customer
+        try:
+            if email:  # If an email is provided
+                customer, created = SignIn.objects.get_or_create(
+                    email=email,
+                    defaults={'name': name}  # If a new customer is created, set the name
+                )
+            else:  # If no email is provided, use a placeholder email
+                customer, created = SignIn.objects.get_or_create(
+                    email='guest@example.com',
+                    defaults={'name': name}  # If a new customer is created, set the name
+                )
+
+        except IntegrityError:
+            # Handle error if any issue occurs while creating/fetching the customer
+            return redirect('check_out')
 
         # Create a new order
         order = Order.objects.create(
-            customer=customer,  # Use the created customer
+            customer=customer,  # Use the created or existing customer
             contact=contact,
+            email=customer.email,  # Use the email from the customer object
+            name=customer.name,  # Use the name from the customer object
             total_price=total_price,
             payment_method=payment_method,
+            place=place,
             status='pending'  # Set initial status
         )
 
@@ -1089,17 +1122,35 @@ def place_order(request):
         # Clear the user's cart after the order is placed
         cart_items.delete()
 
+        # Prepare order details for the email
+        order_details = (
+            f"Order ID: {order.id}\n"
+            f"Total Price: Rs. {total_price}\n"
+            f"Payment Method: {payment_method}\n"
+        )
+
+        # Send the order confirmation email
+        send_order_confirmation_email(user_email=customer.email, order=order)
+
         # Redirect to the order summary page with the order ID
-        return redirect('order_summary', order_id=order.id)  # Use 'order_id' instead of 'id'
+        return redirect('order_summary', order_id=order.id)
 
     # If not a POST request, redirect to the checkout page
     return redirect('check_out')
 
 
 
+from django.core.mail import send_mail
+from django.conf import settings
+
 def send_order_confirmation_email(user_email, order):
     subject = 'Order Confirmation'
-    message = f'Your order has been placed successfully!\n\nOrder ID: {order.id}\nTotal Price: Rs. {order.total_price}\nPayment Method: {order.payment_method}\nDelivery Address: {order.delivery_address}'
+    message = (
+        f'Your order has been placed successfully!\n\n'
+        f'Order ID: {order.id}\n'
+        f'Total Price: Rs. {order.total_price}\n'
+        f'Payment Method: {order.payment_method}'
+    )
     from_email = settings.EMAIL_HOST_USER
 
     send_mail(
@@ -1109,6 +1160,7 @@ def send_order_confirmation_email(user_email, order):
         [user_email],
         fail_silently=False,
     )
+
 
 
 def order_summary(request, order_id):

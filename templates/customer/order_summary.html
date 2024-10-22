@@ -110,12 +110,9 @@
 
         <h3>Your Details</h3>
         <p><strong>Name:</strong> {{ order.customer.name }}</p>
-        <p><strong>Contact:</strong> {{ order.customer.contact }}</p>
+        <p><strong>Contact:</strong> {{ order.contact }}</p>
         <p><strong>Email:</strong> {{ order.customer.email }}</p>
-        <p><strong>Place:</strong> {{ order.customer.place }}</p>
-        <p><strong>Pincode:</strong> {{ order.customer.pincode }}</p>
-        <p><strong>Delivery Address:</strong> {{ order.delivery_address }}</p>
-
+        <p><strong>Place:</strong> {{ order.place }}</p>
         <hr>
 
         <h3>Items You Ordered</h3>
@@ -134,7 +131,7 @@
                     <td>{{ item.menu_item.name }}</td>
                     <td>{{ item.quantity }}</td>
                     <td>Rs. {{ item.menu_item.price }}</td>
-                    <td>Rs. {{ item.get_total_price }}</td> <!-- Assuming get_total_price is defined in your model -->
+                    <td>Rs. {{ total_price }}</td> <!-- Assuming get_total_price is defined in your model -->
                 </tr>
                 {% empty %}
                 <tr>

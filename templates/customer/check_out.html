@@ -154,11 +154,13 @@
 
             <!-- Name -->
             <label for="name"><strong>Name:</strong></label>
-            <input type="text" id="name" name="customer_name" value="{{ user.name }}" required pattern="[A-Za-z\s]+" title="Only letters and spaces are allowed.">
+            <input type="text" id="name" name="customer_name" value="{{ user.name }}" required 
+                pattern="^[A-Za-z\s]+$" title="Only letters and spaces are allowed.">
 
             <!-- Contact -->
             <label for="contact"><strong>Contact:</strong></label>
-            <input type="text" id="contact" name="contact" value="{{ user.contact }}" required pattern="\d{10}" title="Please enter a valid 10-digit phone number.">
+            <input type="text" id="contact" name="contact" value="{{ user.contact }}" required 
+                pattern="\d{10}" title="Please enter a valid 10-digit phone number.">
 
             <!-- Email -->
             <label for="email"><strong>Email:</strong></label>
@@ -166,12 +168,8 @@
 
             <!-- Place -->
             <label for="place"><strong>Place:</strong></label>
-            <input type="text" id="place" name="place" value="{{ user.place }}" required pattern="[A-Za-z\s]+" title="Only letters and spaces are allowed.">
-
-            <!-- Pincode -->
-            <label for="pincode"><strong>Pincode:</strong></label>
-            <input type="text" id="pincode" name="pincode" value="{{ user.pincode }}" required pattern="\d{6}" title="Please enter a valid 6-digit pincode.">
-
+            <input type="text" id="place" name="place" value="{{ user.place }}" required 
+                pattern="^[A-Za-z\s]+$" title="Only letters and spaces are allowed.">
 
             <!-- Payment Method -->
             <h2>Payment Method:</h2>

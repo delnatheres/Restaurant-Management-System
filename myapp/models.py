@@ -165,9 +165,9 @@ class Order(models.Model):
     )
 
     customer = models.ForeignKey('SignIn', on_delete=models.CASCADE)  # Link to SignIn model for customers
-    name = models.CharField(max_length=255, default="")
-    place = models.CharField(max_length=100,default="")
-    email = models.EmailField(null=True, blank=True)
+    name = models.CharField(max_length=255)
+    place = models.CharField(max_length=100)
+    email = models.EmailField()
     contact = models.CharField(max_length=20, default="0000000000")  
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES, default='')
