@@ -1,0 +1,185 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History</title>
+    <style>
+        /* Bright theme with a clean and airy design */
+        body {
+            background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
+            font-family: 'Helvetica Neue', sans-serif;
+            background-color: #f9f9f9;
+            color: #444;
+            margin: 0;
+            padding: 40px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 3rem;
+            margin-bottom: 40px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Main container for order history */
+        .order-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .order-container:hover {
+            transform: translateY(-5px);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Order block styling */
+        li.order-block {
+            background-color: #f1f1f1;
+            border: 1px solid #d1d1d1;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        li.order-block:hover {
+            background-color: #e9f5ff;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Text color for order details */
+        strong {
+            color: #2980b9;
+            font-weight: 600;
+        }
+
+        /* Title for order items */
+        h4 {
+            margin-top: 15px;
+            font-size: 1.5rem;
+            color: #3498db;
+        }
+
+        /* Styling for order items */
+        li.order-item {
+            background-color: #ffffff;
+            padding: 12px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }
+
+        li.order-item:hover {
+            background-color: #f0f8ff;
+        }
+
+        /* Styling for empty message */
+        .message {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Button with modern flat design */
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Back to Dashboard button centered */
+        .back-button {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .order-container {
+                padding: 20px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="order-container">
+        <h2><center>Order History</center></h2>
+
+        {% if message %}
+            <p class="message">{{ message }}</p>
+        {% else %}
+            <ul>
+                {% for order in orders %}
+                    <li class="order-block">
+                        <strong>Order ID:</strong> {{ order.id }}<br>
+                        <strong>Status:</strong> {{ order.get_status_display }}<br>
+                        <strong>Total Price:</strong> Rs. {{ order.total_price }}<br>
+                        <strong>Ordered At:</strong> {{ order.ordered_at }}<br>
+
+                        <h4>Items:</h4>
+                        <ul>
+                            {% for item in order.order_items.all %}
+                                <li class="order-item">
+                                    {{ item.menu_item.name }} - Quantity: {{ item.quantity }}, Price: Rs. {{ item.price }}
+                                </li>
+                            {% empty %}
+                                <li class="order-item">No items found for this order.</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% empty %}
+                    <li>No orders found for {{ email }}.</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- Back to Dashboard button -->
+        <div class="back-button">
+            <a href="{% url 'customer_dashboard' %}" class="btn">Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

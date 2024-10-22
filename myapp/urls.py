@@ -62,12 +62,9 @@ urlpatterns = [
     path('cart/add/<int:menu_item_id>/', views.add_to_cart, name='add_to_cart'),  # Add item to cart
     path('cart/update/<int:cart_id>/', views.update_cart, name='update_cart'),
     path('cart/delete/<int:cart_id>/', views.delete_from_cart, name='delete_from_cart'),  # Delete item from cart
-    
-    
     path('checkout/', views.check_out, name='check_out'),  # Shortened for clarity
     path('place-order/', views.place_order, name='place_order'),
     path('order-summary/<int:order_id>/', views.order_summary, name='order_summary'),
-    
     path('order/<int:item_id>/', views.place_order, name='place_order'),
   
     
@@ -80,7 +77,7 @@ urlpatterns = [
     
     
     
-    
+    path('order-history/', views.order_history, name='order_history'),
   
 
   

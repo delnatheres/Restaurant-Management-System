@@ -57,7 +57,8 @@
         }
 
         .back-button,
-        .pay-button {
+        .pay-button,
+        .print-button {
             display: inline-block;
             padding: 10px 15px;
             margin: 15px 0;
@@ -70,7 +71,8 @@
         }
 
         .back-button:hover,
-        .pay-button:hover {
+        .pay-button:hover,
+        .print-button:hover {
             background-color: #0056b3;
         }
 
@@ -94,19 +96,25 @@
             }
 
             .back-button,
-            .pay-button {
+            .pay-button,
+            .print-button {
                 padding: 8px 12px;
                 font-size: 14px;
             }
         }
     </style>
+    <script>
+        function printOrderSummary() {
+            window.print(); // Open the print dialog
+        }
+    </script>
 </head>
 <body>
     <!-- Back Button -->
     <a href="{% url 'view_cart' %}" class="back-button">Back</a>
 
     <div class="container">
-      <center>  <h2>Order Summary</h2></center>
+        <center><h2>Order Summary</h2></center>
 
         <h3>Your Details</h3>
         <p><strong>Name:</strong> {{ order.customer.name }}</p>
@@ -158,6 +166,9 @@
         {% endif %}
 
         <p>Your order has been placed successfully!</p>
+
+        <!-- Print Button -->
+        <button onclick="printOrderSummary()" class="print-button">Print Order Summary</button>
 
         <!-- Navigation Button -->
         <a href="{% url 'customer_dashboard' %}" class="back-button">Return to Home</a>

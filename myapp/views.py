@@ -1178,3 +1178,37 @@ def order_summary(request, order_id):
     }
 
     return render(request, 'customer/order_summary.html', context)
+
+
+
+def order_history(request):
+    # Check if the user is logged in
+    if request.user.is_authenticated:
+        # Use email from the authenticated user
+        email = request.user.email
+        # Retrieve all orders associated with the logged-in user
+        orders = Order.objects.filter(customer__email=email).prefetch_related('order_items__menu_item')
+    else:
+        # Use session or other method to track guest orders if applicable
+        # For example, assuming a session-based customer ID is being used for guests:
+        customer_id = request.session.get('customer_id')
+        if customer_id:
+            orders = Order.objects.filter(customer__id=customer_id).prefetch_related('order_items__menu_item')
+            email = "Guest"
+        else:
+            orders = []
+            email = "Guest"
+
+    # Prepare context based on whether orders exist
+    if orders:
+        context = {
+            'orders': orders,
+            'email': email
+        }
+    else:
+        context = {
+            'message': 'No orders found for your account.' if request.user.is_authenticated or customer_id else 'Please log in or place an order.',
+            'email': email
+        }
+
+    return render(request, 'customer/order_history.html', context)
