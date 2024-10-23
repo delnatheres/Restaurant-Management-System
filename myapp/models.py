@@ -43,15 +43,20 @@ class Employee(models.Model):
 
 
 class MenuItem(models.Model):
+    CATEGORY_CHOICES = [
+        ('veg', 'Vegetarian'),
+        ('non-veg', 'Non-Vegetarian'),
+    ]
+
     name = models.CharField(max_length=100)
     description = models.TextField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
     available = models.BooleanField(default=True)
-    image = models.ImageField(upload_to='menu_items/', blank=True, null=True)  # Image field
-    
+    image = models.ImageField(upload_to='menu_items/', blank=True, null=True)
+    category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, default='veg')  # New field
+
     def __str__(self):
         return self.name
-    
     
     
 
@@ -76,7 +81,8 @@ class SubCategory(models.Model):
 
 
 class Feedback(models.Model):
-    customer = models.CharField(max_length=100)  # Updated to use Customer
+    customer = models.CharField(max_length=100, default='')
+    customer_name = models.CharField(max_length=100)  # Storing the customer name directly
     comments = models.CharField(max_length=1000)
     rating = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -87,8 +93,7 @@ class Feedback(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"Feedback from {self.customer} - Rating: {self.rating}"
-
+        return f"Feedback from {self.customer_name} - Rating: {self.rating}"
 
 
 class Customer(models.Model):

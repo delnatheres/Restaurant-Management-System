@@ -311,20 +311,25 @@ def customer_dashboard(request):
 # Submit Feedback
 def submit_feedback(request):
     if request.method == 'POST':
-        # Here you would typically process the feedback data
-        customer_id = request.session.get('customer_id')
-        feedback_data = request.POST.get('comments')  # Example of getting feedback data
-        ratings=request.POST.get('rating')
-        print("Ratings : ",ratings)
-        # You can save this data to your database or handle it as needed
-        feedback= Feedback(customer=customer_id,comments=feedback_data,rating=ratings)
-        # Optionally, add a success message (if you want to notify the user)
-        feedback.save()
-        if feedback:
-            messages.success(request, 'Feedback submitted successfully!')
-            return redirect('feedback_success')  # Use the name of your success URL pattern
+        # Retrieve customer name from the form input
+        customer_name = request.POST.get('customer_name')  # Ensure the input name is correct in the form
+        feedback_data = request.POST.get('comments')  # Retrieve comments
+        ratings = request.POST.get('rating')  # Retrieve ratings
 
-    # Render the feedback submission form for GET requests
+        # Save feedback to the database with customer name
+        feedback = Feedback(
+            customer_name=customer_name,  # Save customer name
+            comments=feedback_data,       # Save comments
+            rating=ratings                # Save rating
+        )
+        feedback.save()  # Save the feedback instance
+
+        if feedback:
+            # Add a success message after feedback is submitted
+            messages.success(request, 'Feedback submitted successfully!')
+            return redirect('feedback_success')  # Redirect after successful submission
+
+    # Render the feedback form for GET requests
     return render(request, 'customer/submit_feedback.html')
 
 
@@ -523,41 +528,43 @@ def add_category(request):
         cname = request.POST.get('cname')
         status = request.POST.get('status') == 'on'
 
-        # Validate that the category name does not contain numbers
+        # Validate that the category name only contains letters and spaces
         if cname:
-            if cname.isalpha():  # Ensure that the category name only contains alphabetic characters
+            if re.match("^[A-Za-z\s]+$", cname):  # Allows letters and spaces
                 Category.objects.create(cname=cname, status=status)
                 messages.success(request, 'Category added successfully!')
                 return redirect('view_category')
             else:
-                messages.error(request, 'Category name should only contain alphabetic characters.')
+                messages.error(request, 'Category name should only contain letters and spaces.')
         else:
             messages.error(request, 'Category name is required.')
 
     return render(request, 'admin/add_category.html')
 
 
-# View to edit an existing category
 def edit_category(request, cid):
     category = get_object_or_404(Category, cid=cid)
+    
     if request.method == 'POST':
-        category.cname = request.POST.get('cname')
-        category.status = request.POST.get('status') == 'on'
+        # Get the new values from the form
+        cname = request.POST.get('cname')
+        status = request.POST.get('status') == 'on'
 
-        # Validate that the category name does not contain numbers
-        if category.cname:
-            if category.cname.isalpha():  # Ensure that the category name only contains alphabetic characters
+        # Validate that the category name only contains letters and spaces
+        if cname:
+            if re.match("^[A-Za-z\s]+$", cname):  # Allows letters and spaces
+                category.cname = cname
+                category.status = status
                 category.save()
                 messages.success(request, 'Category updated successfully!')
                 return redirect('view_category')
             else:
-                messages.error(request, 'Category name should only contain alphabetic characters.')
+                messages.error(request, 'Category name should only contain letters and spaces.')
         else:
             messages.error(request, 'Category name is required.')
 
+    # Render the form with the current category data
     return render(request, 'admin/edit_category.html', {'category': category})
-
-
 
 # View to delete a category
 def delete_category(request, cid):
@@ -575,29 +582,29 @@ def view_subcategory(request):
     subcategories = SubCategory.objects.all()
     return render(request, 'admin/view_subcategory.html', {'subcategories': subcategories})
 
-
 def add_subcategory(request):
     if request.method == 'POST':
         scname = request.POST.get('scname')
         cid = request.POST.get('cid')
         status = request.POST.get('status') == 'on'  # Checkbox value handling
 
-        # Validate that the subcategory name does not contain numbers
+        # Validate that the subcategory name only contains letters and spaces
         if scname:
-            if scname.isalpha():  # Ensure that the subcategory name only contains alphabetic characters
+            if re.match("^[A-Za-z\s]+$", scname):  # Allows letters and spaces
                 SubCategory.objects.create(scname=scname, cid_id=cid, status=status)
                 messages.success(request, 'Subcategory added successfully.')
                 return redirect('view_subcategory')
             else:
-                messages.error(request, 'Subcategory name should only contain alphabetic characters.')
+                messages.error(request, 'Subcategory name should only contain letters and spaces.')
         else:
             messages.error(request, 'Subcategory name is required.')
 
+    # Fetch categories for the dropdown
     categories = Category.objects.all()
     return render(request, 'admin/add_subcategory.html', {'categories': categories})
 
 
-# View for editing a subcategory
+
 def edit_subcategory(request, subcategory_id):
     subcategory = get_object_or_404(SubCategory, id=subcategory_id)
 
@@ -606,21 +613,26 @@ def edit_subcategory(request, subcategory_id):
         cid = request.POST.get('cid')
         status = request.POST.get('status') == 'on'
 
-        # Validate that the subcategory name does not contain numbers
-        if scname and scname.isalpha():  # Ensure it only contains alphabetic characters
-            subcategory.scname = scname
-            subcategory.cid_id = cid
-            subcategory.status = status
-            subcategory.save()
-            messages.success(request, 'Subcategory updated successfully.')
-            return redirect('view_subcategory')
+        # Validate that the subcategory name only contains letters and spaces and has a maximum length of 16
+        if scname:
+            if len(scname) <= 16:  # Check for maximum length of 16
+                if re.match("^[A-Za-z\s]+$", scname):  # Allows letters and spaces
+                    subcategory.scname = scname
+                    subcategory.cid_id = cid
+                    subcategory.status = status
+                    subcategory.save()
+                    messages.success(request, 'Subcategory updated successfully.')
+                    return redirect('view_subcategory')
+                else:
+                    messages.error(request, 'Subcategory name should only contain letters and spaces.')
+            else:
+                messages.error(request, 'Subcategory name should not exceed 16 characters.')
         else:
-            messages.error(request, 'Subcategory name should only contain alphabetic characters and cannot be empty.')
+            messages.error(request, 'Subcategory name is required.')
 
+    # Fetch categories for the dropdown
     categories = Category.objects.all()
     return render(request, 'admin/edit_subcategory.html', {'subcategory': subcategory, 'categories': categories})
-
-
 
 
 # View for deleting a subcategory
@@ -767,7 +779,8 @@ def create_leave_request(request, employee_id):
 def feedback_view(request):
     if request.method == 'POST':
         feedback_text = request.POST.get('feedback')
-        feedback = Feedback(customer=request.user, feedback_text=feedback_text)
+        rating = request.POST.get('rating')  # Assuming the rating is passed from the form
+        feedback = Feedback(customer_name=request.user.username, comments=feedback_text, rating=rating)
         feedback.save()
         return redirect('feedback_thankyou')  # Redirect to a thank you page
     return render(request, 'admin/feedback.html')
@@ -778,7 +791,6 @@ def view_feedback(request):
 
 def feedback_thankyou(request):
     return render(request, 'admin/feedback_thankyou.html')
-
 
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -1212,3 +1224,16 @@ def order_history(request):
         }
 
     return render(request, 'customer/order_history.html', context)
+
+
+
+
+def view_order(request):
+    # Fetch all orders ordered by date
+    orders = Order.objects.all().order_by('-ordered_at')  
+    return render(request, 'admin/view_order.html', {'orders': orders})
+
+def view_order(request):
+    # Fetch all orders ordered by date
+    orders = Order.objects.all().order_by('-ordered_at')  
+    return render(request, 'employee/view_order.html', {'orders': orders})

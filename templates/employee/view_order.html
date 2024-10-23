@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History</title>
+    <style>
+        body {
+            background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
+            font-family: 'Arial', sans-serif;
+            background-color: #eef2f3; /* Soft background color */
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .history-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #ffffff; /* White background for container */
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .order-block {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            background-color: #f9f9f9; /* Light grey background for each order block */
+            transition: box-shadow 0.3s; /* Transition effect */
+        }
+        .order-block:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+        }
+        strong {
+            display: inline-block;
+            margin-bottom: 8px;
+            color: #555; /* Darker color for better readability */
+        }
+        .order-item {
+            margin-left: 20px;
+            color: #666; /* Lighter color for items */
+        }
+        .back-button {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px 15px; /* Adjusted padding for button size */
+            background-color: #FFD700; /* Yellow background color */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px; /* Slightly larger font size */
+            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
+            border: none;
+        }
+        .back-button:hover {
+            background-color: #FFC107; /* Slightly darker yellow on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+        .order-items-list {
+            list-style-type: none; /* Remove bullets */
+            padding: 0; /* Remove default padding */
+        }
+        .order-items-list li {
+            padding: 5px 0; /* Spacing for items */
+        }
+    </style>
+</head>
+<body>
+    <div class="history-container">
+        <a href="#" class="back-button">Back to Dashboard</a>
+        <h1>Order History</h1>
+
+        <h3>Customer Orders</h3>
+
+        {% if orders %}
+            <ul>
+                {% for order in orders %}
+                    <li class="order-block">
+                        <strong>Order ID:</strong> {{ order.id }}<br>
+                        <strong>Customer:</strong> {{ order.customer.username }}<br>
+                        <strong>Status:</strong> {{ order.get_status_display }}<br>
+                        <strong>Total Price:</strong> Rs. {{ order.total_price }}<br>
+                        <strong>Ordered At:</strong> {{ order.ordered_at }}<br>
+
+                        <h4>Items:</h4>
+                        <ul class="order-items-list">
+                            {% for item in order.order_items.all %}
+                                <li class="order-item">{{ item.menu_item.name }} - Quantity: {{ item.quantity }}, Price: Rs. {{ item.price }}</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No orders found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

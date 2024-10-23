@@ -128,7 +128,7 @@
                         <!-- Update quantity form -->
                         <form action="{% url 'update_cart' item.id %}" method="POST">
                             {% csrf_token %}
-                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="500">
                             <button type="submit">Update</button>
                         </form>
                     </td>

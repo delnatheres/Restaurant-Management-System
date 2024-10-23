@@ -78,7 +78,9 @@ urlpatterns = [
     
     
     path('order-history/', views.order_history, name='order_history'),
-  
+    
+    
+   path('view-order/', views.view_order, name='view_order'),
 
   
    ]

@@ -8,7 +8,6 @@
     <title>View Customer Feedback</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* General page styling */
         body {
             background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -19,20 +18,19 @@
         h1 {
             text-align: center;
             color: #4a4e69;
-            margin-bottom: 20px; /* Adjusted margin for space above button */
+            margin-bottom: 20px;
             font-size: 32px;
             font-weight: bold;
         }
 
-        /* Back to Dashboard button */
         .btn-back {
             display: inline-block;
             margin: 10px auto;
-            padding: 8px 16px; /* Adjusted padding */
+            padding: 8px 16px;
             background-color: #f3b820;
             color: white;
             text-align: center;
-            font-size: 14px; /* Adjusted font size */
+            font-size: 14px;
             text-transform: uppercase;
             text-decoration: none;
             border-radius: 8px;
@@ -42,10 +40,9 @@
 
         .btn-back:hover {
             background-color: #e5a500;
-            transform: translateY(-2px); /* Slight hover effect */
+            transform: translateY(-2px);
         }
 
-        /* Table container styling */
         .table-container {
             background-color: #ffffff;
             padding: 20px;
@@ -55,7 +52,6 @@
             margin: 0 auto;
         }
 
-        /* Table styling */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -80,18 +76,15 @@
             color: #333333;
         }
 
-        /* Add a hover effect on table rows */
         tbody tr:hover {
             background-color: #f7f7f7;
         }
 
-        /* Responsive table */
         @media (max-width: 768px) {
             table, thead, tbody, th, td, tr {
                 display: block;
             }
 
-            /* Hide table headers for mobile view */
             thead tr {
                 position: absolute;
                 top: -9999px;
@@ -126,7 +119,6 @@
             }
         }
 
-        /* No feedback message styling */
         .no-feedback {
             text-align: center;
             padding: 20px;
@@ -137,13 +129,13 @@
 </head>
 <body>
     <h1>Customer Feedback</h1>
-    <center><a href="{% url 'admin_dashboard' %}" class="btn-back">Back to Dashboard</a></center> <!-- Back to Dashboard button -->
+    <center><a href="{% url 'admin_dashboard' %}" class="btn-back">Back to Dashboard</a></center>
 
     <div class="table-container">
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Customer</th>
+                    <th>Customer Name</th> <!-- Updated field -->
                     <th>Comments</th>
                     <th>Rating</th>
                     <th>Created At</th>
@@ -152,7 +144,7 @@
             <tbody>
                 {% for feedback in feedback_list %}
                 <tr>
-                    <td data-label="Customer">{{ feedback.customer }}</td>
+                    <td data-label="Customer Name">{{ feedback.customer_name }}</td> <!-- Updated field -->
                     <td data-label="Comments">{{ feedback.comments }}</td>
                     <td data-label="Rating">{{ feedback.rating }}</td>
                     <td data-label="Created At">{{ feedback.created_at }}</td>

@@ -211,7 +211,11 @@
                 <div class="menu-card-actions">
                     <form method="POST" action="{% url 'add_to_cart' item.id %}">
                         {% csrf_token %}
-                        <center><button type="submit" class="btn btn-add-to-cart">Order Now</button></center>
+                        {% if item.available %}
+                            <center><button type="submit" class="btn btn-add-to-cart">Order Now</button></center>
+                        {% else %}
+                            <center><button type="button" class="btn btn-secondary" disabled>Not Available</button></center>
+                        {% endif %}
                     </form>
                 </div>
             </div>
