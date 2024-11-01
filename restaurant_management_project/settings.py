@@ -145,6 +145,9 @@ DEFAULT_FROM_EMAIL = 'delnatheres2025@mca.ajce.in'  # Email sender's address
 
 
 
+RAZORPAY_KEY_ID = 'rzp_test_VEVGpwiKT3ZrQ0'
+RAZORPAY_KEY_SECRET = 'KQW7sAYhpdjeBmXJiouI08QQ'
+
 
 #Redirect to the login page if not authenticated
 LOGIN_URL = '/login/'  # Ensure this points to your custom login URL

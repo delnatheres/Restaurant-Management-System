@@ -84,9 +84,8 @@
                 {% for order in orders %}
                     <li class="order-block">
                         <strong>Order ID:</strong> {{ order.id }}<br>
-                        <strong>Customer:</strong> {{ order.customer.username }}<br>
+                        <strong>Customer Name:</strong> {{ order.customer.name }}<br> <!-- Displaying customer's name -->
                         <strong>Status:</strong> {{ order.get_status_display }}<br>
-                        <strong>Total Price:</strong> Rs. {{ order.total_price }}<br>
                         <strong>Ordered At:</strong> {{ order.ordered_at }}<br>
 
                         <h4>Items:</h4>

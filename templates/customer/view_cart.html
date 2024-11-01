@@ -118,8 +118,8 @@
                     <th>Total</th>
                     <th>Actions</th>
                 </tr>
-            </thead>
-            <tbody>
+            </head>
+            <body>
                 {% for item in cart_items %}
                 <tr>
                     <td>{{ item.menu_item.name }}</td>
@@ -142,7 +142,7 @@
                     </td>
                 </tr>
                 {% endfor %}
-            </tbody>
+            </body>
         </table>
 
         <!-- Display total price as a button -->

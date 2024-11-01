@@ -96,7 +96,7 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="name"> Name</label>
-                <input type="text" class="form-control" id="name" name="name" required pattern="^[A-Za-z]+$" title=" name should contain only letters.">
+                <input type="text" class="form-control" id="name" name="name" required pattern="^[A-Za-z ]+$" title="Name should contain only letters and spaces.">
             </div>
             <div class="form-group">
                 <label for="place"> Place</label>

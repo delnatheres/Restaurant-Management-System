@@ -896,13 +896,13 @@ def viewcart(request):
 
     # Calculate the total price of the cart items (assuming Cart model has a price or related field)
     total_price = sum([item.menu_item.price * item.quantity for item in cart_items])
-
+    request.session['totalprice'] = float(total_price)
     # Context to pass to the template
     context = {
         'cart_items': cart_items,
         'total_price': total_price
     }
-
+    
     # Render the cart view with the context
     return render(request, 'customer/view_cart.html', context)
 
@@ -1175,6 +1175,67 @@ def send_order_confirmation_email(user_email, order):
 
 
 
+import json
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import razorpay
+
+razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+@csrf_exempt
+def create_order(request):
+    if request.method == "POST":
+        # Example of fetching cart items, adjust according to your implementation
+        cart_items = request.session.get('cart', [])  # Assuming 'cart' holds your items
+        total_amount = 0
+
+        for item in cart_items:
+            # Assuming item contains 'price' and 'quantity'
+            total_amount += item['price'] * item['quantity']  # Calculate total amount
+
+        total_amount_in_paise = total_amount  # Convert to paise
+        razorpay_order = razorpay_client.order.create({
+            "amount": total_amount, 
+            "currency": "INR", 
+            "payment_capture": "1"
+        })
+
+        return JsonResponse({
+            "order_id": razorpay_order['id'],
+            "amount": total_amount_in_paise  # Return amount for use in the payment page
+        })
+
+
+@csrf_exempt
+def verify_payment(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        try:
+            razorpay_client.utility.verify_payment_signature({
+                'razorpay_order_id': data['order_id'],
+                'razorpay_payment_id': data['payment_id'],
+                'razorpay_signature': data['signature']
+            })
+            # Payment is successful
+            return JsonResponse({"status": "success"})
+        except razorpay.errors.SignatureVerificationError:
+            return JsonResponse({"status": "failure"})
+
+
+from django.shortcuts import render
+
+def payment_view(request):
+    # Handle the payment logic here
+    totalprice = request.session.get('totalprice', 0) 
+    amount_in_paise = totalprice * 100
+    
+    return render(request, 'customer/payment.html',{'amount': amount_in_paise,})  # Adjust the template name as necessary
+
+
+
+
+
 def order_summary(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     order_items = order.order_items.all()
@@ -1237,3 +1298,4 @@ def view_order(request):
     # Fetch all orders ordered by date
     orders = Order.objects.all().order_by('-ordered_at')  
     return render(request, 'employee/view_order.html', {'orders': orders})
+

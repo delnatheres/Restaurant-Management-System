@@ -66,6 +66,8 @@ urlpatterns = [
     path('place-order/', views.place_order, name='place_order'),
     path('order-summary/<int:order_id>/', views.order_summary, name='order_summary'),
     path('order/<int:item_id>/', views.place_order, name='place_order'),
+    path('order-history/', views.order_history, name='order_history'),
+    path('view-order/', views.view_order, name='view_order'),
   
     
     
@@ -75,12 +77,14 @@ urlpatterns = [
     path('employee_dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
     path('create_leave_request/<int:employee_id>/', views.create_leave_request, name='create_leave_request'),
     
+        path('create_order/', views.create_order, name='create_order'),
+       path('verify_payment/', views.verify_payment, name='verify_payment'),
+       path('payment/', views.payment_view, name='payment_view'),
     
     
-    path('order-history/', views.order_history, name='order_history'),
     
     
-   path('view-order/', views.view_order, name='view_order'),
+    
 
   
    ]
