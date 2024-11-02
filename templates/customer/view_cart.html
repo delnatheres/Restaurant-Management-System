@@ -132,7 +132,7 @@
                             <button type="submit">Update</button>
                         </form>
                     </td>
-                    <td>${{ item.get_total_price }}</td>
+                    <td>{{ item.get_total_price }}</td>
                     <td>
                         <!-- Delete item from cart form -->
                         <form action="{% url 'delete_from_cart' item.id %}" method="POST">

@@ -17,6 +17,13 @@
             background-color: #f9f9f9;
             text-align: center;
         }
+        body {
+            background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
 
         h2 {
             color: #333;
@@ -70,7 +77,14 @@
         <h2>Complete Your Payment</h2>
         <button id="rzp-button">Pay Now</button>
     </div>
-    <center><a href="{% url 'customer_dashboard' %}" class="btn btn-primary" aria-label="Back to Dashboard">Back to Dashboard</a></center>
+
+    <center>
+        <div class="button-container" style="display: flex; justify-content: center; gap: 10px;">
+            <a href="{% url 'view_cart' %}" class="btn btn-primary" aria-label="Back to Cart">Back to Cart</a>
+            <a href="{% url 'customer_dashboard' %}" class="btn btn-primary" aria-label="Back to Dashboard">Back to Dashboard</a>
+        </div>
+    </center>
+
     <script>
         document.getElementById('rzp-button').onclick = function(e) {
             console.log("Button clicked!"); // Debugging line

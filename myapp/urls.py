@@ -77,9 +77,9 @@ urlpatterns = [
     path('employee_dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
     path('create_leave_request/<int:employee_id>/', views.create_leave_request, name='create_leave_request'),
     
-        path('create_order/', views.create_order, name='create_order'),
-       path('verify_payment/', views.verify_payment, name='verify_payment'),
-       path('payment/', views.payment_view, name='payment_view'),
+    path('create_order/', views.create_order, name='create_order'),
+    path('verify_payment/', views.verify_payment, name='verify_payment'),
+    path('payment/', views.payment_view, name='payment_view'),
     
     
     

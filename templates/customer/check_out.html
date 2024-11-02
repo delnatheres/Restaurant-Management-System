@@ -128,7 +128,21 @@
 
     <script>
         document.getElementById('pay-now').addEventListener('click', function() {
-            // Redirect to payment.html
+            const contactInput = document.getElementById('contact');
+            const contactValue = contactInput.value.trim();
+
+            // Check if the contact field is empty
+            if (!contactValue) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Error',
+                    text: 'Please fill in the contact field.',
+                });
+                contactInput.focus();
+                return;
+            }
+
+            // Redirect to payment.html if validation is successful
             window.location.href = "{% url 'payment_view' %}"; // Adjust the URL to your payment page
         });
     </script>
