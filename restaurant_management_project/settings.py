@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-dc%)n^t4%bcl-e3(8s6ow0)7*xhdxf-ae32f+azm)nz$j_ikd#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -60,14 +60,27 @@ WSGI_APPLICATION = 'restaurant_management_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'mydb',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
+
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mydb',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': 'mydb_stoodthan',
+        'USER': 'mydb_stoodthan',
+        'PASSWORD': '83da761cb221d4726fcc31a53c6402d398224c80',
+        'HOST': '673js.h.filess.io',
+        'PORT': '3307',
     }
 }
 
