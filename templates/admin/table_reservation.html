@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation History</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #212529;
+        }
+
+        .history-container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e3e3e3;
+        }
+
+        .history-container h2 {
+            color: #495057;
+            font-size: 28px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .reservation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .reservation-table th {
+            background: #343a40;
+            color: #ffffff;
+            font-weight: 500;
+            text-transform: uppercase;
+            padding: 10px;
+            font-size: 13px;
+        }
+
+        .reservation-table td {
+            padding: 12px;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .reservation-table tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .reservation-table tbody tr:hover {
+            background: #e9ecef;
+        }
+
+        .reservation-table td,
+        .reservation-table th {
+            border: 1px solid #dee2e6;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border: 1px solid #28a745;
+            color: #ffffff;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border: 1px solid #dc3545;
+            color: #ffffff;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: 1px solid #6c757d;
+            color: #ffffff;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+        a.btn {
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="history-container">
+            <h2 class="text-center mb-4">Reservation History</h2>
+
+            {% if reservations %}
+                <table class="table table-striped reservation-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Guests</th>
+                            <th>Special Requests</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reservation in reservations %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ reservation.customer_name }}</td>
+                                <td>{{ reservation.email }}</td>
+                                <td>{{ reservation.phone }}</td>
+                                <td>{{ reservation.reservation_date }}</td>
+                                <td>{{ reservation.reservation_time }}</td>
+                                <td>{{ reservation.number_of_guests }}</td>
+                                <td>{{ reservation.special_requests|default:"None" }}</td>
+                                <td>
+                                    <form method="post" action="{% url 'update_reservation_status' %}" class="d-flex justify-content-center gap-2">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="reservation_id" value="{{ reservation.id }}">
+                                        <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+                                        <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-center">No reservations made yet.</p>
+            {% endif %}
+
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary w-100 mt-3">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

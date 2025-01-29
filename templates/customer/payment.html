@@ -67,6 +67,31 @@
         button:focus {
             outline: none;
         }
+
+        .terms-link {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #ff0000;  /* Red color for emphasis */
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .terms-link a {
+            color: #ff0000;  /* Red color */
+            text-decoration: none;  /* No underline */
+        }
+
+        .terms-link a:hover {
+            color: #cc0000;  /* Darker red on hover */
+        }
+
+        .warning-icon {
+            font-size: 20px;
+            color: #ff0000; /* Red color for the warning icon */
+        }
     </style>
 </head>
 <body>
@@ -75,6 +100,11 @@
 
     <div class="container">
         <h2>Complete Your Payment</h2>
+        <!-- Add the 'Before you pay' message with a warning icon -->
+        <div class="terms-link">
+            <span class="warning-icon">⚠️</span>
+            <p>Before you pay, please <a href="{% url 'terms_and_conditions' %}" target="_blank">read our Terms and Conditions</a>.</p>
+        </div>
         <button id="rzp-button">Pay Now</button>
     </div>
 
@@ -97,7 +127,26 @@
                 "image": "{% static 'your_logo.png' %}",
                 "order_id": "{{ razorpay_order_id }}",
                 "handler": function(response) {
-                    window.location.href = "?payment_id=" + response.razorpay_payment_id;
+                    // Send payment verification to backend
+                    fetch('/verify-payment/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            order_id: options.order_id,
+                            payment_id: response.razorpay_payment_id,
+                            signature: response.razorpay_signature
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            window.location.href = '/payment-success/';  // Redirect to success page
+                        } else {
+                            window.location.href = '/payment-failure/';  // Redirect to failure page
+                        }
+                    });
                 },
                 "prefill": {
                     "name": "{{ user.name }}",

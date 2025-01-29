@@ -111,6 +111,8 @@ def contact_view(request):
 def menu_view(request):
     return render(request, 'menu.html')
 
+def terms_and_conditions(request):
+    return render(request, 'terms_and_conditions.html')
 
 
 def forgot_password(request):
@@ -967,8 +969,6 @@ def delete_from_cart(request, cart_id):
 
 
 
-
-
 # Place an Order
 @login_required
 def place_order(request, item_id):
@@ -979,13 +979,6 @@ def place_order(request, item_id):
         messages.success(request, 'Order placed successfully!')
         return redirect('customer_dashboard')
     return render(request, 'customer/menu_item.html', {'item': item})
-
-
-
-
-
-
-
 
 
 
@@ -1299,3 +1292,205 @@ def view_order(request):
     orders = Order.objects.all().order_by('-ordered_at')  
     return render(request, 'employee/view_order.html', {'orders': orders})
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import TableReservation
+from datetime import datetime
+
+def reserve_table(request):
+    if request.method == 'POST':
+        # Retrieve data from the form
+        customer_name = request.POST.get('customer_name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        reservation_date = request.POST.get('reservation_date')
+        reservation_time = request.POST.get('reservation_time')
+        number_of_guests = request.POST.get('number_of_guests')
+        special_requests = request.POST.get('special_requests', '')
+
+        # Validate and parse date/time
+        try:
+            reservation_date = datetime.strptime(reservation_date, "%Y-%m-%d").date()
+            reservation_time = datetime.strptime(reservation_time, "%H:%M").time()
+        except ValueError:
+            messages.error(request, "Invalid date or time format. Please try again.")
+            return redirect('reserve_table')
+
+        # Create reservation and save to the database
+        reservation = TableReservation.objects.create(
+            customer_name=customer_name,
+            email=email,
+            phone=phone,
+            reservation_date=reservation_date,
+            reservation_time=reservation_time,
+            number_of_guests=number_of_guests,
+            special_requests=special_requests
+        )
+
+        # Convert date and time objects to strings
+        reservation_date_str = reservation_date.strftime("%Y-%m-%d")
+        reservation_time_str = reservation_time.strftime("%H:%M")
+
+        # Save the reservation to the session (convert date and time to string)
+        reservations = request.session.get('reservations', [])
+        reservations.append({
+            'customer_name': customer_name,
+            'email': email,
+            'phone': phone,
+            'reservation_date': reservation_date_str,  # Store as string
+            'reservation_time': reservation_time_str,  # Store as string
+            'number_of_guests': number_of_guests,
+            'special_requests': special_requests,
+        })
+        request.session['reservations'] = reservations
+
+        # Show success message
+        messages.success(request, "Your reservation has been successfully added!")
+        return redirect('reservation_history')
+
+    return render(request, 'customer/reserve_table.html')
+
+
+
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+def view_reservation(request):
+    # Get the latest reservation from the session
+    reservations = request.session.get('reservations', [])
+    if not reservations:
+        messages.error(request, "No reservation found.")
+        return redirect('reserve_table')
+
+    # Fetch the most recent reservation
+    latest_reservation = reservations[-1]
+
+    return render(request, 'customer/view_reservation.html', {'reservation': latest_reservation})
+
+
+
+
+from django.shortcuts import render
+
+def reservation_history(request):
+    # Fetch reservations from session
+    reservations = request.session.get('reservations', [])
+    return render(request, 'customer/reservation_history.html', {
+        'reservations': reservations,
+    })
+
+
+
+def table_reservation(request):
+    # Fetch reservations from session
+    reservations = request.session.get('reservations', [])
+    return render(request, 'admin/table_reservation.html', {
+        'reservations': reservations,
+    })
+
+def table_reservation_history(request):
+    # Fetch reservations from session
+    reservations = request.session.get('reservations', [])
+    return render(request, 'employee/table_reservation_history.html', {
+        'reservations': reservations,
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.contrib import messages
+
+def table_reservation(request):
+    # Mock data for reservations if session data doesn't exist
+    if 'reservations' not in request.session:
+        request.session['reservations'] = [
+            {
+                'id': 1,
+                'customer_name': 'John Doe',
+                'email': 'john@example.com',
+                'phone': '1234567890',
+                'reservation_date': '2025-01-30',
+                'reservation_time': '19:00',
+                'number_of_guests': 4,
+                'special_requests': 'Window seat',
+                'status': 'Pending',
+            },
+            {
+                'id': 2,
+                'customer_name': 'Jane Smith',
+                'email': 'jane@example.com',
+                'phone': '9876543210',
+                'reservation_date': '2025-01-31',
+                'reservation_time': '20:00',
+                'number_of_guests': 2,
+                'special_requests': 'Vegan menu',
+                'status': 'Pending',
+            }
+        ]
+
+    reservations = request.session['reservations']
+    return render(request, 'admin/table_reservation.html', {
+        'reservations': reservations,
+    })
+
+
+def update_reservation_status(request):
+    if request.method == 'POST':
+        reservation_id = request.POST.get('reservation_id')
+        action = request.POST.get('action')
+
+        if not reservation_id or not action:
+            messages.error(request, "Invalid request data.")
+            return redirect('table_reservation')
+
+        try:
+            # Fetch reservations from the session (or database if using one)
+            reservations = request.session.get('reservations', [])
+            for reservation in reservations:
+                if str(reservation['id']) == str(reservation_id):
+                    if action == 'approve':
+                        reservation['status'] = 'Approved'
+                        messages.success(request, f"Reservation {reservation_id} has been approved.")
+                    elif action == 'reject':
+                        reservation['status'] = 'Rejected'
+                        messages.error(request, f"Reservation {reservation_id} has been rejected.")
+                    break
+            else:
+                messages.error(request, "Reservation not found.")
+
+            # Save updated reservations back to the session
+            request.session['reservations'] = reservations
+
+        except Exception as e:
+            messages.error(request, f"An error occurred: {str(e)}")
+
+    return redirect('table_reservation')

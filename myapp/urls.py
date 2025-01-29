@@ -2,10 +2,12 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+
 urlpatterns = [
     path('', views.index_view, name='index'),  # Root URL for index
     path('about/', views.about_view, name='about'),
     path('contact/', views.contact_view, name='contact'),
+    path('terms-and-conditions/', views.terms_and_conditions, name='terms_and_conditions'),
     path('menu/', views.menu_view, name='menu'),
     path('sign_in/', views.sign_in_view, name='sign_in'),
     path('login/', views.login_view, name='login'),
@@ -68,24 +70,30 @@ urlpatterns = [
     path('order/<int:item_id>/', views.place_order, name='place_order'),
     path('order-history/', views.order_history, name='order_history'),
     path('view-order/', views.view_order, name='view_order'),
-  
-    
-    
-    
-    
     path('dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
     path('employee_dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
     path('create_leave_request/<int:employee_id>/', views.create_leave_request, name='create_leave_request'),
-    
     path('create_order/', views.create_order, name='create_order'),
     path('verify_payment/', views.verify_payment, name='verify_payment'),
     path('payment/', views.payment_view, name='payment_view'),
-    
-    
-    
-    
-    
 
+
+    path('reserve_table/', views.reserve_table, name='reserve_table'),
+    path('reserve/', views.reserve_table, name='reserve_table'),
+    path('view-reservation/', views.view_reservation, name='view_reservation'),
+
+    path('reserve-table/', views.reserve_table, name='reserve_table'),
+    path('reservation-history/', views.reservation_history, name='reservation_history'),
+
+    path('table_reservation/', views.table_reservation, name='table_reservation'),
+    path('table_reservation_history/', views.table_reservation_history, name='table_reservation_history'),
+
+
+
+    path('table_reservation/', views.table_reservation, name='table_reservation'),
+        path('update-reservation-status/', views.update_reservation_status, name='update_reservation_status'),
+
+    
   
    ]
 if settings.DEBUG:
