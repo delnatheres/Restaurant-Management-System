@@ -1310,6 +1310,11 @@ from django.contrib import messages
 from .models import TableReservation
 from datetime import datetime
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from datetime import datetime, date
+from .models import TableReservation
+
 def reserve_table(request):
     if request.method == 'POST':
         # Retrieve data from the form
@@ -1317,16 +1322,40 @@ def reserve_table(request):
         email = request.POST.get('email')
         phone = request.POST.get('phone')
         reservation_date = request.POST.get('reservation_date')
-        reservation_time = request.POST.get('reservation_time')
+        reservation_time = request.POST.get('reservation_time')  # Now in AM/PM format
         number_of_guests = request.POST.get('number_of_guests')
         special_requests = request.POST.get('special_requests', '')
 
-        # Validate and parse date/time
+        # Validate phone number
+        if not phone.isdigit() or len(phone) > 10:
+            messages.error(request, "Invalid phone number. Please enter up to 10 digits only.")
+            return redirect('reserve_table')
+
+        # Validate number of guests
+        try:
+            number_of_guests = int(number_of_guests)
+            if number_of_guests < 1 or number_of_guests > 10:
+                messages.error(request, "Number of guests must be between 1 and 10.")
+                return redirect('reserve_table')
+        except ValueError:
+            messages.error(request, "Invalid number of guests.")
+            return redirect('reserve_table')
+
+        # Validate and parse date
         try:
             reservation_date = datetime.strptime(reservation_date, "%Y-%m-%d").date()
-            reservation_time = datetime.strptime(reservation_time, "%H:%M").time()
+            if reservation_date < date.today():
+                messages.error(request, "You can only reserve a table for today or future dates.")
+                return redirect('reserve_table')
         except ValueError:
-            messages.error(request, "Invalid date or time format. Please try again.")
+            messages.error(request, "Invalid date format. Please try again.")
+            return redirect('reserve_table')
+
+        # Convert 12-hour AM/PM time format to 24-hour format
+        try:
+            reservation_time = datetime.strptime(reservation_time, "%I:%M %p").time()
+        except ValueError:
+            messages.error(request, "Invalid time format. Please select a valid time slot.")
             return redirect('reserve_table')
 
         # Create reservation and save to the database
@@ -1342,16 +1371,16 @@ def reserve_table(request):
 
         # Convert date and time objects to strings
         reservation_date_str = reservation_date.strftime("%Y-%m-%d")
-        reservation_time_str = reservation_time.strftime("%H:%M")
+        reservation_time_str = reservation_time.strftime("%I:%M %p")  # Store in 12-hour format for session
 
-        # Save the reservation to the session (convert date and time to string)
+        # Save the reservation to the session
         reservations = request.session.get('reservations', [])
         reservations.append({
             'customer_name': customer_name,
             'email': email,
             'phone': phone,
-            'reservation_date': reservation_date_str,  # Store as string
-            'reservation_time': reservation_time_str,  # Store as string
+            'reservation_date': reservation_date_str,
+            'reservation_time': reservation_time_str,
             'number_of_guests': number_of_guests,
             'special_requests': special_requests,
         })
@@ -1362,6 +1391,7 @@ def reserve_table(request):
         return redirect('reservation_history')
 
     return render(request, 'customer/reserve_table.html')
+
 
 
 

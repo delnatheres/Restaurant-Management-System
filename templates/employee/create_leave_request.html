@@ -9,86 +9,94 @@
         body {
             background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
             font-family: 'Arial', sans-serif;
-            color: #333; /* Dark text color */
-            padding: 20px; /* Add some padding */
+            color: #333;
+            padding: 20px;
         }
 
         h1 {
             text-align: center;
-            color: #2c3e50; /* Dark blue color */
-            margin-bottom: 30px; /* Space below the heading */
+            color: #2c3e50;
+            margin-bottom: 30px;
         }
 
         form {
-            background: rgba(255, 255, 255, 0.9); /* Slightly transparent white background for the form */
-            padding: 20px; /* Padding inside the form */
-            border-radius: 8px; /* Rounded corners */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-            max-width: 600px; /* Limit the width of the form */
-            margin: 0 auto; /* Center the form */
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         label {
-            display: block; /* Labels should take full width */
-            margin-bottom: 5px; /* Space below labels */
-            font-weight: bold; /* Bold text for labels */
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
         }
 
         input[type="text"],
         input[type="date"],
         textarea {
-            width: 100%; /* Full width for inputs */
-            padding: 10px; /* Padding inside inputs */
-            border: 1px solid #ccc; /* Light gray border */
-            border-radius: 4px; /* Slightly rounded corners */
-            margin-bottom: 20px; /* Space below inputs */
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 20px;
         }
 
         textarea {
-            resize: vertical; /* Allow vertical resizing */
+            resize: vertical;
         }
 
         button {
-            background-color: #5cb85c; /* Green button */
-            color: white; /* White text */
-            border: none; /* No border */
-            padding: 10px 15px; /* Padding for button */
-            border-radius: 5px; /* Rounded corners for button */
-            cursor: pointer; /* Pointer cursor on hover */
-            font-size: 16px; /* Slightly larger font */
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
         }
 
         button:hover {
-            background-color: #4cae4c; /* Darker green on hover */
+            background-color: #4cae4c;
         }
 
         a {
-            display: inline-block; /* Make the link block-level */
-            margin-top: 20px; /* Space above the link */
-            text-align: center; /* Center text */
-            color: #007bff; /* Bootstrap primary blue */
-            text-decoration: none; /* No underline */
-            font-weight: bold; /* Bold text */
+            display: inline-block;
+            margin-top: 20px;
+            text-align: center;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
         }
 
         a:hover {
-            text-decoration: underline; /* Underline on hover */
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.9rem;
+            display: none;
         }
     </style>
 </head>
 <body>
     <h1>Apply for Leave</h1>
 
-    <form method="POST">
+    <form method="POST" id="leave-form">
         {% csrf_token %}
         <label for="leave_type">Leave Type:</label>
         <input type="text" name="leave_type" required><br>
 
         <label for="start_date">Start Date:</label>
-        <input type="date" name="start_date" required><br>
+        <input type="date" name="start_date" id="start_date" required><br>
+        <div id="start-date-error" class="error-message">Start date cannot be in the past or same as end date.</div>
 
         <label for="end_date">End Date:</label>
-        <input type="date" name="end_date" required><br>
+        <input type="date" name="end_date" id="end_date" required><br>
+        <div id="end-date-error" class="error-message">End date cannot be before start date or same as start date.</div>
 
         <label for="reason">Reason:</label>
         <textarea name="reason" required></textarea><br>
@@ -97,5 +105,78 @@
     </form>
 
     <center><a href="{% url 'employee_dashboard' employee.employee_id %}">Back to Dashboard</a></center>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const startDateField = document.getElementById("start_date");
+            const endDateField = document.getElementById("end_date");
+            const startDateError = document.getElementById("start-date-error");
+            const endDateError = document.getElementById("end-date-error");
+            const form = document.getElementById("leave-form");
+
+            // Set the minimum date as today
+            const today = new Date().toISOString().split("T")[0];
+            startDateField.setAttribute("min", today);
+            endDateField.setAttribute("min", today);
+
+            // Real-time validation for date fields
+            function validateDates() {
+                const startDate = startDateField.value;
+                const endDate = endDateField.value;
+
+                // Validate Start Date: Cannot be in the past
+                if (startDate && startDate < today) {
+                    startDateError.style.display = "block";
+                } else {
+                    startDateError.style.display = "none";
+                }
+
+                // Validate End Date: Cannot be before Start Date or the same
+                if (endDate && endDate < startDate) {
+                    endDateError.textContent = "End date cannot be before start date.";
+                    endDateError.style.display = "block";
+                } else if (endDate === startDate) {
+                    endDateError.textContent = "End date cannot be the same as start date.";
+                    endDateError.style.display = "block";
+                } else {
+                    endDateError.style.display = "none";
+                }
+            }
+
+            // Event listeners for date fields
+            startDateField.addEventListener("input", validateDates);
+            endDateField.addEventListener("input", validateDates);
+
+            // Form submission validation
+            form.addEventListener("submit", function(event) {
+                let isValid = true;
+
+                // Check if start date is before today
+                if (startDateField.value < today) {
+                    startDateError.style.display = "block";
+                    isValid = false;
+                } else {
+                    startDateError.style.display = "none";
+                }
+
+                // Check if end date is before start date or the same
+                if (endDateField.value < startDateField.value) {
+                    endDateError.textContent = "End date cannot be before start date.";
+                    endDateError.style.display = "block";
+                    isValid = false;
+                } else if (endDateField.value === startDateField.value) {
+                    endDateError.textContent = "End date cannot be the same as start date.";
+                    endDateError.style.display = "block";
+                    isValid = false;
+                } else {
+                    endDateError.style.display = "none";
+                }
+
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
