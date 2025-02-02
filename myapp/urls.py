@@ -76,22 +76,18 @@ urlpatterns = [
     path('create_order/', views.create_order, name='create_order'),
     path('verify_payment/', views.verify_payment, name='verify_payment'),
     path('payment/', views.payment_view, name='payment_view'),
-
-
     path('reserve_table/', views.reserve_table, name='reserve_table'),
     path('reserve/', views.reserve_table, name='reserve_table'),
     path('view-reservation/', views.view_reservation, name='view_reservation'),
-
     path('reserve-table/', views.reserve_table, name='reserve_table'),
     path('reservation-history/', views.reservation_history, name='reservation_history'),
-
     path('table_reservation/', views.table_reservation, name='table_reservation'),
     path('table_reservation_history/', views.table_reservation_history, name='table_reservation_history'),
-
-
-
     path('table_reservation/', views.table_reservation, name='table_reservation'),
-        path('update-reservation-status/', views.update_reservation_status, name='update_reservation_status'),
+    path('update-reservation-status/', views.update_reservation_status, name='update_reservation_status'),
+    
+
+
 
     
   

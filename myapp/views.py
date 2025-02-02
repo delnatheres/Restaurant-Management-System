@@ -1298,13 +1298,6 @@ def view_order(request):
 
 
 
-
-
-
-
-
-
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import TableReservation
@@ -1440,16 +1433,6 @@ def table_reservation_history(request):
     return render(request, 'employee/table_reservation_history.html', {
         'reservations': reservations,
     })
-
-
-
-
-
-
-
-
-
-
 
 
 

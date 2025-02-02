@@ -23,9 +23,18 @@
             text-align: center;
             vertical-align: middle;
         }
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 14px;
+            padding: 8px 15px;
+        }
     </style>
 </head>
 <body>
+    <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary back-btn">Back to Dashboard</a>
+    
     <div class="container">
         <div class="history-container">
             <h2 class="text-center mb-4">Your Reservation History</h2>
@@ -34,7 +43,7 @@
                 <table class="table table-striped reservation-table">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>SL NO</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
@@ -64,7 +73,6 @@
             {% endif %}
 
             <a href="{% url 'reserve_table' %}" class="btn btn-primary w-100 mt-3">Make Another Reservation</a>
-            <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary w-100 mt-3">Back to Dashboard</a>
         </div>
     </div>
 
