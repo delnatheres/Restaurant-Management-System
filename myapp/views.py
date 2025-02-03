@@ -1507,3 +1507,132 @@ def update_reservation_status(request):
             messages.error(request, f"An error occurred: {str(e)}")
 
     return redirect('table_reservation')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import logging
+import google.generativeai as genai
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Configure the Generative AI client
+API_KEY = "AIzaSyBnNAb8qvTChM3TVTPKqIYEug3SlSzSO3Q"
+genai.configure(api_key=API_KEY)
+
+# Update the system prompt to specify Indian Rupees
+SYSTEM_PROMPT = """You are a helpful Restaurant Assistant for our restaurant management system. 
+Your role is to assist customers with:
+
+1. Menu Information:
+   - Dish recommendations with prices in Indian Rupees (₹)
+   - Price ranges (e.g., ₹200-₹500 for main courses)
+   - Special dietary options (vegetarian, vegan, gluten-free)
+   - Daily specials and their prices
+
+2. Reservation Help:
+   - Table booking process
+   - Minimum booking amounts if applicable
+   - Cancellation policies
+   - Special event booking rates
+
+3. General Information:
+   - Restaurant hours
+   - Location and directions
+   - Payment methods (UPI, cards, cash)
+   - Minimum order values
+   - Delivery charges if applicable
+
+4. Special Services:
+   - Catering packages with pricing
+   - Private dining costs
+   - Group booking rates
+   - Special occasion celebration packages
+
+Please format responses in a clear, structured way using:
+- Show all prices in Indian Rupees with the ₹ symbol
+- Use bullet points for lists
+- *text* for emphasis
+- Clear sections with line breaks
+- Professional and friendly tone"""
+
+@csrf_exempt
+def chatbot(request):
+    if request.method == 'POST':
+        user_message = request.POST.get('message')
+
+        if not user_message:
+            return JsonResponse({'error': 'No message provided'}, status=400)
+
+        try:
+            # Create the model
+            model = genai.GenerativeModel("gemini-pro")
+
+            # Add restaurant-specific context with Indian pricing
+            restaurant_context = """
+            Our restaurant offers:
+            
+            Menu Price Ranges:
+            - Starters: ₹150 - ₹300
+            - Main Course: ₹250 - ₹500
+            - Desserts: ₹100 - ₹200
+            - Beverages: ₹80 - ₹150
+            
+            Special Offers:
+            - Lunch Buffet: ₹499 per person
+            - Weekend Brunch: ₹699 per person
+            - Happy Hours (4-6 PM): 20% off on beverages
+            - Group Discount: 10% off for groups of 8 or more
+            
+            Minimum Orders:
+            - Dine-in: No minimum order
+            - Delivery: Minimum ₹300
+            - Private Events: Starting from ₹15,000
+            
+            Payment Options:
+            - All major credit/debit cards
+            - UPI payments (PhonePe, Google Pay, Paytm)
+            - Cash payments
+            
+            Opening Hours:
+            - Monday to Friday: 11:00 AM - 10:00 PM
+            - Saturday and Sunday: 10:00 AM - 11:00 PM
+            
+            Location: [Your Restaurant Address]
+            Contact: [Your Restaurant Phone]
+            """
+
+            # Combine prompts and generate response
+            formatted_prompt = f"{SYSTEM_PROMPT}\n\nRestaurant Context: {restaurant_context}\n\nCustomer Query: {user_message}"
+            response = model.generate_content(formatted_prompt)
+
+            # Format the response
+            ai_message = response.text.replace('•', '&bull;')
+            
+            # Ensure ₹ symbol is displayed correctly
+            ai_message = ai_message.replace('Rs.', '₹').replace('INR', '₹')
+            
+            logger.info(f"Generated response for: {user_message}")
+            return JsonResponse({'response': ai_message})
+
+        except Exception as e:
+            logger.error(f"Error in restaurant chatbot: {str(e)}")
+            return JsonResponse({
+                'response': "I apologize, but I'm having trouble assisting you at the moment. Please try again or speak with our staff for immediate assistance."
+            }, status=200)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
