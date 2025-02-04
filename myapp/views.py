@@ -1514,13 +1514,6 @@ def update_reservation_status(request):
 
 
 
-
-
-
-
-
-
-
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import logging
@@ -1636,3 +1629,32 @@ def chatbot(request):
             }, status=200)
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+
+
+
+
+
+
+
+
+    from django.shortcuts import render, redirect
+from .models import Reservation
+
+def edit_reservation(request):
+    reservation = Reservation.objects.first()  # Fetch the first reservation (modify logic as needed)
+    
+    if request.method == 'POST':
+        reservation.customer_name = request.POST.get('customer_name')
+        reservation.email = request.POST.get('email')
+        reservation.phone = request.POST.get('phone')
+        reservation.reservation_date = request.POST.get('reservation_date')
+        reservation.reservation_time = request.POST.get('reservation_time')
+        reservation.number_of_guests = request.POST.get('number_of_guests')
+        reservation.special_requests = request.POST.get('special_requests', '')
+
+        reservation.save()
+        return redirect('view_reservation')  # Redirect after saving
+
+    return render(request, 'customer/edit_reservation.html', {'reservation': reservation})

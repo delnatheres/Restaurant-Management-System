@@ -11,8 +11,56 @@
         body {
             background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
+            padding: 0;
+            margin: 0;
+            display: flex;
         }
+
+        /* Sidebar styles */
+        #sidebar {
+            width: 250px;
+            background-color: #34495e;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            bottom: 0;
+        }
+
+        #sidebar h1 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        #sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        #sidebar ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+        }
+
+        #sidebar ul li a:hover {
+            color: #3498db;
+        }
+
+        /* Main content */
+        .main-content {
+            margin-left: 270px; /* To account for the sidebar */
+            padding: 20px;
+            flex: 1;
+        }
+
         .container {
             max-width: 800px;
             margin: auto;
@@ -21,70 +69,92 @@
             border-radius: 10px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
+
         .card {
             margin-bottom: 20px;
         }
+
         .alert {
             margin-bottom: 20px;
         }
+
         /* Adjust search input box and button size */
         .search-input {
             width: 150px; /* Set the width to your preference */
         }
+
         .search-button {
             padding: 5px 10px; /* Adjust padding for a smaller button */
         }
+
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1 class="text-center mb-4">Your Leave Status</h1>
-    <!-- Search Form -->
-    <form method="GET" class="mb-4">
-        <div class="input-group">
-            <input type="text" name="search" class="form-control search-input" placeholder="Search by employee name" value="{{ request.GET.search }}">
-            <button type="submit" class="btn btn-primary search-button">Search</button>
-        </div>
-    </form>
-    <!-- Back Button (only shown when there is a search query) -->
-    {% if request.GET.search %}
-    <div class="mb-4">
-       <center> <a href="{% url 'view_leave_status' %}" class="btn btn-secondary">Back to Leave Status</a></center>
+    <!-- Sidebar (Employee Dashboard) -->
+    <div id="sidebar">
+        <h1><i class="fas fa-user-tie"></i> Employee Dashboard</h1>
+        <ul>
+            <li><a href="{% url 'menu_item_new' %}"><i class="fas fa-utensils"></i> View Menu</a></li>
+            <li><a href="{% url 'table_reservation_history' %}"><i class="fas fa-receipt"></i> View Reservation History</a></li>
+            <li><a href="{% url 'view_order' %}"><i class="fas fa-receipt"></i> View Orders</a></li>
+            <li><a href="{% url 'view_leave_status' %}"><i class="fas fa-check-circle"></i> View Leave Approval</a></li>
+            <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
     </div>
-    {% endif %}
 
-    <!-- Alert for messages -->
-    {% if messages %}
-        <div class="alert alert-info">
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <!-- Leave Requests List -->
-    {% if leave_requests %}
-        <div class="row">
-            {% for request in leave_requests %}
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ request.leave_type }}</h5>
-                        <p class="card-text">Employee Name: <strong>{{ request.employee.name }}</strong></p> <!-- Display employee name -->
-                        <p class="card-text">From: {{ request.start_date }} to {{ request.end_date }}</p>
-                        <p class="card-text">Reason: {{ request.reason }}</p>
-                        <p class="card-text"><strong>Status: {{ request.get_status_display }}</strong></p> <!-- Use get_status_display() -->
-                    </div>
+    <!-- Main Content Section -->
+    <div class="main-content">
+        <div class="container">
+            <h1 class="text-center mb-4">Your Leave Status</h1>
+            
+            <!-- Search Form -->
+            <form method="GET" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control search-input" placeholder="Search by employee name" value="{{ request.GET.search }}">
+                    <button type="submit" class="btn btn-primary search-button">Search</button>
                 </div>
-            </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="alert alert-info text-center">No leave requests found.</div>
-    {% endif %}
-</div>
+            </form>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+            <!-- Back Button (only shown when there is a search query) -->
+            {% if request.GET.search %}
+            <div class="mb-4">
+                <center><a href="{% url 'view_leave_status' %}" class="btn btn-secondary">Back to Leave Status</a></center>
+            </div>
+            {% endif %}
+
+            <!-- Alert for messages -->
+            {% if messages %}
+                <div class="alert alert-info">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Leave Requests List -->
+            {% if leave_requests %}
+                <div class="row">
+                    {% for request in leave_requests %}
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ request.leave_type }}</h5>
+                                <p class="card-text">Employee Name: <strong>{{ request.employee.name }}</strong></p> <!-- Display employee name -->
+                                <p class="card-text">From: {{ request.start_date }} to {{ request.end_date }}</p>
+                                <p class="card-text">Reason: {{ request.reason }}</p>
+                                <p class="card-text"><strong>Status: {{ request.get_status_display }}</strong></p> <!-- Use get_status_display() -->
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center">No leave requests found.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

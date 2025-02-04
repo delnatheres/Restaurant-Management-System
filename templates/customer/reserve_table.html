@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,42 @@
             background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
+        #sidebar {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        #sidebar h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #sidebar ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        #sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        #sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        #sidebar ul li a:hover {
+            color: #f3b820;
+        }
+
         .reservation-form {
             max-width: 600px;
             margin: 50px auto;
@@ -18,17 +55,22 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            margin-left: 270px;
         }
+
         .availability-status {
             font-weight: bold;
             margin-top: 10px;
         }
+
         .available {
             color: green;
         }
+
         .unavailable {
             color: red;
         }
+
         .error-message {
             color: red;
             font-size: 0.9rem;
@@ -36,16 +78,33 @@
         }
     </style>
 </head>
+
 <body>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <h1><i class="fas fa-user-tie"></i>Customer Dashboard</h1>
+        <ul>
+            <li><a href="{% url 'menu_item' %}"><i class="fas fa-utensils"></i> View Menu</a></li>
+            <li><a href="{% url 'reserve_table' %}"><i class="fas fa-calendar-alt"></i> Reserve Table</a></li>
+            <li><a href="{% url 'view_reservation' %}"><i class="fas fa-calendar-check"></i> View Reservations</a></li>
+            <li><a href="{% url 'reservation_history' %}"><i class="fas fa-receipt"></i> Reservation History</a></li>
+            <li><a href="{% url 'view_cart' %}"><i class="fas fa-shopping-cart"></i> View Cart List</a></li>
+            <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i> Feedback</a></li>
+            <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
     <div class="container">
         <div class="reservation-form">
             <h2 class="text-center mb-4">Reserve Your Table</h2>
             {% if messages %}
-                <div class="alert alert-success">
-                    {% for message in messages %}
-                        {{ message }}
-                    {% endfor %}
-                </div>
+            <div class="alert alert-success">
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+            </div>
             {% endif %}
             <form id="reservation-form" method="POST">
                 {% csrf_token %}
@@ -78,7 +137,7 @@
                     <label for="number_of_guests" class="form-label">Number of Guests</label>
                     <input type="number" class="form-control" id="number_of_guests" name="number_of_guests" min="1" max="10" required>
                     <div id="guests-error" class="error-message">Number of guests cannot exceed 10.</div>
-                </div>                   
+                </div>
                 <div class="mb-3">
                     <label for="table_number" class="form-label">Select Table</label>
                     <select class="form-select" id="table_number" name="table_number" required>
@@ -110,7 +169,7 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const form = document.getElementById("reservation-form");
 
             // Simulated table reservations data (You would normally fetch this data from your backend)
@@ -180,7 +239,7 @@
 
             // Real-time validation
             function validateField(field, regex, errorId) {
-                field.addEventListener("input", function() {
+                field.addEventListener("input", function () {
                     if (regex.test(field.value)) {
                         document.getElementById(errorId).style.display = "none";
                     } else {
@@ -194,7 +253,7 @@
             validateField(document.getElementById("phone"), /^\d{10}$/, "phone-error");
 
             // Form submission validation
-            form.addEventListener("submit", function(event) {
+            form.addEventListener("submit", function (event) {
                 let isValid = true;
 
                 if (!/^[A-Za-z]+$/.test(document.getElementById("customer_name").value)) {
@@ -209,14 +268,8 @@
                     document.getElementById("phone-error").style.display = "block";
                     isValid = false;
                 }
-
-                // Check if selected table is available
-                const tableSelect = document.getElementById("table_number");
-                const selectedTable = tableSelect.value;
-                if (tableSelect.options[tableSelect.selectedIndex].disabled) {
-                    availabilityMessage.textContent = "This table is not available at the selected time.";
-                    availabilityMessage.classList.add("unavailable");
-                    availabilityMessage.classList.remove("available");
+                if (parseInt(document.getElementById("number_of_guests").value) > 10) {
+                    document.getElementById("guests-error").style.display = "block";
                     isValid = false;
                 }
 
@@ -227,4 +280,5 @@
         });
     </script>
 </body>
+
 </html>

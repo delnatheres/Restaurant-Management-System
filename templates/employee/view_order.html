@@ -11,21 +11,65 @@
             font-family: 'Arial', sans-serif;
             background-color: #eef2f3; /* Soft background color */
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            display: flex;
         }
+
+        /* Sidebar Styles */
+        #sidebar {
+            width: 250px;
+            background-color: #34495e;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            bottom: 0;
+        }
+
+        #sidebar h1 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        #sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        #sidebar ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+        }
+
+        #sidebar ul li a:hover {
+            color: #3498db;
+        }
+
+        /* Order History Content */
+        .history-container {
+            margin-left: 280px;
+            padding: 20px;
+            width: calc(100% - 280px);
+            background-color: #ffffff; /* White background for container */
+            border-radius: 10px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
         h1 {
             text-align: center;
             color: #333;
             margin-bottom: 10px;
         }
-        .history-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 30px;
-            background-color: #ffffff; /* White background for container */
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
+
         .order-block {
             border: 1px solid #ccc;
             padding: 20px;
@@ -34,45 +78,78 @@
             background-color: #f9f9f9; /* Light grey background for each order block */
             transition: box-shadow 0.3s; /* Transition effect */
         }
+
         .order-block:hover {
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow on hover */
         }
+
         strong {
             display: inline-block;
             margin-bottom: 8px;
             color: #555; /* Darker color for better readability */
         }
+
         .order-item {
             margin-left: 20px;
             color: #666; /* Lighter color for items */
         }
+
         .back-button {
             display: inline-block;
             margin: 20px 0;
-            padding: 10px 15px; /* Adjusted padding for button size */
+            padding: 10px 15px;
             background-color: #FFD700; /* Yellow background color */
             color: white;
             text-decoration: none;
             border-radius: 5px;
             text-align: center;
             font-size: 16px; /* Slightly larger font size */
-            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
+            transition: background-color 0.3s, transform 0.3s;
             border: none;
         }
+
         .back-button:hover {
             background-color: #FFC107; /* Slightly darker yellow on hover */
             transform: translateY(-2px); /* Slight lift effect */
         }
+
         .order-items-list {
             list-style-type: none; /* Remove bullets */
             padding: 0; /* Remove default padding */
         }
+
         .order-items-list li {
             padding: 5px 0; /* Spacing for items */
+        }
+
+        /* Adjust for smaller screens */
+        @media (max-width: 768px) {
+            #sidebar {
+                width: 200px;
+            }
+
+            .history-container {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- Sidebar (Employee Dashboard) -->
+    <div id="sidebar">
+        <h1><i class="fas fa-user-tie"></i> Employee Dashboard</h1>
+        <ul>
+            <li><a href="{% url 'menu_item_new' %}"><i class="fas fa-utensils"></i> View Menu</a></li>
+            <li><a href="{% url 'table_reservation_history' %}"><i class="fas fa-receipt"></i> View Reservation History</a></li>
+            <li><a href="{% url 'view_order' %}"><i class="fas fa-receipt"></i> View Orders</a></li>
+            <li><a href="{% url 'view_leave_status' %}"><i class="fas fa-check-circle"></i> View Leave Approval</a></li>
+            <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Order History Content -->
     <div class="history-container">
         <h1>Order History</h1>
 
@@ -101,5 +178,6 @@
             <p>No orders found.</p>
         {% endif %}
     </div>
+
 </body>
 </html>

@@ -10,61 +10,127 @@
         body {
             background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            height: 100vh;  /* Ensure body takes full viewport height */
+            margin: 0;
         }
-        .history-container {
-            max-width: 800px;
-            margin: 50px auto;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 30px;
+
+        #sidebar {
+            width: 250px;
+            background-color: #34495e;
+            color: white;
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;  /* Sidebar will take full height */
+            z-index: 1000;  /* Ensure sidebar stays above content */
         }
+
+        #sidebar h1 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        #sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        #sidebar ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+        }
+
+        #sidebar ul li a:hover {
+            color: #3498db;
+        }
+
+        .history-container {
+            margin-left: 250px;  /* Create space for the sidebar */
+            padding: 20px;
+            width: calc(100% - 250px);  /* Adjust width for sidebar */
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow-y: auto;  /* Allow content to scroll if necessary */
+            height: 100vh;  /* Full height to match the sidebar */
+        }
+
         .reservation-table th, .reservation-table td {
             text-align: center;
             vertical-align: middle;
         }
+
+        /* Adjust for smaller screens */
+        @media (max-width: 768px) {
+            #sidebar {
+                width: 200px;  /* Adjust sidebar size on small screens */
+            }
+
+            .history-container {
+                margin-left: 200px;  /* Adjust content width for smaller screens */
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="history-container">
-            <h2 class="text-center mb-4"> Reservation History</h2>
 
-            {% if reservations %}
-                <table class="table table-striped reservation-table">
-                    <thead>
+    <!-- Sidebar (Employee Dashboard) -->
+    <div id="sidebar">
+        <h1><i class="fas fa-user-tie"></i>Employee Dashboard</h1>
+        <ul>
+            <li><a href="{% url 'menu_item_new' %}"><i class="fas fa-utensils"></i> View Menu</a></li>
+            <li><a href="{% url 'table_reservation_history' %}"><i class="fas fa-receipt"></i> View Reservation History</a></li>
+            <li><a href="{% url 'view_order' %}"><i class="fas fa-receipt"></i> View Orders</a></li>
+            <li><a href="{% url 'view_leave_status' %}"><i class="fas fa-check-circle"></i> View Leave Approval</a></li>
+            <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Reservation History Content -->
+    <div class="history-container">
+        <h2 class="text-center mb-4">Reservation History</h2>
+
+        {% if reservations %}
+            <table class="table table-striped reservation-table">
+                <thead>
+                    <tr>
+                        <th>SL NO</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Guests</th>
+                        <th>Special Requests</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reservation in reservations %}
                         <tr>
-                            <th>SL NO</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Guests</th>
-                            <th>Special Requests</th>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ reservation.customer_name }}</td>
+                            <td>{{ reservation.email }}</td>
+                            <td>{{ reservation.phone }}</td>
+                            <td>{{ reservation.reservation_date }}</td>
+                            <td>{{ reservation.reservation_time }}</td>
+                            <td>{{ reservation.number_of_guests }}</td>
+                            <td>{{ reservation.special_requests|default:"None" }}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for reservation in reservations %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ reservation.customer_name }}</td>
-                                <td>{{ reservation.email }}</td>
-                                <td>{{ reservation.phone }}</td>
-                                <td>{{ reservation.reservation_date }}</td>
-                                <td>{{ reservation.reservation_time }}</td>
-                                <td>{{ reservation.number_of_guests }}</td>
-                                <td>{{ reservation.special_requests|default:"None" }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p class="text-center">No reservations made yet.</p>
-            {% endif %}
-
-            
-        </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-center">No reservations made yet.</p>
+        {% endif %}
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

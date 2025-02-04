@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,12 +12,55 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
+            display: flex;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #sidebar {
+            width: 250px;
+            background-color: #34495e;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;  /* Full height */
+            z-index: 1000;  /* Keep sidebar above content */
+        }
+
+        #sidebar h1 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        #sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        #sidebar ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+        }
+
+        #sidebar ul li a:hover {
+            color: #3498db;
         }
 
         .menu-container {
-            max-width: 1200px;
-            margin: 50px auto;
+            margin-left: 250px;  /* Space for the sidebar */
             padding: 20px;
+            width: calc(100% - 250px);  /* Adjust for the sidebar */
+            overflow-y: auto;  /* Allow scrolling if content overflows */
+            height: 100vh;
         }
 
         .menu-card {
@@ -122,69 +164,82 @@
 </head>
 <body>
 
-<div class="menu-container">
-
-    <!-- Alert for success messages -->
-    {% if messages %}
-        <div class="alert alert-success">
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <!-- Menu List Heading -->
-    <h1 class="text-center mb-4">Menu List</h1>
-
-    <br>
-
-    <!-- Search Box -->
-    <div class="search-box">
-        <form method="GET" action="{% url 'menu_item_new' %}">
-            <div class="input-group">
-                <input type="text" name="search" class="form-control" placeholder="Search Menu Items" aria-label="Search Menu Items">
-                <button type="submit" class="btn btn-primary">Search</button>
-            </div>
-        </form>
+    <!-- Sidebar (Employee Dashboard) -->
+    <div id="sidebar">
+        <h1><i class="fas fa-user-tie"></i>Employee Dashboard</h1>
+        <ul>
+            <li><a href="{% url 'menu_item_new' %}"><i class="fas fa-utensils"></i> View Menu</a></li>
+            <li><a href="{% url 'table_reservation_history' %}"><i class="fas fa-receipt"></i> View Reservation History</a></li>
+            <li><a href="{% url 'view_order' %}"><i class="fas fa-receipt"></i> View Orders</a></li>
+            <li><a href="{% url 'view_leave_status' %}"><i class="fas fa-check-circle"></i> View Leave Approval</a></li>
+            <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
     </div>
-    <br>
 
-    <!-- Back to Menu List button (displayed only after a search) -->
-    {% if query %}
-        <center><a href="{% url 'menu_item_new' %}" class="btn btn-secondary mb-3">Back to Menu List</a></center>
-    {% endif %}
+    <!-- Main Content (Menu Items) -->
+    <div class="menu-container">
 
-    <br>
-    <br>
+        <!-- Alert for success messages -->
+        {% if messages %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
 
-    <!-- Menu Cards -->
-    <div class="row">
-        {% for item in menu_items %}
-        <div class="col-md-4">
-            <div class="card menu-card">
-                <!-- Dynamically set the image based on menu item -->
-                {% if item.image %}
-                    <img src="{{ item.image.url }}" alt="{{ item.name }}" class="card-img-top">
-                {% else %}
-                    <img src="{% static 'images/default-food.jpg' %}" alt="Food" class="card-img-top">
-                {% endif %}
-                
-                <div class="card-body">
-                    <h3>{{ item.name }}</h3>
-                    <p>{{ item.description }}</p>
-                    <p class="price">{{ item.price }}</p>
-                    <p>{{ item.available|yesno:"Available,Not Available" }}</p>
+        <!-- Menu List Heading -->
+        <h1 class="text-center mb-4">Menu List</h1>
+
+        <br>
+
+        <!-- Search Box -->
+        <div class="search-box">
+            <form method="GET" action="{% url 'menu_item_new' %}">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search Menu Items" aria-label="Search Menu Items">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </form>
+        </div>
+        <br>
+
+        <!-- Back to Menu List button (displayed only after a search) -->
+        {% if query %}
+            <center><a href="{% url 'menu_item_new' %}" class="btn btn-secondary mb-3">Back to Menu List</a></center>
+        {% endif %}
+
+        <br>
+        <br>
+
+        <!-- Menu Cards -->
+        <div class="row">
+            {% for item in menu_items %}
+            <div class="col-md-4">
+                <div class="card menu-card">
+                    <!-- Dynamically set the image based on menu item -->
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="card-img-top">
+                    {% else %}
+                        <img src="{% static 'images/default-food.jpg' %}" alt="Food" class="card-img-top">
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h3>{{ item.name }}</h3>
+                        <p>{{ item.description }}</p>
+                        <p class="price">{{ item.price }}</p>
+                        <p>{{ item.available|yesno:"Available,Not Available" }}</p>
+                    </div>
                 </div>
             </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center">No menu items available.</p>
+            </div>
+            {% endfor %}
         </div>
-        {% empty %}
-        <div class="col-12">
-            <p class="text-center">No menu items available.</p>
-        </div>
-        {% endfor %}
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

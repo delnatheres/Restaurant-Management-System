@@ -5,14 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Feedback</title>
+    <title>Customer Dashboard - Submit Feedback</title>
     <!-- Bootstrap CSS for styling -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         /* Global body styling with background image */
         body {
             background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
-            background-size: cover;
             font-family: 'Arial', sans-serif;
             min-height: 100vh;
             display: flex;
@@ -21,9 +21,56 @@
             margin: 0;
         }
 
+        /* Sidebar styling */
+        #sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background: #333;
+            padding-top: 20px;
+            color: white;
+        }
+
+        #sidebar h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        #sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #sidebar ul li {
+            padding: 10px;
+        }
+
+        #sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            transition: 0.3s;
+        }
+
+        #sidebar ul li a:hover {
+            background: #575757;
+        }
+
         /* Container styling */
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+            margin-left: 250px;
+        }
+
         .container {
-            background-color: rgba(255, 255, 255, 0.85); /* Semi-transparent white background */
+            background-color: rgba(255, 255, 255, 0.85);
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 30px;
@@ -31,92 +78,57 @@
             width: 100%;
         }
 
-        /* Header styling */
-        h1 {
-            color: #333;
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #F3B820;
-            padding-bottom: 10px;
-        }
-
-        /* Label and input styling */
-        label {
-            font-weight: bold;
-            color: #555;
-        }
-
-        textarea, input[type="text"], input[type="number"] {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            transition: border-color 0.3s;
-        }
-
-        textarea:focus, input[type="text"]:focus, input[type="number"]:focus {
-            border-color: #F3B820;
-            box-shadow: 0 0 5px rgba(243, 184, 32, 0.5);
-        }
-
-        /* Button styling */
-        .btn-primary {
-            background-color: #F3B820;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 1rem;
-            width: 100%;
-            margin-bottom: 10px; /* Space between buttons */
-        }
-
-        .btn-primary:hover {
-            background-color: #e0a800;
-        }
-
-        /* Spacing between buttons */
-        .btn-secondary {
-            margin-top: 10px;
-        }
-
         /* Responsive adjustments */
         @media (max-width: 768px) {
-            .container {
-                padding: 20px;
+            #sidebar {
+                width: 200px;
             }
-
-            h1 {
-                font-size: 1.8rem;
+            .main-content {
+                margin-left: 200px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Submit Feedback</h1>
-        <form method="POST" action="{% url 'submit_feedback' %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="customer_name">Customer Name:</label>
-                <input type="text" class="form-control" name="customer_name" id="customer_name" required>
-            </div>
-            <div class="form-group">
-                <label for="comments">Comments:</label>
-                <input type="text" class="form-control" name="comments" id="comments" required>
-            </div>
-            <div class="form-group">
-                <label for="rating">Rating:</label>
-                <input type="number" class="form-control" name="rating" id="rating" min="1" max="5" required>
-            </div>
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <h1><i class="fas fa-user-tie"></i> Customer Dashboard</h1>
+        <ul>
+            <li><a href="{% url 'menu_item' %}"><i class="fas fa-utensils"></i> View Menu</a></li>
+            <li><a href="{% url 'reserve_table'%}"><i class="fas fa-calendar-alt"></i> Reserve Table</a></li>
+            <li><a href="{% url 'view_reservation'%}"><i class="fas fa-calendar-check"></i> View Reservations</a></li>
+            <li><a href="{% url 'reservation_history' %}"><i class="fas fa-receipt"></i> Reservation History</a></li>
+            <li><a href="{% url 'view_cart' %}"><i class="fas fa-shopping-cart"></i> View Cart List</a></li>
+            <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i> Feedback</a></li>
+            <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
 
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <h1>Submit Feedback</h1>
+            <form method="POST" action="{% url 'submit_feedback' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="customer_name">Customer Name:</label>
+                    <input type="text" class="form-control" name="customer_name" id="customer_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="comments">Comments:</label>
+                    <input type="text" class="form-control" name="comments" id="comments" required>
+                </div>
+                <div class="form-group">
+                    <label for="rating">Rating:</label>
+                    <input type="number" class="form-control" name="rating" id="rating" min="1" max="5" required>
+                </div>
 
-        <!-- Back to Customer Dashboard Button -->
-        <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+            <!-- Back to Customer Dashboard Button -->
+            <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
     </div>
 
     <!-- Bootstrap JS and dependencies -->

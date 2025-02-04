@@ -85,7 +85,14 @@ urlpatterns = [
     path('table_reservation_history/', views.table_reservation_history, name='table_reservation_history'),
     path('table_reservation/', views.table_reservation, name='table_reservation'),
     path('update-reservation-status/', views.update_reservation_status, name='update_reservation_status'),
-     path('chatbot/', views.chatbot, name='chatbot'),
+    path('chatbot/', views.chatbot, name='chatbot'),
+
+
+
+
+    path('edit_reservation/', views.edit_reservation, name='edit_reservation'),
+
+
 ]
 if settings.DEBUG:
   urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
