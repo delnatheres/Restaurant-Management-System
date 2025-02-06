@@ -1658,3 +1658,20 @@ def edit_reservation(request):
         return redirect('view_reservation')  # Redirect after saving
 
     return render(request, 'customer/edit_reservation.html', {'reservation': reservation})
+
+
+
+
+
+
+
+
+
+from django.shortcuts import render
+
+def reserve_table(request):
+    context = {
+        "table_range": range(1, 11)  # Generates numbers from 1 to 10
+    }
+    return render(request, "customer/reserve_table.html", context)
+

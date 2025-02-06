@@ -5,22 +5,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Employees - Management</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Global styles for body */
         body {
-            background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
+            background: url("{% static 'images/sky1.webp' %}") no-repeat center center fixed;
+            background-size: cover;
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            color: white;
+        }
+
+        #sidebar {
+            background-color: #333;
+            color: white;
+            width: 250px;
+            position: fixed;
+            height: 100%;
+            overflow: auto;
+        }
+
+        #sidebar h1 {
+            font-weight: bold;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        #sidebar a:hover {
+            background-color: #555;
+        }
+
+        #sidebar a i {
+            margin-right: 10px;
+        }
+
+        #content {
+            margin-left: 260px;
+            padding: 20px;
         }
 
         h1 {
             text-align: center;
-            color: #333;
-            margin-top: 30px;
-            font-size: 24px; /* Reduced font size */
+            color: #ffffff;
+            text-shadow: 2px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
         }
+
+        .table-container {
+            background-color: rgba(244, 244, 244, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        /* old */
+
+        
+       
 
         /* Styling the table */
         table {
@@ -156,49 +213,74 @@
     </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <div id="sidebar">
+        <h1><i class="fas fa-user-tie"></i> Admin Dashboard</h1>
+        <ul>
+            <li><a href="{% url 'view_user' %}"><i class="fas fa-users"></i> View Users</a></li>
+            <li><a href="{% url 'add_employee' %}"><i class="fas fa-user-plus"></i> Add Employee</a></li>
+            <li><a href="{% url 'view_employees' %}"><i class="fas fa-users-cog"></i> View Employees</a></li>
+            <li><a href="{% url 'add_menu_item' %}"><i class="fas fa-utensils"></i> Add Items</a></li>
+            <li><a href="{% url 'view_menu' %}"><i class="fas fa-list-alt"></i> View Menu</a></li>
+            <li><a href="{% url 'view_category' %}"><i class="fas fa-tags"></i> View Category</a></li>
+            <li><a href="{% url 'view_subcategory' %}"><i class="fas fa-th-list"></i> View Sub Category</a></li>
+            <li><a href="{% url 'view_order' %}"><i class="fas fa-receipt"></i> View Orders</a></li>
+            <li><a href="{% url 'view_leave_requests' %}"><i class="fas fa-clipboard-list"></i> Leave Requests</a></li>
+            <li><a href="{% url 'table_reservation' %}"><i class="fas fa-receipt"></i> View Table Reservations</a></li>
+            <li><a href="{% url 'view_feedback' %}"><i class="fas fa-comments"></i> View Customer Feedback</a></li>
+            <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <div id="content">
         <h1>Employee List</h1>
-        <!-- Back to Dashboard button -->
-        <a href="{% url 'admin_dashboard' %}" class="btn-back">Back to Dashboard</a>
-        
-        <!-- Search Form -->
+        <div class="table-container">
+             <!-- Search Form -->
         <div class="search-form">
             <form method="GET" action="{% url 'view_employees' %}">
                 <input type="text" name="name" placeholder="Search by Name">  <!-- Changed to 'name' -->
                 <button type="submit">Search</button>
             </form>
+                </div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Salary</th>
+                        <th>Place</th>
+                        <th>Status</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td>{{ employee.name }}</td>
+                        <td>{{ employee.phone }}</td>
+                        <td>{{ employee.salary }}</td>
+                        <td>{{ employee.place }}</td>
+                        <td>{% if employee.status %}Active{% else %}Inactive{% endif %}</td>
+                        <td><a href="{% url 'edit_employee' employee.employee_id %}" class="btn btn-primary">Edit</a></td>
+                        <td><a href="{% url 'delete_employee' employee.employee_id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this employee?');">Delete</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">No employees found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Name</th> <!-- Updated to 'Name' only -->
-                    <th>Phone</th>
-                    <th>Salary</th>
-                    <th>Place</th> <!-- Added Place field -->
-                    <th>Status</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for employee in employees %}
-                <tr>
-                    <td>{{ employee.name }}</td> <!-- Displaying name only -->
-                    <td>{{ employee.phone }}</td>
-                    <td>{{ employee.salary }}</td>
-                    <td>{{ employee.place }}</td> <!-- Displaying place -->
-                    <td>{% if employee.status %}Active{% else %}Inactive{% endif %}</td>
-                    <td><a href="{% url 'edit_employee' employee.employee_id %}" class="btn-edit">Edit</a></td>
-                    <td><a href="{% url 'delete_employee' employee.employee_id %}" class="btn-delete" onclick="return confirm('Are you sure you want to delete this employee?');">Delete</a></td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="7" class="text-center">No employees found.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
     </div>
+
+    <script>
+        document.getElementById("logoutBtn").addEventListener("click", function(event) {
+            event.preventDefault();
+            if (confirm("Are you sure you want to logout?")) {
+                window.location.href = "{% url 'login' %}";
+            }
+        });
+    </script>
 </body>
 </html>

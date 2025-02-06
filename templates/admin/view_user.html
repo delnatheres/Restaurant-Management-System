@@ -5,73 +5,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In Details</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* Global styles for body */
         body {
-            background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
+            background: url("{% static 'images/sky1.webp' %}") no-repeat center center fixed;
+            background-size: cover;
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+        }
+
+        /* Sidebar styling */
+        #sidebar {
+            background-color: #333;
+            color: white;
+            width: 250px;
+            position: fixed;
+            height: 100%;
+            overflow: auto;
+        }
+
+        #sidebar h1 {
+            font-weight: bold;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        #sidebar a:hover {
+            background-color: #555;
+        }
+
+        #sidebar a i {
+            margin-right: 10px;
+        }
+
+        /* Content styling */
+        #content {
+            margin-left: 260px;
+            padding: 20px;
         }
 
         h1 {
             text-align: center;
-            color: #333;
-            margin-top: 30px;
-            font-size: 36px; /* Increased font size */
+            color: #eaeaea;
+            margin-top: 20px;
+            text-shadow: 2px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
         }
 
-        /* Back to Dashboard button */
-        .btn-back {
-            display: inline-block;
-            margin: 10px auto;
-            padding: 8px 16px; /* Reduced padding */
-            background-color: #f3b820;
-            color: white;
-            text-align: center;
-            font-size: 14px; /* Reduced font size */
-            text-transform: uppercase;
-            text-decoration: none;
+        /* Table Styling */
+        .table-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
             border-radius: 8px;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .btn-back:hover {
-            background-color: #e5a500;
-            transform: translateY(-2px); /* Slight hover effect */
-        }
-
-        /* Styling the table */
-        table {
-            width: 80%;
-            margin: 30px auto;
-            border-collapse: collapse;
-            background-color: #fff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            margin: 20px auto;
         }
 
-        thead {
-            background-color: #f3b820;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
         th, td {
-            padding: 10px; /* Reduced padding */
+            padding: 10px;
             text-align: center;
             border: 1px solid #ddd;
-            font-size: 16px; /* Reduced font size */
         }
 
         th {
-            background-color: #f3b820;
+            background-color: #F3B820;
             color: white;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        td {
-            color: #333;
         }
 
         tr:nth-child(even) {
@@ -82,98 +104,146 @@
             background-color: #f1f1f1;
         }
 
-        /* No records message */
-        td[colspan="4"] {
-            font-size: 18px; /* Reduced font size */
-            color: #888;
+        /* Buttons */
+        .btn-action {
+            padding: 8px 12px;
+            text-decoration: none;
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
         }
 
-        /* Add some padding and spacing around the table */
-        table {
-            border-radius: 8px;
-            overflow: hidden;
+        .btn-deactivate {
+            background-color: #d9534f;
         }
 
-        /* Button styling */
-        .btn-delete {
-            display: inline-block; /* Changed to inline-block for smaller button */
-            padding: 8px 16px; /* Reduced padding */
-            background-color: #f3b820;
+        .btn-deactivate:hover {
+            background-color: #c9302c;
+        }
+
+        .btn-activate {
+            background-color: #5cb85c;
+        }
+
+        .btn-activate:hover {
+            background-color: #4cae4c;
+        }
+
+        /* Back button */
+        .btn-back {
+            display: block;
+            width: 200px;
+            margin: 10px auto;
+            padding: 10px;
+            background-color: #F3B820;
             color: white;
             text-align: center;
-            font-size: 14px; /* Reduced font size */
-            text-transform: uppercase;
-            text-decoration: none;
             border-radius: 8px;
             font-weight: bold;
+            text-decoration: none;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
-        .btn-delete:hover {
+        .btn-back:hover {
             background-color: #e5a500;
-            transform: translateY(-2px); /* Slight hover effect */
+            transform: translateY(-2px);
         }
 
-        /* Media query for mobile responsiveness */
         @media (max-width: 768px) {
+            #content {
+                margin-left: 0;
+                padding: 10px;
+            }
+
             table {
-                width: 100%;
+                font-size: 14px;
             }
 
-            h1 {
-                font-size: 28px; /* Further reduced font size for mobile */
-            }
-
-            th, td {
-                font-size: 14px; /* Further reduced font size for mobile */
-                padding: 8px; /* Further reduced padding for mobile */
-            }
-
-            .btn-back, .btn-delete {
-                font-size: 12px; /* Further adjusted font size for smaller screens */
-                padding: 6px 12px; /* Further reduced padding for smaller screens */
+            .btn-action {
+                font-size: 12px;
+                padding: 6px 10px;
             }
         }
     </style>
 </head>
 <body>
-    <h1>Sign In Details</h1>
-    <br>
 
-    <!-- Back to Dashboard button placed after heading -->
-    <center><a href="{% url 'admin_dashboard' %}" class="btn-back">Back to Dashboard</a></center>
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <h1><i class="fas fa-user-tie"></i> Admin Dashboard</h1>
+        <ul>
+            <li><a href="{% url 'view_user' %}"><i class="fas fa-users"></i> View Users</a></li>
+            <li><a href="{% url 'add_employee' %}"><i class="fas fa-user-plus"></i> Add Employee</a></li>
+            <li><a href="{% url 'view_employees' %}"><i class="fas fa-users-cog"></i> View Employees</a></li>
+            <li><a href="{% url 'add_menu_item' %}"><i class="fas fa-utensils"></i> Add Items</a></li>
+            <li><a href="{% url 'view_menu' %}"><i class="fas fa-list-alt"></i> View Menu</a></li>
+            <li><a href="{% url 'view_category' %}"><i class="fas fa-tags"></i> View Category</a></li>
+            <li><a href="{% url 'view_subcategory' %}"><i class="fas fa-th-list"></i> View Sub Category</a></li>
+            <li><a href="{% url 'view_order' %}"><i class="fas fa-receipt"></i> View Orders</a></li>
+            <li><a href="{% url 'view_leave_requests' %}"><i class="fas fa-clipboard-list"></i> Leave Requests</a></li>
+            <li><a href="{% url 'table_reservation' %}"><i class="fas fa-receipt"></i> View Table Reservations</a></li>
+            <li><a href="{% url 'view_feedback' %}"><i class="fas fa-comments"></i> View Customer Feedback</a></li>
+            <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
 
-    <!-- Table to display sign-in records -->
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Place</th>
-                <th>Email</th>
-                <th>Action</th> <!-- Added action column for delete/restore button -->
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in person %}
-                <tr>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.place }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>
-                        <!-- Action button based on user status -->
-                        {% if user.status %}
-                            <a href="{% url 'deactivate_user' user.id %}" class="btn-delete" onclick="return confirm('Are you sure you want to deactivate this user?');">Deactivate</a>
-                        {% else %}
-                            <a href="{% url 'activate_user' user.id %}" class="btn-delete" onclick="return confirm('Are you sure you want to reactivate this user?');">Activate</a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="4">No sign-in records found.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- Main Content -->
+    <div id="content">
+        <h1>Sign In Details</h1>
+        
+        <center><a href="{% url 'admin_dashboard' %}" class="btn-back">Back to Dashboard</a></center>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Place</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in person %}
+                        <tr>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.place }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                {% if user.status %}
+                                    <a href="{% url 'deactivate_user' user.id %}" class="btn-action btn-deactivate" onclick="return confirm('Are you sure you want to deactivate this user?');">Deactivate</a>
+                                {% else %}
+                                    <a href="{% url 'activate_user' user.id %}" class="btn-action btn-activate" onclick="return confirm('Are you sure you want to reactivate this user?');">Activate</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4">No sign-in records found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.getElementById("logoutBtn").addEventListener("click", function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Are you sure you want to logout?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, logout!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'login' %}";
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>

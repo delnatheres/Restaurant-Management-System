@@ -5,28 +5,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <style>
         body {
             background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
             font-family: 'Arial', sans-serif;
-            background-color: #eef2f3; /* Soft background color */
+            background-color: #eef2f3;
             margin: 0;
             padding: 0;
             display: flex;
         }
 
-        /* Sidebar Styles */
+        /* Full height sidebar */
         #sidebar {
             width: 250px;
             background-color: #34495e;
             color: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 4px 8px rgba(156, 7, 7, 0.1);
             position: fixed;
-            top: 20px;
-            left: 20px;
-            bottom: 0;
+            top: 0;
+            left: 0;
+            bottom: 0; /* Ensures it takes full height */
+            height: 100%;
         }
 
         #sidebar h1 {
@@ -55,10 +58,10 @@
 
         /* Order History Content */
         .history-container {
-            margin-left: 280px;
+            margin-left: 270px; /* Added margin to the left to make space for sidebar */
             padding: 20px;
-            width: calc(100% - 280px);
-            background-color: #ffffff; /* White background for container */
+            width: calc(100% - 270px); /* Make content take the remaining width */
+            background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
             margin-top: 30px;
@@ -66,7 +69,7 @@
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #e7b73f;
             margin-bottom: 10px;
         }
 
@@ -75,51 +78,51 @@
             padding: 20px;
             margin: 15px 0;
             border-radius: 8px;
-            background-color: #f9f9f9; /* Light grey background for each order block */
-            transition: box-shadow 0.3s; /* Transition effect */
+            background-color: #f9f9f9;
+            transition: box-shadow 0.3s;
         }
 
         .order-block:hover {
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         strong {
             display: inline-block;
             margin-bottom: 8px;
-            color: #555; /* Darker color for better readability */
+            color: #555;
         }
 
         .order-item {
             margin-left: 20px;
-            color: #666; /* Lighter color for items */
+            color: #666;
         }
 
         .back-button {
             display: inline-block;
             margin: 20px 0;
             padding: 10px 15px;
-            background-color: #FFD700; /* Yellow background color */
+            background-color: #FFD700;
             color: white;
             text-decoration: none;
             border-radius: 5px;
             text-align: center;
-            font-size: 16px; /* Slightly larger font size */
+            font-size: 16px;
             transition: background-color 0.3s, transform 0.3s;
             border: none;
         }
 
         .back-button:hover {
-            background-color: #FFC107; /* Slightly darker yellow on hover */
-            transform: translateY(-2px); /* Slight lift effect */
+            background-color: #FFC107;
+            transform: translateY(-2px);
         }
 
         .order-items-list {
-            list-style-type: none; /* Remove bullets */
-            padding: 0; /* Remove default padding */
+            list-style-type: none;
+            padding: 0;
         }
 
         .order-items-list li {
-            padding: 5px 0; /* Spacing for items */
+            padding: 5px 0;
         }
 
         /* Adjust for smaller screens */

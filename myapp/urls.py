@@ -86,10 +86,6 @@ urlpatterns = [
     path('table_reservation/', views.table_reservation, name='table_reservation'),
     path('update-reservation-status/', views.update_reservation_status, name='update_reservation_status'),
     path('chatbot/', views.chatbot, name='chatbot'),
-
-
-
-
     path('edit_reservation/', views.edit_reservation, name='edit_reservation'),
 
 
