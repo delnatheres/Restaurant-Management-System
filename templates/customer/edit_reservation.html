@@ -6,26 +6,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Reservation</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
             background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
             background-size: cover;
             color: #333;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        #sidebar {
+            width: 250px;
+            background-color: #34495e;
+            color: white;
             padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        #sidebar h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        #sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        #sidebar ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            display: block;
+        }
+
+        #sidebar ul li a:hover {
+            color: #3498db;
         }
 
         .container {
+            margin-left: 270px;
+            padding: 20px;
+            width: calc(100% - 270px);
+        }
+
+        .form-container {
             max-width: 600px;
             margin: auto;
             padding: 15px;
             background: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-group {
-            margin-bottom: 12px;
         }
 
         .btn {
@@ -36,44 +79,160 @@
             letter-spacing: 1px;
             border-radius: 6px;
         }
+
+        .error-message {
+            color: red;
+            font-size: 0.9rem;
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2 class="text-center">Edit Reservation</h2>
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label>Name:</label>
-                <input type="text" class="form-control" name="customer_name" value="{{ reservation.customer_name }}" required>
-            </div>
-            <div class="form-group">
-                <label>Email:</label>
-                <input type="email" class="form-control" name="email" value="{{ reservation.email }}" required>
-            </div>
-            <div class="form-group">
-                <label>Phone:</label>
-                <input type="text" class="form-control" name="phone" value="{{ reservation.phone }}" required>
-            </div>
-            <div class="form-group">
-                <label>Date:</label>
-                <input type="date" class="form-control" name="reservation_date" value="{{ reservation.reservation_date|date:'Y-m-d' }}" required>
-            </div>
-            <div class="form-group">
-                <label>Time:</label>
-                <input type="time" class="form-control" name="reservation_time" value="{{ reservation.reservation_time }}" required>
-            </div>
-            <div class="form-group">
-                <label>Number of Guests:</label>
-                <input type="number" class="form-control" name="number_of_guests" value="{{ reservation.number_of_guests }}" required>
-            </div>
-            <div class="form-group">
-                <label>Special Requests:</label>
-                <textarea class="form-control" name="special_requests">{{ reservation.special_requests }}</textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-            <a href="{% url 'view_reservation' %}" class="btn btn-secondary mt-2">Cancel</a>
-        </form>
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <h3><i class="fas fa-user-tie"></i> Customer Dashboard</h3>
+        <ul>
+            <li><a href="{% url 'menu_item' %}"><i class="fas fa-utensils"></i> View Menu</a></li>
+            <li><a href="{% url 'reserve_table' %}"><i class="fas fa-calendar-alt"></i> Reserve Table</a></li>
+            <li><a href="{% url 'view_reservation' %}"><i class="fas fa-calendar-check"></i> View Reservations</a></li>
+            <li><a href="{% url 'reservation_history' %}"><i class="fas fa-receipt"></i> Reservation History</a></li>
+            <li><a href="{% url 'view_cart' %}"><i class="fas fa-shopping-cart"></i> View Cart</a></li>
+            <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i> Feedback</a></li>
+        </ul>
     </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="form-container">
+            <h2 class="text-center">Edit Reservation</h2>
+            <form method="post" onsubmit="return validateForm()">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Name:</label>
+                    <input type="text" class="form-control" name="customer_name" id="customer_name" value="{{ reservation.customer_name }}" required>
+                    <small class="error-message" id="name-error">Name must contain only alphabets and be no longer than 15 characters.</small>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email:</label>
+                    <input type="email" class="form-control" name="email" id="email" value="{{ reservation.email }}" required>
+                    <small class="error-message" id="email-error">Email must contain '@', '.', 'com', and 'in'.</small>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone:</label>
+                    <input type="text" class="form-control" name="phone" id="phone" value="{{ reservation.phone }}" maxlength="10" required>
+                    <small class="error-message" id="phone-error">Phone number must be exactly 10 digits.</small>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Date:</label>
+                    <input type="date" class="form-control" name="reservation_date" id="reservation_date" required>
+                    <small class="error-message" id="date-error">Reservation date cannot be in the past.</small>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Time:</label>
+                    <select class="form-control" name="reservation_time" id="reservation_time" required>
+                        <!-- Time options will be dynamically populated -->
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Number of Guests:</label>
+                    <input type="number" class="form-control" name="number_of_guests" id="number_of_guests" value="{{ reservation.number_of_guests }}" required>
+                    <small class="error-message" id="guests-error">Number of guests cannot exceed 10.</small>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Special Requests:</label>
+                    <textarea class="form-control" name="special_requests">{{ reservation.special_requests }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{% url 'view_reservation' %}" class="btn btn-secondary mt-2">Cancel</a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById("reservation_date").setAttribute("min", today);
+
+            const timeField = document.getElementById("reservation_time");
+
+            // Populate time options from 8:00 AM to 10:30 PM
+            for (let hour = 8; hour <= 22; hour++) {
+                let period = hour < 12 ? "AM" : "PM";
+                let displayHour = hour % 12 === 0 ? 12 : hour % 12; // Adjust 12 hour format
+                for (let minutes of ["00", "30"]) {
+                    let option = document.createElement("option");
+                    option.value = `${displayHour}:${minutes} ${period}`;
+                    option.textContent = `${displayHour}:${minutes} ${period}`;
+                    timeField.appendChild(option);
+                }
+            }
+
+            // Pre-select the reservation time
+            const reservationTime = "{{ reservation.reservation_time|date:'h:i A' }}";
+            timeField.value = reservationTime;
+        });
+
+        function validateForm() {
+            let valid = true;
+
+            // Validate name (only alphabets and max length of 15)
+            const nameInput = document.getElementById("customer_name");
+            const nameError = document.getElementById("name-error");
+            const nameRegex = /^[A-Za-z\s]{1,15}$/;
+            if (!nameRegex.test(nameInput.value)) {
+                nameError.style.display = "block";
+                valid = false;
+            } else {
+                nameError.style.display = "none";
+            }
+
+            // Validate email (must contain @, ., com, and in)
+            const emailInput = document.getElementById("email");
+            const emailError = document.getElementById("email-error");
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in)$/;
+            if (!emailRegex.test(emailInput.value)) {
+                emailError.style.display = "block";
+                valid = false;
+            } else {
+                emailError.style.display = "none";
+            }
+
+            // Validate phone number (exactly 10 digits)
+            const phoneInput = document.getElementById("phone");
+            const phoneError = document.getElementById("phone-error");
+            const phoneRegex = /^\d{10}$/;
+            if (!phoneRegex.test(phoneInput.value)) {
+                phoneError.style.display = "block";
+                valid = false;
+            } else {
+                phoneError.style.display = "none";
+            }
+
+            // Validate reservation date (must be today or future)
+            const dateInput = document.getElementById("reservation_date");
+            const dateError = document.getElementById("date-error");
+            const today = new Date().toISOString().split("T")[0];
+            if (dateInput.value < today) {
+                dateError.style.display = "block";
+                valid = false;
+            } else {
+                dateError.style.display = "none";
+            }
+
+            // Validate number of guests (cannot exceed 10)
+            const guestsInput = document.getElementById("number_of_guests");
+            const guestsError = document.getElementById("guests-error");
+            const numGuests = parseInt(guestsInput.value);
+
+            if (numGuests > 10) {
+                guestsError.style.display = "block";
+                valid = false;
+            } else {
+                guestsError.style.display = "none";
+            }
+
+            return valid;
+        }
+    </script>
 </body>
 </html>

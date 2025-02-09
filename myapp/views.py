@@ -1638,40 +1638,85 @@ def chatbot(request):
 
 
 
-
-    from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from .models import Reservation
 
+def view_reservation(request):
+    # Retrieve reservations from session
+    reservations = request.session.get('reservations', [])
+    if not reservations:
+        messages.error(request, "No reservation found.")
+        return redirect('reserve_table')
+
+    # Get the most recent reservation
+    latest_reservation = reservations[-1]
+
+    return render(request, 'customer/view_reservation.html', {'reservation': latest_reservation})
+
+
 def edit_reservation(request):
-    reservation = Reservation.objects.first()  # Fetch the first reservation (modify logic as needed)
-    
+    reservations = request.session.get('reservations', [])
+    if not reservations:
+        messages.error(request, "No reservation found to edit.")
+        return redirect('view_reservation')
+
+    latest_reservation = reservations[-1]
+
     if request.method == 'POST':
-        reservation.customer_name = request.POST.get('customer_name')
-        reservation.email = request.POST.get('email')
-        reservation.phone = request.POST.get('phone')
-        reservation.reservation_date = request.POST.get('reservation_date')
-        reservation.reservation_time = request.POST.get('reservation_time')
-        reservation.number_of_guests = request.POST.get('number_of_guests')
-        reservation.special_requests = request.POST.get('special_requests', '')
+        latest_reservation['customer_name'] = request.POST.get('customer_name')
+        latest_reservation['email'] = request.POST.get('email')
+        latest_reservation['phone'] = request.POST.get('phone')
+        latest_reservation['reservation_date'] = request.POST.get('reservation_date')
+        latest_reservation['reservation_time'] = request.POST.get('reservation_time')
+        latest_reservation['number_of_guests'] = request.POST.get('number_of_guests')
+        latest_reservation['special_requests'] = request.POST.get('special_requests', '')
 
-        reservation.save()
-        return redirect('view_reservation')  # Redirect after saving
+        # Update session data
+        request.session['reservations'][-1] = latest_reservation
+        request.session.modified = True
 
-    return render(request, 'customer/edit_reservation.html', {'reservation': reservation})
+        messages.success(request, "Reservation updated successfully.")
+        return redirect('view_reservation')
 
-
-
-
-
-
+    return render(request, 'customer/edit_reservation.html', {'reservation': latest_reservation})
 
 
 
-from django.shortcuts import render
 
-def reserve_table(request):
-    context = {
-        "table_range": range(1, 11)  # Generates numbers from 1 to 10
-    }
-    return render(request, "customer/reserve_table.html", context)
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Reservation
+
+def cancel_reservation(request):
+    if request.method == "POST":
+        reservation = Reservation.objects.filter(customer=request.user).first()
+        
+        if reservation:
+            reservation.delete()
+            messages.success(request, "Your reservation has been canceled successfully.")
+        else:
+            messages.error(request, "No active reservation found.")
+
+        return redirect('view_reservation')
+
+    return render(request, 'customer/cancel_reservation.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
