@@ -79,7 +79,7 @@
             <li><a href="{% url 'reservation_history' %}"><i class="fas fa-receipt"></i> Reservation History</a></li>
             <li><a href="{% url 'view_cart' %}"><i class="fas fa-shopping-cart"></i> View Cart List</a></li>
             <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i> Feedback</a></li>
-            <li><a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        
         </ul>
     </div>
 
@@ -90,12 +90,15 @@
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="customer_name" class="form-label">Your Name</label>
-                    <input type="text" class="form-control" id="customer_name" name="customer_name" maxlength="15" required>
+                    <input type="text" class="form-control" id="customer_name" name="customer_name" maxlength="15" required
+                        pattern="^[A-Za-z\s]+$" title="Name can only contain alphabets and spaces, max length 15 characters.">
                 </div>
 
                 <div class="mb-3">
                     <label for="email" class="form-label">Email Address</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <input type="email" class="form-control" id="email" name="email" required 
+                        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in)$" 
+                        title="Email must be in the format of example@domain.com or example@domain.in">
                 </div>
                 <div class="mb-3">
                     <label for="phone" class="form-label">Phone Number</label>
@@ -127,15 +130,18 @@
                     <textarea class="form-control" id="special_requests" name="special_requests" rows="3"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Reserve Now</button>
+                <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary w-100 mt-2">Back to Dashboard</a>
             </form>
         </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // Set min date to today
             const today = new Date().toISOString().split('T')[0];
             document.getElementById("reservation_date").setAttribute("min", today);
 
+            // Populate time options
             const timeField = document.getElementById("reservation_time");
             for (let hour = 8; hour <= 22; hour++) {
                 let period = hour < 12 ? "AM" : "PM";
@@ -148,36 +154,40 @@
                 }
             }
 
+            // Update available tables based on guest count
             const guestsField = document.getElementById("number_of_guests");
             const tableSelect = document.getElementById("table_number");
-            const tables = [
-                { id: 1, seats: 1 },
-                { id: 2, seats: 2 },
-                { id: 3, seats: 3 },
-                { id: 4, seats: 4 },
-                { id: 5, seats: 5 },
-                { id: 6, seats: 6 },
-                { id: 7, seats: 7 },
-                { id: 8, seats: 8 },
-                { id: 9, seats: 9 },
-                { id: 10, seats: 10 }
-            ];
+            const tables = [...Array(10).keys()].map(i => ({ id: i + 1, seats: i + 1 }));
 
-            function updateTableOptions() {
+            guestsField.addEventListener("input", function () {
                 const guests = parseInt(guestsField.value, 10);
                 tableSelect.innerHTML = "<option value=''>Select Table</option>";
-                tables.forEach(table => {
-                    if (table.seats >= guests) {
+                tables.filter(table => table.seats >= guests)
+                    .forEach(table => {
                         let option = document.createElement("option");
                         option.value = table.id;
                         option.textContent = `Table ${table.id} - ${table.seats} seats`;
                         tableSelect.appendChild(option);
-                    }
-                });
-            }
+                    });
+            });
 
-            guestsField.addEventListener("input", updateTableOptions);
-        });
+    const nameField = document.getElementById("customer_name");
+
+    nameField.addEventListener("input", function () {
+        const namePattern = /^[A-Za-z\s]+$/;
+        if (!namePattern.test(this.value)) {
+            this.setCustomValidity("Only alphabets & spaces are allowed. Max length: 15 characters.");
+        } else {
+            this.setCustomValidity("");
+        }
+        this.reportValidity(); // ✅ Displays error message dynamically
+    });
+
+    nameField.addEventListener("blur", function () {
+        this.reportValidity(); // ✅ Ensures validation message appears when leaving the field
+    });
+});
+
     </script>
 </body>
 

@@ -87,12 +87,14 @@ urlpatterns = [
     path('update-reservation-status/', views.update_reservation_status, name='update_reservation_status'),
     path('chatbot/', views.chatbot, name='chatbot'),
     path('edit_reservation/', views.edit_reservation, name='edit_reservation'),
+    path('cancel_reservation/', views.cancel_reservation, name='cancel_reservation'),
+    
 
 
 
 
-     path('cancel_reservation/', views.cancel_reservation, name='cancel_reservation'),
 
+    
 ]
 if settings.DEBUG:
   urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

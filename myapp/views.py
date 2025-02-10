@@ -1633,11 +1633,6 @@ def chatbot(request):
 
 
 
-
-
-
-
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Reservation
@@ -1684,23 +1679,37 @@ def edit_reservation(request):
 
 
 
-
-
-
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.utils.timezone import now
 from .models import Reservation
 
 def cancel_reservation(request):
-    if request.method == "POST":
-        reservation = Reservation.objects.filter(customer=request.user).first()
-        
-        if reservation:
-            reservation.delete()
-            messages.success(request, "Your reservation has been canceled successfully.")
-        else:
-            messages.error(request, "No active reservation found.")
+    if request.method == "GET":
+        return render(request, 'customer/cancel_reservation.html')
 
+    if request.method == "POST":
+        customer_name = request.POST.get('customer_name')
+        customer_email = request.POST.get('customer_email')
+
+        # Retrieve the reservation based on customer name and email
+        reservation = Reservation.objects.filter(customer_name=customer_name, email=customer_email).first()
+
+        if not reservation:
+            messages.error(request, "No reservation found with the provided name and email.")
+            return redirect('cancel_reservation')
+
+        # Get the current time and compare with reservation time
+        current_time = now()
+        time_difference = (reservation.reservation_date - current_time).total_seconds() / 3600
+
+        if time_difference < 1:
+            messages.error(request, "Cancellation is only allowed at least one hour before the reservation.")
+            return redirect('cancel_reservation')
+
+        # If the reservation is valid, delete it
+        reservation.delete()
+        messages.success(request, "Your reservation has been canceled successfully.")
         return redirect('view_reservation')
 
     return render(request, 'customer/cancel_reservation.html')
