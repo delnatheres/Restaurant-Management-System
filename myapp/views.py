@@ -1729,3 +1729,36 @@ def cancel_reservation(request):
 
 
 
+
+
+
+
+
+
+
+
+
+
+from django.shortcuts import render
+from django.http import JsonResponse
+import json
+
+def voice_assistant(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        user_text = data.get("text", "").lower()
+
+        # Simple response logic
+        if "hello" in user_text:
+            response_text = "Hello! How can I help you today?"
+        elif "your name" in user_text:
+            response_text = "I am your voice assistant."
+        elif "time" in user_text:
+            from datetime import datetime
+            response_text = f"The current time is {datetime.now().strftime('%I:%M %p')}"
+        else:
+            response_text = "I'm sorry, I didn't understand that."
+
+        return JsonResponse({"reply": response_text})
+
+    return render(request, "customer/voice_assistant.html")
