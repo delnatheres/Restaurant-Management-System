@@ -969,19 +969,6 @@ def delete_from_cart(request, cart_id):
 
 
 
-# Place an Order
-@login_required
-def place_order(request, item_id):
-    item = MenuItem.objects.get(id=item_id)
-    if request.method == 'POST':
-        quantity = int(request.POST.get('quantity'))
-        Order.objects.create(customer=request.user, menu_item=item, quantity=quantity)
-        messages.success(request, 'Order placed successfully!')
-        return redirect('customer_dashboard')
-    return render(request, 'customer/menu_item.html', {'item': item})
-
-
-
 
 
 
@@ -1721,24 +1708,6 @@ def cancel_reservation(request):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 from django.shortcuts import render
 from django.http import JsonResponse
 import json
@@ -1762,3 +1731,8 @@ def voice_assistant(request):
         return JsonResponse({"reply": response_text})
 
     return render(request, "customer/voice_assistant.html")
+
+
+
+
+

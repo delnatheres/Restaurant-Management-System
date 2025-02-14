@@ -4,135 +4,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Page</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'path/to/your/css/styles.css' %}">
+    <title>Secure Payment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    
     <style>
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            background-color: #f9f9f9;
-            text-align: center;
-        }
+        /* Standard Modern Styling */
         body {
-            background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background: #f7f6f6;
+            font-family: 'Poppins', sans-serif;
+            color: white;
             margin: 0;
+            padding: 0;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background-color: hsl(0, 0%, 12%);
             padding: 20px;
+        }
+
+        #sidebar h1 {
+            font-size: 1.4em;
+            color: #f39c12;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        #sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        #sidebar ul li a:hover {
+            color: #f39c12;
+        }
+
+        #sidebar ul li a i {
+            margin-right: 10px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+        }
+
+        /* Payment Box */
+        .container {
+            max-width: 500px;
+            margin: 60px auto;
+            padding: 30px;
+            background: #e5e0e0;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(252, 231, 231, 0.1);
+            text-align: center;
+            border: 1px solid #333;
         }
 
         h2 {
-            color: #333;
-            font-family: 'Arial', sans-serif;
+            color: #f39c12;
+            font-weight: bold;
+            margin-bottom: 20px;
         }
 
+        /* Button */
         .btn-primary {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
+            background: #f39c12;
             color: white;
-            font-size: 16px;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
             border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: background-color 0.3s;
         }
 
         .btn-primary:hover {
-            background-color: #0056b3;
+            background: #e67e22;
+            transform: scale(1.05);
         }
 
-        button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background-color: #3399cc;
-            color: white;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #297b99;
-        }
-
-        button:focus {
-            outline: none;
-        }
-
+        /* Terms */
         .terms-link {
-            margin-top: 10px;
+            margin-top: 15px;
             font-size: 14px;
-            color: #ff0000;  /* Red color for emphasis */
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            color: #bbb;
         }
 
         .terms-link a {
-            color: #ff0000;  /* Red color */
-            text-decoration: none;  /* No underline */
+            color: #f39c12;
+            text-decoration: none;
         }
 
         .terms-link a:hover {
-            color: #cc0000;  /* Darker red on hover */
-        }
-
-        .warning-icon {
-            font-size: 20px;
-            color: #ff0000; /* Red color for the warning icon */
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-    <div class="container">
-        <h2>Complete Your Payment</h2>
-        <!-- Add the 'Before you pay' message with a warning icon -->
-        <div class="terms-link">
-            <span class="warning-icon">⚠️</span>
-            <p>Before you pay, please <a href="{% url 'terms_and_conditions' %}" target="_blank">read our Terms and Conditions</a>.</p>
-        </div>
-        <button id="rzp-button">Pay Now</button>
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <h1><i class="fas fa-user-tie"></i> Dashboard</h1>
+        <ul>
+            <li><a href="{% url 'menu_item' %}"><i class="fas fa-utensils"></i> View Menu</a></li>
+            <li><a href="{% url 'voice_assistant' %}"><i class="fas fa-microphone"></i> Voice Assistant</a></li>
+            <li><a href="{% url 'reserve_table'%}"><i class="fas fa-calendar-alt"></i> Reserve Table</a></li>
+            <li><a href="{% url 'view_reservation'%}"><i class="fas fa-calendar-check"></i> View Reservations</a></li>
+            <li><a href="{% url 'reservation_history' %}"><i class="fas fa-receipt"></i> Reservation History</a></li>
+            <li><a href="{% url 'view_cart' %}"><i class="fas fa-shopping-cart"></i> View Cart</a></li>
+            <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i> Feedback</a></li>
+            <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </ul>
     </div>
 
-    <center>
-        <div class="button-container" style="display: flex; justify-content: center; gap: 10px;">
-            <a href="{% url 'view_cart' %}" class="btn btn-primary" aria-label="Back to Cart">Back to Cart</a>
-            <a href="{% url 'customer_dashboard' %}" class="btn btn-primary" aria-label="Back to Dashboard">Back to Dashboard</a>
+    <!-- Main Content -->
+    <div class="main-content">
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <div class="container">
+            <h2>Secure Payment</h2>
+            <div class="terms-link">
+                ⚠️ Please <a href="{% url 'terms_and_conditions' %}" target="_blank">read our Terms & Conditions</a> before paying.
+            </div>
+            <button id="rzp-button" class="btn-primary">Pay Now</button>
         </div>
-    </center>
+    </div>
 
     <script>
         document.getElementById('rzp-button').onclick = function(e) {
-            console.log("Button clicked!"); // Debugging line
             var options = {
-                "key": "rzp_test_VEVGpwiKT3ZrQ0",  // Replace with your actual Razorpay Key ID
-                "amount": "{{amount}}", // Ensure it's in paise
+                "key": "rzp_test_VEVGpwiKT3ZrQ0",  
+                "amount": "{{amount}}", 
                 "currency": "INR",
                 "name": "Restaurant Management",
                 "description": "Order Payment",
-                "image": "{% static 'your_logo.png' %}",
+                "image": "{% static 'images/logo.png' %}",
                 "order_id": "{{ razorpay_order_id }}",
                 "handler": function(response) {
-                    // Send payment verification to backend
                     fetch('/verify-payment/', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                        headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
                             order_id: options.order_id,
                             payment_id: response.razorpay_payment_id,
@@ -142,9 +173,9 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === 'success') {
-                            window.location.href = '/payment-success/';  // Redirect to success page
+                            window.location.href = '/payment-success/';
                         } else {
-                            window.location.href = '/payment-failure/';  // Redirect to failure page
+                            window.location.href = '/payment-failure/';
                         }
                     });
                 },
@@ -153,15 +184,12 @@
                     "email": "{{ user.email }}",
                     "contact": "{{ user.contact }}"
                 },
-                "theme": {
-                    "color": "#3399cc"
-                }
+                "theme": {"color": "#f39c12"}
             };
             var rzp = new Razorpay(options);
             rzp.open();
             e.preventDefault();
         };
     </script>
-    
 </body>
 </html>

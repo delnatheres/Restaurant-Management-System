@@ -92,7 +92,7 @@ urlpatterns = [
 
 
     path('voice-assistant/', views.voice_assistant, name='voice_assistant'),
-
+    
 
     
 ]

@@ -5,145 +5,195 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/checkout.css' %}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <style>
-        /* General page styling */
         body {
-            background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background: url("{% static 'images/restaurant-bg.jpg' %}") no-repeat center center/cover;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
+            padding: 0;
+        }
+
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background-color: #2c3e50;
+            color: white;
             padding: 20px;
         }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            color: #333;
-            margin-bottom: 15px;
+
+        #sidebar h1 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #f39c12;
             text-align: center;
         }
+
+        #sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        #sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+        }
+
+        #sidebar ul li a:hover {
+            color: #f39c12;
+        }
+
+        #sidebar ul li a i {
+            margin-right: 10px;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            border: 2px solid #f39c12;
+        }
+
+        h2 {
+            color: #9c79fb;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
         label {
+            font-weight: 600;
             display: block;
             margin: 10px 0 5px;
-            font-weight: bold;
+            text-align: left;
         }
-        input[type="text"],
-        input[type="email"],
-        textarea {
+
+        input {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 15px;
+            border-radius: 5px;
             font-size: 16px;
         }
+
         button {
-            background-color: #28a745;
+            background-color: #9c79fb;
             color: white;
             border: none;
-            padding: 10px 15px;
-            text-align: center;
-            font-size: 16px;
-            margin: 10px 0;
+            padding: 12px 18px;
+            font-size: 18px;
             cursor: pointer;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 15px;
+            width: 100%;
         }
+
         button:hover {
-            background-color: #218838;
+            background-color: #9170ee;
+            transform: scale(1.05);
         }
+
         .back-button {
-            background-color: #007bff;
+            display: inline-block;
+            background-color: #34495e;
             padding: 10px 15px;
             color: white;
             text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s;
-            display: inline-block;
-            margin-bottom: 20px;
+            margin-top: 10px;
         }
+
         .back-button:hover {
-            background-color: #0056b3;
-        }
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-            input[type="text"],
-            input[type="email"],
-            textarea {
-                font-size: 14px;
-            }
-            button {
-                font-size: 14px;
-                padding: 8px 12px;
-            }
-            h2 {
-                font-size: 18px;
-            }
+            background-color: #2c3e50;
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <h2>Payment Details</h2>
-
-        <!-- Customer Information Form -->
-        <form id="order-form" method="POST" action="{% url 'place_order' %}">
-            {% csrf_token %}
-            
-            <label for="name"><strong>Name:</strong></label>
-            <input type="text" id="name" name="customer_name" value="{{ user.name }}" required pattern="^[A-Za-z\s]+$" title="Only letters and spaces are allowed.">
-
-            <label for="contact"><strong>Contact:</strong></label>
-            <input type="text" id="contact" name="contact" value="{{ user.contact }}" required pattern="\d{10}" title="Please enter a valid 10-digit phone number.">
-
-            <label for="email"><strong>Email:</strong></label>
-            <input type="email" id="email" name="email" value="{{ user.email }}" required>
-
-            <label for="place"><strong>Place:</strong></label>
-            <input type="text" id="place" name="place" value="{{ user.place }}" required pattern="^[A-Za-z\s]+$" title="Only letters and spaces are allowed.">
-
-            <!-- Pay Now Button -->
-            <button type="button" id="pay-now">Continue</button>
-        </form>
+    <div id="sidebar">
+        <h1><i class="fas fa-user-tie"></i> Customer Dashboard</h1>
+        <ul>
+            <li><a href="{% url 'menu_item' %}"><i class="fas fa-utensils"></i> View Menu</a></li>
+            <li><a href="{% url 'voice_assistant' %}"><i class="fas fa-microphone"></i> Voice Assistant</a></li>
+            <li><a href="{% url 'reserve_table' %}"><i class="fas fa-calendar-alt"></i> Reserve Table</a></li>
+            <li><a href="{% url 'view_reservation' %}"><i class="fas fa-calendar-check"></i> View Reservations</a></li>
+            <li><a href="{% url 'reservation_history' %}"><i class="fas fa-receipt"></i> Reservation History</a></li>
+            <li><a href="{% url 'view_cart' %}"><i class="fas fa-shopping-cart"></i> View Cart</a></li>
+            <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i> Feedback</a></li>
+            <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </ul>
     </div>
-    <br>
 
-    <center>
-        <a href="{% url 'customer_dashboard' %}" class="back-button">Back to Dashboard</a>
-        <a href="{% url 'view_cart' %}" class="back-button">Back to Cart</a>
-    </center>
+    <div class="main-content">
+        <div class="container">
+            <h2>Payment Details</h2>
+            <form id="order-form" method="POST" action="{% url 'place_order' %}">
+                {% csrf_token %}
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="customer_name" value="{{ user.name }}" required>
+
+                <label for="contact">Contact:</label>
+                <input type="text" id="contact" name="contact" value="{{ user.contact }}" required pattern="\d{10}" maxlength="10" oninput="validateContact(event)">
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{{ user.email }}" required>
+
+                <label for="place">Place:</label>
+                <input type="text" id="place" name="place" value="{{ user.place }}" required>
+
+                <button type="button" id="pay-now">Proceed to Payment</button>
+            </form>
+        </div>
+
+    </div>
 
     <script>
+        function validateContact(event) {
+            let input = event.target;
+            input.value = input.value.replace(/\D/g, ''); // Remove non-numeric characters
+            if (input.value.length > 10) {
+                input.value = input.value.slice(0, 10); // Restrict to 10 digits
+            }
+        }
+
         document.getElementById('pay-now').addEventListener('click', function() {
             const contactInput = document.getElementById('contact');
             const contactValue = contactInput.value.trim();
 
-            // Check if the contact field is empty
-            if (!contactValue) {
+            if (!/^\d{10}$/.test(contactValue)) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Error',
-                    text: 'Please fill in the contact field.',
+                    text: 'Please enter a valid 10-digit contact number.',
                 });
                 contactInput.focus();
                 return;
             }
 
-            // Redirect to payment.html if validation is successful
-            window.location.href = "{% url 'payment_view' %}"; // Adjust the URL to your payment page
+            window.location.href = "{% url 'payment_view' %}";
         });
     </script>
 </body>

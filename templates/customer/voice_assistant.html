@@ -1,3 +1,7 @@
+Share
+
+
+You said:
 {% load static %}
 
 <!DOCTYPE html>
@@ -10,7 +14,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style>
-        /* Overall body style */
         body {
             font-family: 'Arial', sans-serif;
             background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
@@ -21,13 +24,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* Ensure body takes full height */
+            min-height: 100vh;
         }
 
-        /* Sidebar style */
         #sidebar {
             width: 250px;
-            background-color: #34495e; /* Sidebar color */
+            background-color: #34495e;
             color: white;
             padding: 20px;
             border-radius: 10px;
@@ -35,8 +37,8 @@
             position: fixed;
             top: 0;
             left: 0;
-            bottom: 0; /* Ensure sidebar spans the full height */
-            overflow-y: auto; /* Allow sidebar to scroll if necessary */
+            bottom: 0;
+            overflow-y: auto;
         }
 
         #sidebar h1 {
@@ -63,14 +65,13 @@
             color: #3498db;
         }
 
-        /* Main content area */
         .container {
             padding: 20px;
-            width: 100%; /* Allow for full width */
-            max-width: 500px; /* Control the max width */
+            width: 100%;
+            max-width: 500px;
             position: absolute;
-            top: 50%; /* Center vertically */
-            transform: translateY(-50%); /* Adjust to truly center */
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -90,8 +91,6 @@
             font-size: 2.5rem;
             margin-bottom: 20px;
             color: #fff;
-            font-weight: bold;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         }
 
         .button {
@@ -132,52 +131,13 @@
             background-color: rgba(255, 255, 255, 0.2);
             padding: 20px;
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
             text-align: left;
-            word-wrap: break-word;
         }
-
-        .pulse {
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.1);
-                opacity: 0.7;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        /* Optional: Additional styling for responsiveness */
-        @media (max-width: 480px) {
-            .container {
-                width: 80%;
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .button {
-                width: 100%;
-            }
-        }
-
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
     <div id="sidebar">
-        <h1><i class="fas fa-user-tie"></i>Customer Dashboard</h1>
+        <h1><i class="fas fa-user-tie"></i> Customer Dashboard</h1>
         <ul>
             <li><a href="{% url 'menu_item' %}"><i class="fas fa-utensils"></i> View Menu</a></li>
             <li><a href="{% url 'reserve_table'%}"><i class="fas fa-calendar-alt"></i> Reserve Table</a></li>
@@ -189,13 +149,10 @@
         </ul>
     </div>
 
-    <!-- Main Content -->
     <div class="container">
         <div class="voice-assistant-container">
             <h1>Voice Assistant</h1>
-            <!-- Start Listening Button -->
-            <button id="startButton" class="button pulse">🎤 Start Listening</button>
-            <!-- Stop Listening Button -->
+            <button id="startButton" class="button">🎤 Start Listening</button>
             <button id="stopButton" class="button">⛔ Stop Listening</button>
             <p id="output"></p>
         </div>
@@ -205,33 +162,57 @@
         let recognition;
         let isListening = false;
 
-        // Start Listening
         document.getElementById("startButton").addEventListener("click", function() {
             if (!isListening) {
                 recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
                 recognition.lang = 'en-US';
+                recognition.continuous = false;
+                recognition.interimResults = false;
                 recognition.start();
                 isListening = true;
-                document.getElementById("output").innerText = "Listening started...";
+                document.getElementById("output").innerText = "Listening...";
 
                 recognition.onresult = function(event) {
-                    let spokenText = event.results[0][0].transcript;
+                    let spokenText = event.results[0][0].transcript.toLowerCase();
                     document.getElementById("output").innerText = "You said: " + spokenText;
 
-                    // Send text to Django backend
-                    fetch('/voice-assistant/', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ "text": spokenText })
-                    })
-                    .then(response => response.json())
-                    .then(data => alert("Assistant Response: " + data.reply))
-                    .catch(error => console.error("Error:", error));
+                    // Define commands and their corresponding URLs
+                    const commands = {
+                        "show me the menu": function() { window.location.href = "{% url 'menu_item' %}"; },
+                        "reserve a table": function() { window.location.href = "{% url 'reserve_table' %}"; },
+                        "view my reservations": function() { window.location.href = "{% url 'view_reservation' %}"; },
+                        "check my reservation history": function() { window.location.href = "{% url 'reservation_history' %}"; },
+                        "view my cart": function() { window.location.href = "{% url 'view_cart' %}"; },
+                        "give feedback": function() { window.location.href = "{% url 'submit_feedback' %}"; },
+                        "back to dashboard": function() { window.location.href = "{% url 'customer_dashboard' %}"; }
+                    };
+
+                    // Check if the spoken text matches any command
+                    for (let command in commands) {
+                        if (spokenText.includes(command)) {
+                            document.getElementById("output").innerText = "Redirecting to: " + command;
+                            setTimeout(() => {
+                                commands[command]();
+                            }, 1000);
+                            break;
+                        }
+                    }
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    document.getElementById("output").innerText = "Error: " + event.error;
+                    isListening = false;
+                };
+
+                recognition.onend = function() {
+                    if (isListening) {
+                        recognition.start();
+                    }
                 };
             }
         });
 
-        // Stop Listening
         document.getElementById("stopButton").addEventListener("click", function() {
             if (isListening && recognition) {
                 recognition.stop();

@@ -81,14 +81,14 @@
         .reservation-header {
             text-align: center;
             margin-bottom: 15px;
-            border-bottom: 3px solid #3498db;
+            border-bottom: 3px solid #033658;
             padding-bottom: 10px;
         }
 
         .reservation-header h2 {
             font-size: 2rem;
             font-weight: 600;
-            color: #34495e;
+            color: #0556a8;
             letter-spacing: 1px;
         }
 
@@ -103,7 +103,7 @@
         .table td {
             padding: 12px;
             border: 1px solid #ddd;
-            color: #7f8c8d;
+            color: #817f8d;
         }
 
         .btn {
@@ -223,11 +223,13 @@
         <h1><i class="fas fa-user-tie"></i>Customer Dashboard</h1>
         <ul>
             <li><a href="{% url 'menu_item' %}"><i class="fas fa-utensils"></i> View Menu</a></li>
+            <li><a href="{% url 'voice_assistant' %}"><i class="fas fa-microphone"></i> Voice Assistant</a></li>
             <li><a href="{% url 'reserve_table'%}"><i class="fas fa-calendar-alt"></i> Reserve Table</a></li>
             <li><a href="{% url 'view_reservation'%}"><i class="fas fa-calendar-check"></i> View Reservations</a></li>
             <li><a href="{% url 'reservation_history' %}"><i class="fas fa-receipt"></i> Reservation History</a></li>
             <li><a href="{% url 'view_cart' %}"><i class="fas fa-shopping-cart"></i> View Cart List</a></li>
             <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i> Feedback</a></li>
+            <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
         
         </ul>
     </div>
@@ -285,7 +287,6 @@
             <div class="navigation-buttons">
                 <a href="{% url 'reservation_history' %}" class="btn btn-secondary">View Reservation History</a>
                 <a href="{% url 'reserve_table' %}" class="btn btn-primary">Make Another Reservation</a>
-                <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
             </div>
 
             <!-- Print button -->
