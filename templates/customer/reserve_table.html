@@ -17,7 +17,7 @@
 
         .sidebar {
             width: 250px;
-            background: rgba(0, 0, 0, 0.8);
+            background: #343a40;
             color: white;
             padding: 20px;
             height: 100vh;
@@ -79,7 +79,8 @@
             <li><a href="{% url 'view_reservation' %}"><i class="fas fa-calendar-check"></i> View Reservations</a></li>
             <li><a href="{% url 'reservation_history' %}"><i class="fas fa-receipt"></i> Reservation History</a></li>
             <li><a href="{% url 'view_cart' %}"><i class="fas fa-shopping-cart"></i> View Cart List</a></li>
-            <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i> Feedback</a></li>
+            <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i>Give Feedback</a></li>
+            <li><a href="{% url 'customer_feedback' %}"><i class="fas fa-comments"></i> View All Feedback</a></li>
             <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
         
         </ul>
@@ -100,7 +101,7 @@
                     <label for="email" class="form-label">Email Address</label>
                     <input type="email" class="form-control" id="email" name="email" required 
                         pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in)$" 
-                        title="Email must be in the format of example@domain.com or example@domain.in">
+                        title="Email must be in the format of john@domain.com or john@domain.in">
                 </div>
                 <div class="mb-3">
                     <label for="phone" class="form-label">Phone Number</label>
@@ -138,57 +139,71 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Set min date to today
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById("reservation_date").setAttribute("min", today);
+    // Set minimum date for reservation
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById("reservation_date").setAttribute("min", today);
 
-            // Populate time options
-            const timeField = document.getElementById("reservation_time");
-            for (let hour = 8; hour <= 22; hour++) {
-                let period = hour < 12 ? "AM" : "PM";
-                let displayHour = hour % 12 === 0 ? 12 : hour % 12;
-                for (let minutes of ["00", "30"]) {
-                    let option = document.createElement("option");
-                    option.value = `${displayHour}:${minutes} ${period}`;
-                    option.textContent = `${displayHour}:${minutes} ${period}`;
-                    timeField.appendChild(option);
-                }
-            }
-
-            // Update available tables based on guest count
-            const guestsField = document.getElementById("number_of_guests");
-            const tableSelect = document.getElementById("table_number");
-            const tables = [...Array(10).keys()].map(i => ({ id: i + 1, seats: i + 1 }));
-
-            guestsField.addEventListener("input", function () {
-                const guests = parseInt(guestsField.value, 10);
-                tableSelect.innerHTML = "<option value=''>Select Table</option>";
-                tables.filter(table => table.seats >= guests)
-                    .forEach(table => {
-                        let option = document.createElement("option");
-                        option.value = table.id;
-                        option.textContent = `Table ${table.id} - ${table.seats} seats`;
-                        tableSelect.appendChild(option);
-                    });
-            });
-
-    const nameField = document.getElementById("customer_name");
-
-    nameField.addEventListener("input", function () {
-        const namePattern = /^[A-Za-z\s]+$/;
-        if (!namePattern.test(this.value)) {
-            this.setCustomValidity("Only alphabets & spaces are allowed. Max length: 15 characters.");
-        } else {
-            this.setCustomValidity("");
+    // Populate time options
+    const timeField = document.getElementById("reservation_time");
+    for (let hour = 8; hour <= 22; hour++) {
+        let period = hour < 12 ? "AM" : "PM";
+        let displayHour = hour % 12 === 0 ? 12 : hour % 12;
+        for (let minutes of ["00", "30"]) {
+            let option = document.createElement("option");
+            option.value = `${displayHour}:${minutes} ${period}`;
+            option.textContent = `${displayHour}:${minutes} ${period}`;
+            timeField.appendChild(option);
         }
-        this.reportValidity(); // ✅ Displays error message dynamically
+    }
+
+    // Table availability and selection logic
+    const guestsField = document.getElementById("number_of_guests");
+    const tableSelect = document.getElementById("table_number");
+    const tables = [
+        { id: 1, seats: 1, available: true },
+        { id: 2, seats: 2, available: true },
+        { id: 3, seats: 3, available: true },
+        { id: 4, seats: 4, available: false },
+        { id: 5, seats: 5, available: true },
+        { id: 6, seats: 6, available: false },
+        { id: 7, seats: 7, available: false },
+        { id: 8, seats: 8, available: true },
+        { id: 9, seats: 9, available: false },
+        { id: 10, seats: 10, available: true }
+    ];
+
+    guestsField.addEventListener("input", function () {
+        const guests = parseInt(guestsField.value, 10);
+        tableSelect.innerHTML = "<option value=''>Select Table</option>";
+
+        tables.filter(table => table.seats >= guests)
+            .forEach(table => {
+                let option = document.createElement("option");
+                option.value = table.id;
+                option.textContent = `Table ${table.id} - ${table.seats} seats ${table.available ? '' : '(Not Available)'}`;
+                if (!table.available) {
+                    option.disabled = true;
+                }
+                tableSelect.appendChild(option);
+            });
     });
 
-    nameField.addEventListener("blur", function () {
-        this.reportValidity(); // ✅ Ensures validation message appears when leaving the field
+    // Name validation
+    const nameField = document.getElementById("customer_name");
+    nameField.addEventListener("input", function () {
+        const namePattern = /^[A-Za-z\s]{1,15}$/;
+        this.setCustomValidity(namePattern.test(this.value) ? "" : "Only alphabets & spaces allowed, max 15 characters.");
+        this.reportValidity();
+    });
+
+    // Email validation
+    const emailField = document.getElementById("email");
+    emailField.addEventListener("input", function () {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in)$/;
+        this.setCustomValidity(emailPattern.test(this.value) ? "" : "Email must contain @ .com or .in");
+        this.reportValidity();
     });
 });
-
     </script>
 </body>
 

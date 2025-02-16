@@ -195,6 +195,7 @@
             <li><a href="{% url 'view_leave_requests' %}"><i class="fas fa-clipboard-list"></i> Leave Requests</a></li>
             <li><a href="{% url 'table_reservation' %}"><i class="fas fa-receipt"></i> View Table Reservations</a></li>
             <li><a href="{% url 'view_feedback' %}"><i class="fas fa-comments"></i> View Customer Feedback</a></li>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
         
         </ul>
     </div>
@@ -203,9 +204,6 @@
     <div id="content">
         <div class="container">
             <h2>Categories</h2>
-
-            <!-- Back to Dashboard Button -->
-            <a href="{% url 'admin_dashboard' %}" class="btn btn-primary back-to-dashboard-btn">Back to Dashboard</a>
 
             <!-- Link to add a new category -->
             <a href="{% url 'add_category' %}" class="btn btn-primary add-category-btn">Add New Category</a>

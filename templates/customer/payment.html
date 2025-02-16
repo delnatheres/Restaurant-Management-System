@@ -133,7 +133,8 @@
             <li><a href="{% url 'view_reservation'%}"><i class="fas fa-calendar-check"></i> View Reservations</a></li>
             <li><a href="{% url 'reservation_history' %}"><i class="fas fa-receipt"></i> Reservation History</a></li>
             <li><a href="{% url 'view_cart' %}"><i class="fas fa-shopping-cart"></i> View Cart</a></li>
-            <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i> Feedback</a></li>
+            <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i>Give Feedback</a></li>
+            <li><a href="{% url 'customer_feedback' %}"><i class="fas fa-comments"></i> View All Feedback</a></li>
             <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
         </ul>
     </div>
@@ -142,7 +143,7 @@
     <div class="main-content">
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         <div class="container">
-            <h2>Secure Payment</h2>
+            <h2>Complete Your Payment</h2>
             <div class="terms-link">
                 ⚠️ Please <a href="{% url 'terms_and_conditions' %}" target="_blank">read our Terms & Conditions</a> before paying.
             </div>

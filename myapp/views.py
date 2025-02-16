@@ -1736,3 +1736,8 @@ def voice_assistant(request):
 
 
 
+
+
+def view_feedback(request):
+    feedback_list = Feedback.objects.all().order_by('-created_at')
+    return render(request, 'customer/customer_feedback.html', {'feedback_list': feedback_list})

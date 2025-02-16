@@ -93,6 +93,7 @@ urlpatterns = [
 
     path('voice-assistant/', views.voice_assistant, name='voice_assistant'),
     
+    path('customer-feedback/', views.view_feedback, name='customer_feedback'),
 
     
 ]

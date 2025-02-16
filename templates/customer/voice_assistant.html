@@ -1,7 +1,4 @@
-Share
 
-
-You said:
 {% load static %}
 
 <!DOCTYPE html>
@@ -29,7 +26,7 @@ You said:
 
         #sidebar {
             width: 250px;
-            background-color: #34495e;
+            background-color: #343a40;
             color: white;
             padding: 20px;
             border-radius: 10px;
@@ -140,18 +137,20 @@ You said:
         <h1><i class="fas fa-user-tie"></i> Customer Dashboard</h1>
         <ul>
             <li><a href="{% url 'menu_item' %}"><i class="fas fa-utensils"></i> View Menu</a></li>
+            <li><a href="{% url 'voice_assistant' %}"><i class="fas fa-microphone"></i> Voice Assistant</a></li>
             <li><a href="{% url 'reserve_table'%}"><i class="fas fa-calendar-alt"></i> Reserve Table</a></li>
             <li><a href="{% url 'view_reservation'%}"><i class="fas fa-calendar-check"></i> View Reservations</a></li>
             <li><a href="{% url 'reservation_history' %}"><i class="fas fa-receipt"></i> Reservation History</a></li>
             <li><a href="{% url 'view_cart' %}"><i class="fas fa-shopping-cart"></i> View Cart List</a></li>
-            <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i> Feedback</a></li>
+            <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i>Give Feedback</a></li>
+            <li><a href="{% url 'customer_feedback' %}"><i class="fas fa-comments"></i> View All Feedback</a></li>
             <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
         </ul>
     </div>
 
     <div class="container">
         <div class="voice-assistant-container">
-            <h1>Voice Assistant</h1>
+            <h1>Modern Feast Voice Assistant</h1>
             <button id="startButton" class="button">🎤 Start Listening</button>
             <button id="stopButton" class="button">⛔ Stop Listening</button>
             <p id="output"></p>
@@ -180,10 +179,11 @@ You said:
                     const commands = {
                         "show me the menu": function() { window.location.href = "{% url 'menu_item' %}"; },
                         "reserve a table": function() { window.location.href = "{% url 'reserve_table' %}"; },
-                        "view my reservations": function() { window.location.href = "{% url 'view_reservation' %}"; },
-                        "check my reservation history": function() { window.location.href = "{% url 'reservation_history' %}"; },
-                        "view my cart": function() { window.location.href = "{% url 'view_cart' %}"; },
+                        "view reservations": function() { window.location.href = "{% url 'view_reservation' %}"; },
+                        "view reservation history": function() { window.location.href = "{% url 'reservation_history' %}"; },
+                        "view cart": function() { window.location.href = "{% url 'view_cart' %}"; },
                         "give feedback": function() { window.location.href = "{% url 'submit_feedback' %}"; },
+                        "view all feedback": function() { window.location.href = "{% url 'customer_feedback' %}";},
                         "back to dashboard": function() { window.location.href = "{% url 'customer_dashboard' %}"; }
                     };
 
