@@ -88,12 +88,13 @@ urlpatterns = [
     path('chatbot/', views.chatbot, name='chatbot'),
     path('edit_reservation/', views.edit_reservation, name='edit_reservation'),
     path('cancel_reservation/', views.cancel_reservation, name='cancel_reservation'),
-    
+    path('voice-assistant/', views.voice_assistant, name='voice_assistant'),  
+    path('customer-feedback/', views.view_feedback, name='admin_customer_feedback'),
+    path('customer_feedback/', views.customer_feedback, name='customer_feedback'),
+    path('view-reviews/', views.view_reviews, name='view_reviews'),
 
 
-    path('voice-assistant/', views.voice_assistant, name='voice_assistant'),
-    
-    path('customer-feedback/', views.view_feedback, name='customer_feedback'),
+
 
     
 ]

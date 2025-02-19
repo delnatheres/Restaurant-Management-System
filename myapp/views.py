@@ -791,6 +791,10 @@ def view_feedback(request):
     feedback_list = Feedback.objects.all().order_by('-created_at')
     return render(request, 'admin/view_feedback.html', {'feedback_list': feedback_list})
 
+def customer_feedback(request):
+    feedback_list = Feedback.objects.all().order_by('-created_at')
+    return render(request, 'customer/customer_feedback.html', {'feedback_list': feedback_list})
+
 def feedback_thankyou(request):
     return render(request, 'admin/feedback_thankyou.html')
 
@@ -1734,10 +1738,107 @@ def voice_assistant(request):
 
 
 
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+
+
+def view_reviews(request):
+    """
+    View function to display customer reviews
+    """
+    return render(request, 'customer/view_reviews.html')
 
 
 
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import google.generativeai as genai
+from .models import Feedback
 
-def view_feedback(request):
+# Configure the Gemini API
+genai.configure(api_key='AIzaSyBnNAb8qvTChM3TVTPKqIYEug3SlSzSO3Q')
+model = genai.GenerativeModel('gemini-pro')
+
+def view_reviews(request):
+    # Get all feedback
     feedback_list = Feedback.objects.all().order_by('-created_at')
-    return render(request, 'customer/customer_feedback.html', {'feedback_list': feedback_list})
+    analyzed_feedback = []
+
+    for feedback in feedback_list:
+        # Create analysis prompt for each feedback
+        prompt = f"""
+        Analyze this restaurant feedback and provide:
+        1. Sentiment Analysis (Positive/Negative/Neutral)
+        2. Key Points
+        3. Improvement Suggestions (if applicable)
+
+        Customer Name: {feedback.customer_name}
+        Rating: {feedback.rating}/5
+        Comments: {feedback.comments}
+
+        Please format the response as follows:
+        Sentiment: [sentiment]
+        Key Points: [main points from the feedback]
+        Suggestions: [improvement suggestions if rating < 5]
+        """
+
+        try:
+            # Generate analysis using Gemini
+            response = model.generate_content(prompt)
+            analysis = response.text
+
+            # Add the feedback and its analysis to the list
+            analyzed_feedback.append({
+                'feedback': feedback,
+                'analysis': analysis
+            })
+        except Exception as e:
+            # If analysis fails, add the feedback without analysis
+            analyzed_feedback.append({
+                'feedback': feedback,
+                'analysis': "Analysis not available"
+            })
+
+    context = {
+        'analyzed_feedback': analyzed_feedback
+    }
+    
+    return render(request, 'customer/view_reviews.html', context)
+
+@csrf_exempt
+def analyze_single_review(request):
+    """Endpoint for analyzing a single review via AJAX"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            review_text = data.get('review')
+            rating = data.get('rating', 0)
+            
+            prompt = f"""
+            Analyze this restaurant feedback and provide:
+            1. Sentiment Analysis (Positive/Negative/Neutral)
+            2. Key Points
+            3. Improvement Suggestions (if applicable)
+
+            Rating: {rating}/5
+            Comments: {review_text}
+
+            Please format the response as follows:
+            {{
+                "sentiment": "[Positive/Negative/Neutral]",
+                "keyPoints": "[key points from the feedback]",
+                "suggestions": "[improvement suggestions if needed]"
+            }}
+            """
+
+            response = model.generate_content(prompt)
+            analysis = json.loads(response.text)
+            return JsonResponse(analysis)
+            
+        except Exception as e:
+            return JsonResponse({
+                'error': str(e)
+            }, status=500)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=400)

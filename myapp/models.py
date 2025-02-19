@@ -212,13 +212,6 @@ class Payment(models.Model):
 
 
 
-
-
-
-
-
-
-
 from django.db import models
 
 class TableReservation(models.Model):
@@ -236,11 +229,15 @@ class TableReservation(models.Model):
 
 
 
-
-
 from django.db import models
 
 class Reservation(models.Model):
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Approved", "Approved"),
+        ("Rejected", "Rejected"),
+    ]
+    
     customer_name = models.CharField(max_length=255)
     email = models.EmailField()
     phone = models.CharField(max_length=15)
@@ -248,10 +245,11 @@ class Reservation(models.Model):
     reservation_time = models.TimeField()
     number_of_guests = models.PositiveIntegerField()
     special_requests = models.TextField(blank=True, null=True)
-    
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="Pending")
 
     def __str__(self):
-        return f"{self.customer_name} - {self.reservation_date} at {self.reservation_time}"
-    
- 
+        return f"{self.customer_name} - {self.reservation_date}"
+
+
+
 

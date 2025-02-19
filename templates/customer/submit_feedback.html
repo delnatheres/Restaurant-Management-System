@@ -100,10 +100,9 @@
             <li><a href="{% url 'view_reservation'%}"><i class="fas fa-calendar-check"></i> View Reservations</a></li>
             <li><a href="{% url 'reservation_history' %}"><i class="fas fa-receipt"></i> Reservation History</a></li>
             <li><a href="{% url 'view_cart' %}"><i class="fas fa-shopping-cart"></i> View Cart List</a></li>
-            <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i>Give Feedback</a></li>
+            <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i> Give Feedback</a></li>
             <li><a href="{% url 'customer_feedback' %}"><i class="fas fa-comments"></i> View All Feedback</a></li>
             <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
-    
         </ul>
     </div>
 
@@ -117,10 +116,19 @@
                     <label for="customer_name">Customer Name:</label>
                     <input type="text" class="form-control" name="customer_name" id="customer_name" required>
                 </div>
+
                 <div class="form-group">
                     <label for="comments">Comments:</label>
-                    <input type="text" class="form-control" name="comments" id="comments" required>
+                    <select class="form-control" name="comments" id="comments" required>
+                        <option value="" disabled selected>Select an option</option>
+                        <option value="Very Good">Very Good</option>
+                        <option value="Good">Good</option>
+                        <option value="Nice">Nice</option>
+                        <option value="Poor">Poor</option>
+                        <option value="Very Poor">Very Poor</option>
+                    </select>
                 </div>
+
                 <div class="form-group">
                     <label for="rating">Rating:</label>
                     <input type="number" class="form-control" name="rating" id="rating" min="1" max="5" required>
