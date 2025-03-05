@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'restaurant_management_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mydb_stoodthan',
-        'USER': 'mydb_stoodthan',
-        'PASSWORD': '83da761cb221d4726fcc31a53c6402d398224c80',
-        'HOST': '673js.h.filess.io',
-        'PORT': '3307',
+        'NAME': 'mydb_heavyorder',
+        'USER': 'mydb_heavyorder',
+        'PASSWORD': '504868a1ddb710fd95b404dcd49fea65b33a6ad0',
+        'HOST': '4bu-u.h.filess.io',
+        'PORT': '3306',
     }
 }
 
