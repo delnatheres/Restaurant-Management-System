@@ -25,7 +25,7 @@ from .models import Login, User, SignIn
 
 from .models import Employee, EmployeeDashboard
 from .models import EmployeeDashboard, Employee, LeaveRequest, Order,Cart,Feedback
-
+from .models import Payment
 
 
 
@@ -982,81 +982,38 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 def check_out(request):
-    user = None
-    try:
-        # Fetch user based on session ID (convert to int if needed)
-        user_id = int(request.session.get('user_id'))
-        print("user",user_id)  
-        user = SignIn.objects.get(id=user_id)
-        print(user)
-    except (ValueError, SignIn.DoesNotExist):
-        user = None  # Set user to None if an error occurs
+    if request.method == 'POST':
+        # Get payment method from the POST request
+        payment_method = request.POST.get('payment_method', 'N/A')  # Default to 'N/A' if not provided
 
-    # Fetch cart items for the logged-in user
-    cart_items = Cart.objects.filter(customer=user) if user else []
-    
-    # Calculate the total price of the items in the cart
+        # Fetch user and cart items
+        customer_id = int(request.session.get('customer_id'))
+        customer = SignIn.objects.get(id=customer_id)
+        cart_items = Cart.objects.filter(customer=customer)
+
+        # Calculate the total price
+        total_price = sum(item.get_total_price() for item in cart_items)
+
+        # Create the order
+        order = Order.objects.create(customer=customer, total_price=total_price, payment_method=payment_method)
+        
+        # Redirect to payment view with order_id
+        return redirect('payment_view', order_id=order.id)  # Ensure this matches the URL pattern
+
+    # If not a POST request, render the checkout page
+    customer_id = int(request.session.get('customer_id'))
+    customer = SignIn.objects.get(id=customer_id)
+    cart_items = Cart.objects.filter(customer=customer)
     total_price = sum(item.get_total_price() for item in cart_items)
 
-    if request.method == 'POST':
-        # Get contact and payment method from the form data
-        contact = request.POST.get('contact', '')
-        print(contact)
-        payment_method = request.POST.get('payment_method', '')
-
-        # Create the order if the user is logged in
-        if user:
-            # Create a new Order object
-            order = Order.objects.create(
-                customer=user,  # Assuming customer is ForeignKey to SignIn
-                name=user.name if hasattr(user, 'name') else 'Guest',  # Ensure 'name' field exists
-                contact=contact,
-                email=user.email if hasattr(user, 'email') else '',  # Ensure 'email' field exists
-                place=user.place if hasattr(user, 'place') else '',  # Ensure 'place' field exists
-                total_price=total_price,
-                payment_method=payment_method,
-                status='pending'  # Assuming 'status' field exists in Order
-            )
-
-            # Create OrderItem instances for each cart item
-            for item in cart_items:
-                OrderItem.objects.create(
-                    order=order,
-                    menu_item=item.menu_item,  # Assuming 'menu_item' is ForeignKey in Cart
-                    quantity=item.quantity,
-                    price=item.menu_item.price  # Store the price at the time of order
-                )
-
-
-                
-
-            # Clear the cart after placing the order
-            cart_items.delete()
-
-            # Redirect to order summary after placing the order
-            messages.success(request, 'Order placed successfully!')
-            return redirect('order_summary', order_id=order.id)
-        else:
-            # Show error message if user is not logged in
-            error_message = "Please log in to place your order."
-            return render(request, 'customer/check_out.html', {
-                'error_message': error_message,
-                'cart_items': cart_items,
-                'total_price': total_price
-            })
-    user_id = int(request.session.get('customer_id'))
-    print("user",user_id)  
-    user = SignIn.objects.get(id=user_id)
-    print(user)
-# Render the checkout page with user and cart details
     return render(request, 'customer/check_out.html', {
-        'user': user,
+        'customer': customer,
         'cart_items': cart_items,
         'total_price': total_price
     })
-    
-    
-    
+
+
+
 def place_order(request):
     if request.method == 'POST':
         # Fetch payment details and contact information from the POST request
@@ -1170,24 +1127,24 @@ razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZOR
 @csrf_exempt
 def create_order(request):
     if request.method == "POST":
-        # Example of fetching cart items, adjust according to your implementation
-        cart_items = request.session.get('cart', [])  # Assuming 'cart' holds your items
-        total_amount = 0
-
-        for item in cart_items:
-            # Assuming item contains 'price' and 'quantity'
-            total_amount += item['price'] * item['quantity']  # Calculate total amount
-
-        total_amount_in_paise = total_amount  # Convert to paise
+        # Calculate total amount
+        total_amount = ...  # Your logic to calculate total amount
         razorpay_order = razorpay_client.order.create({
             "amount": total_amount, 
             "currency": "INR", 
             "payment_capture": "1"
         })
 
+        # Create the order in your database
+        order = Order.objects.create(
+            customer=request.user,
+            total_price=total_amount,
+            payment_method='razorpay'
+        )
+
         return JsonResponse({
             "order_id": razorpay_order['id'],
-            "amount": total_amount_in_paise  # Return amount for use in the payment page
+            "amount": total_amount  # Return amount for use in the payment page
         })
 
 
@@ -1207,14 +1164,16 @@ def verify_payment(request):
             return JsonResponse({"status": "failure"})
 
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from .models import Order
 
-def payment_view(request):
-    # Handle the payment logic here
-    totalprice = request.session.get('totalprice', 0) 
-    amount_in_paise = totalprice * 100
-    
-    return render(request, 'customer/payment.html',{'amount': amount_in_paise,})  # Adjust the template name as necessary
+def payment_view(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    return render(request, 'customer/payment.html', {
+        'order': order,
+        'amount': order.total_price * 100,  # Amount in paise
+        'user': request.user  # Pass the user if needed
+    })
 
 
 
@@ -1758,7 +1717,7 @@ from .models import Feedback
 
 # Configure the Gemini API
 genai.configure(api_key='AIzaSyBnNAb8qvTChM3TVTPKqIYEug3SlSzSO3Q')
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('gemini-1.5-pro')
 
 def view_reviews(request):
     # Get all feedback
@@ -1842,3 +1801,41 @@ def analyze_single_review(request):
             }, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+@csrf_exempt
+def process_payment(request, order_id):
+    print("Received request for order ID:", order_id)
+    if request.method == 'POST':
+        print("Request body:", request.body)  # Log the request body
+        order = get_object_or_404(Order, id=order_id)
+        
+        # Log incoming data
+        data = json.loads(request.body)
+        razorpay_payment_id = data.get('razorpay_payment_id')
+
+        print("razorpay_payment_id:", razorpay_payment_id)
+
+        # Verify the payment signature
+        try:
+            Payment.objects.create(order=order, amount=order.total_price, razorpay_payment_id=razorpay_payment_id, status='successful')
+            return JsonResponse({'status': 'success', 'order_id': order.id})  # Return success response
+        except razorpay.errors.SignatureVerificationError:
+            print("Signature verification failed")
+            return JsonResponse({'status': 'error', 'message': 'Signature verification failed'}, status=400)
+        except Exception as e:
+            print(f"Error processing payment: {str(e)}")
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)  # Handle payment verification failure
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+def payment_failure(request):
+    return render(request, 'customer/payment_failure.html')
+
+
+
+
+from django.shortcuts import render
+
+def guidelines(request):
+    return render(request, 'customer/guidelines.html')
+

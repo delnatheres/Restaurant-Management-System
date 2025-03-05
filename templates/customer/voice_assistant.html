@@ -1,4 +1,3 @@
-
 {% load static %}
 
 <!DOCTYPE html>
@@ -144,6 +143,7 @@
             <li><a href="{% url 'view_cart' %}"><i class="fas fa-shopping-cart"></i> View Cart List</a></li>
             <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i>Give Feedback</a></li>
             <li><a href="{% url 'customer_feedback' %}"><i class="fas fa-comments"></i> View All Feedback</a></li>
+            <li><a href="{% url 'view_reviews' %}"><i class="fas fa-star"></i> View Reviews</a></li>
             <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
         </ul>
     </div>
@@ -153,6 +153,7 @@
             <h1>Modern Feast Voice Assistant</h1>
             <button id="startButton" class="button">🎤 Start Listening</button>
             <button id="stopButton" class="button">⛔ Stop Listening</button>
+            <button id="guidelinesButton" class="btn btn-info">📖 Read Guidelines</button>
             <p id="output"></p>
         </div>
     </div>
@@ -175,7 +176,6 @@
                     let spokenText = event.results[0][0].transcript.toLowerCase();
                     document.getElementById("output").innerText = "You said: " + spokenText;
 
-                    // Define commands and their corresponding URLs
                     const commands = {
                         "show me the menu": function() { window.location.href = "{% url 'menu_item' %}"; },
                         "reserve a table": function() { window.location.href = "{% url 'reserve_table' %}"; },
@@ -183,11 +183,11 @@
                         "view reservation history": function() { window.location.href = "{% url 'reservation_history' %}"; },
                         "view cart": function() { window.location.href = "{% url 'view_cart' %}"; },
                         "give feedback": function() { window.location.href = "{% url 'submit_feedback' %}"; },
-                        "view all feedback": function() { window.location.href = "{% url 'customer_feedback' %}";},
+                        "view all feedback": function() { window.location.href = "{% url 'customer_feedback' %}"; },
+                        "view reviews": function() { window.location.href = "{% url 'view_reviews' %}"; },
                         "back to dashboard": function() { window.location.href = "{% url 'customer_dashboard' %}"; }
                     };
 
-                    // Check if the spoken text matches any command
                     for (let command in commands) {
                         if (spokenText.includes(command)) {
                             document.getElementById("output").innerText = "Redirecting to: " + command;
@@ -200,7 +200,6 @@
                 };
 
                 recognition.onerror = function(event) {
-                    console.error('Speech recognition error:', event.error);
                     document.getElementById("output").innerText = "Error: " + event.error;
                     isListening = false;
                 };
@@ -219,6 +218,10 @@
                 isListening = false;
                 document.getElementById("output").innerText = "Listening stopped.";
             }
+        });
+
+        document.getElementById("guidelinesButton").addEventListener("click", function() {
+            window.location.href = "{% url 'guidelines' %}";
         });
     </script>
 </body>

@@ -81,6 +81,7 @@
             <li><a href="{% url 'view_cart' %}"><i class="fas fa-shopping-cart"></i> View Cart List</a></li>
             <li><a href="{% url 'submit_feedback' %}"><i class="fas fa-comment-dots"></i>Give Feedback</a></li>
             <li><a href="{% url 'customer_feedback' %}"><i class="fas fa-comments"></i> View All Feedback</a></li>
+            <li><a href="{% url 'view_reviews' %}"><i class="fas fa-star"></i> View Reviews</a></li>
             <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
         
         </ul>
@@ -132,7 +133,7 @@
                     <label for="special_requests" class="form-label">Special Requests (Optional)</label>
                     <textarea class="form-control" id="special_requests" name="special_requests" rows="3"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Reserve Now</button>
+                <button type="submit" id="submit" class="btn btn-primary w-100">Reserve Now</button>
             </form>
         </div>
     </div>

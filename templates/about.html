@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         /* Basic Reset */
         * {
@@ -41,18 +42,18 @@
         .navbar {
             background-color: #f8f9fa;
             padding: 10px;
-            text-align: center; /* Center the navbar items */
+            text-align: center;
         }
 
         .navbar a {
             color: #343a40;
             text-decoration: none;
-            margin: 0 15px; /* Add space between links */
+            margin: 0 15px;
             font-weight: bold;
         }
 
         .navbar a:hover {
-            color: #ff4081; /* Hover effect */
+            color: #ff4081;
         }
 
         /* Section Styling */
@@ -65,71 +66,50 @@
             margin: 0 auto;
         }
 
+        section h2 i {
+            margin-right: 10px;
+            color: #ff4081;
+        }
+
         section p {
             font-size: 1.2em;
             line-height: 1.8;
         }
 
-        /* Additional Content Styling */
-        .history, .team, .mission, .contact {
-            margin-bottom: 30px;
-        }
-
-        .history h2, .team h2, .mission h2, .contact h2 {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-
-        .history p, .team p, .mission p, .contact p {
-            font-size: 1.1em;
-            line-height: 1.6;
-        }
-
+        /* Team Image Styling */
         .team img {
             max-width: 100%;
             height: auto;
             border-radius: 5px;
         }
-
-        /* Contact Info Styling */
-        .contact-info {
-            background-color: #f4f4f4;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .contact-info p {
-            font-size: 1em;
-            line-height: 1.6;
-        }
     </style>
 </head>
 <body>
     <header>
-        <h1>About Our Modern Feast</h1>
+        <h1><i class="fas fa-utensils"></i> About Our Modern Feast</h1>
         <nav class="navbar">
-            <a href="{%url 'index' %}">Home</a>
-            <a href="{%url 'contact' %}">Contact</a>
-            <a href="{% url 'terms_and_conditions' %}">Terms & Conditions</a>
-            <a href="{%url 'sign_in' %}">Sign In</a>
-            <a href="{%url 'login' %}">Login</a>
+            <a href="{% url 'index' %}"><i class="fas fa-home"></i> Home</a>
+            <a href="{% url 'contact' %}"><i class="fas fa-envelope"></i> Contact</a>
+            <a href="{% url 'terms_and_conditions' %}"><i class="fas fa-file-contract"></i> Terms & Conditions</a>
+            <a href="{% url 'sign_in' %}"><i class="fas fa-user-plus"></i> Sign In</a>
+            <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
         </nav>
     </header>
     
     <section>
         <div class="history">
-            <h2>Our History</h2>
+            <h2><i class="fas fa-history"></i> Our History</h2>
             <p>Founded in 2024, our restaurant has been dedicated to bringing you the best dining experience with a focus on quality and freshness. Our journey began with a passion for food and a commitment to excellence.</p>
         </div>
 
         <div class="team">
-            <h2>Meet Our Team</h2>
+            <h2><i class="fas fa-users"></i> Meet Our Team</h2>
             <p>Our team is composed of skilled chefs and dedicated staff who work together to create a memorable dining experience. Each member brings their unique expertise to the table.</p>
             <img src="{% static 'images/team.webp' %}" alt="Our Team">
         </div>
 
         <div class="mission">
-            <h2>Our Mission</h2>
+            <h2><i class="fas fa-bullseye"></i> Our Mission</h2>
             <p>We are committed to providing exceptional service and high-quality dishes that bring joy to our guests. Our mission is to create a warm and inviting atmosphere where everyone feels at home.</p>
         </div>
      </section>

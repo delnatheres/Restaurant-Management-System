@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         /* Basic Reset */
         * {
@@ -71,9 +72,9 @@
             margin: 0 auto;
         }
 
-        section h2 {
-            font-size: 2em;
-            margin-bottom: 10px;
+        section h2 i {
+            margin-right: 10px;
+            color: #ff4081;
         }
 
         section p {
@@ -82,113 +83,55 @@
             margin-bottom: 10px;
         }
 
-        /* Contact Form Styling */
-        .contact-form {
-            margin-top: 20px;
+        /* Contact Info */
+        .contact-info h2 i {
+            color: #ff4081;
         }
 
-        .contact-form label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .contact-form input, 
-        .contact-form textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-        }
-
-        .contact-form button {
-            background-color: #333;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-size: 1.2em;
-            cursor: pointer;
-        }
-
-        .contact-form button:hover {
-            background-color: #555;
-        }
-
-        .contact-info {
-            margin-top: 20px;
-        }
-
-        .contact-info p {
-            margin-bottom: 10px;
-        }
-
-        .contact-info .address, 
-        .contact-info .social-media {
-            margin-bottom: 20px;
-        }
-
-        .contact-info .social-media a {
-            margin-right: 10px;
-            color: #333;
-            text-decoration: none;
-        }
-
-        .contact-info .social-media a:hover {
-            text-decoration: underline;
-        }
-
-        /* Google Map */
-        .google-map {
-            margin-top: 20px;
-            max-width: 100%;
-            height: 400px;
+        .social-media a i {
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Contact</h1>
+        <h1><i class="fas fa-phone-alt"></i> Contact Us</h1>
     </header>
     <nav class="navbar">
-        <a href="{% url 'index' %}">Home</a>
-        <a href="{% url 'about' %}">About</a>
-        <a href="{% url 'terms_and_conditions' %}">Terms & Conditions</a>
-        <a href="{% url 'sign_in' %}">Sign In</a>
-        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'index' %}"><i class="fas fa-home"></i> Home</a>
+        <a href="{% url 'about' %}"><i class="fas fa-info-circle"></i> About</a>
+        <a href="{% url 'terms_and_conditions' %}"><i class="fas fa-file-contract"></i> Terms & Conditions</a>
+        <a href="{% url 'sign_in' %}"><i class="fas fa-user-plus"></i> Sign In</a>
+        <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
     </nav>
     <section>
-        <h2>Get in Touch</h2>
+        <h2><i class="fas fa-envelope"></i> Get in Touch</h2>
         <p>If you have any doubts please feel free to reach out to us. We look forward to hearing from you!</p>
         
-        <!-- Contact Information -->
         <div class="contact-info">
             <div class="address">
-                <h2>Our Address</h2>
+                <h2><i class="fas fa-map-marker-alt"></i> Our Address</h2>
                 <p>292 Food Street, Kannur, 670582</p>
             </div>
 
             <div class="phone-email">
-                <h2>Contact Details</h2>
+                <h2><i class="fas fa-phone"></i> Contact Details</h2>
                 <p><strong>Email:</strong> contact@modernfeast.com</p>
                 <p><strong>Phone:</strong> 8585452321</p>
             </div>
 
             <div class="social-media">
-                <h2>Follow Us</h2>
-                <a href="https://www.facebook.com/yourrestaurant" target="_blank">Facebook</a>
-                <a href="https://www.twitter.com/yourrestaurant" target="_blank">Twitter</a>
-                <a href="https://www.instagram.com/yourrestaurant" target="_blank">Instagram</a>
+                <h2><i class="fas fa-share-alt"></i> Follow Us</h2>
+                <a href="https://www.facebook.com/yourrestaurant" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
+                <a href="https://www.twitter.com/yourrestaurant" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
+                <a href="https://www.instagram.com/yourrestaurant" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
             </div>
         </div>
         
-        <!-- Google Map Embed with Reduced Size -->
-      <div class="google-map">
-    <h2>Our Location</h2>
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31270.67160647879!2d75.37614903525142!3d11.874477859395103!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba42655acccd245%3A0xc165b8a5823a78d3!2sKannur%2C%20Kerala%2C%20India!5e0!3m2!1sen!2sus!4v1600732210981!5m2!1sen!2sus" width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
-    </div>
+        <div class="google-map">
+            <h2><i class="fas fa-map"></i> Our Location</h2>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31270.67160647879!2d75.37614903525142!3d11.874477859395103!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba42655acccd245%3A0xc165b8a5823a78d3!2sKannur%2C%20Kerala%2C%20India!5e0!3m2!1sen!2sus!4v1600732210981!5m2!1sen!2sus" width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+        </div>
     </section>
 </body>
 </html>

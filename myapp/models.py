@@ -200,7 +200,6 @@ class Payment(models.Model):
     id = models.AutoField(primary_key=True)
     order = models.ForeignKey('Order', on_delete=models.CASCADE)  # Link to Order model
     amount = models.DecimalField(max_digits=10, decimal_places=2)  # Total amount paid
-    razorpay_order_id = models.CharField(max_length=255, unique=True)  # Razorpay order ID
     razorpay_payment_id = models.CharField(max_length=255, unique=True)  # Razorpay payment ID
     status = models.CharField(max_length=20, default='pending')  # Payment status (pending, successful, failed)
     created_at = models.DateTimeField(auto_now_add=True)  # Date and time of payment creation
@@ -253,3 +252,12 @@ class Reservation(models.Model):
 
 
 
+
+
+class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def get_total_price(self):
+        return self.menu_item.price * self.quantity

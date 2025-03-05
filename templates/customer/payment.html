@@ -154,29 +154,28 @@
     <script>
         document.getElementById('rzp-button').onclick = function(e) {
             var options = {
-                "key": "rzp_test_VEVGpwiKT3ZrQ0",  
-                "amount": "{{amount}}", 
+                "key": "rzp_test_VEVGpwiKT3ZrQ0",  // Your Razorpay key
+                "amount": "{{ amount }}",  // Amount in paise
                 "currency": "INR",
                 "name": "Restaurant Management",
                 "description": "Order Payment",
                 "image": "{% static 'images/logo.png' %}",
-                "order_id": "{{ razorpay_order_id }}",
                 "handler": function(response) {
-                    fetch('/verify-payment/', {
+                    // Submit the payment details to the server
+                    fetch(`/process_payment/{{ order.id }}/`, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
-                            order_id: options.order_id,
-                            payment_id: response.razorpay_payment_id,
-                            signature: response.razorpay_signature
+                            razorpay_payment_id: response.razorpay_payment_id,
                         })
                     })
                     .then(response => response.json())
                     .then(data => {
+                        console.log(data);  // Log the response for debugging
                         if (data.status === 'success') {
-                            window.location.href = '/payment-success/';
+                            window.location.href = `/order-summary/${data.order_id}/`;  // Redirect to order summary
                         } else {
-                            window.location.href = '/payment-failure/';
+                            window.location.href = '/payment-failure/';  // Redirect to failure page
                         }
                     });
                 },

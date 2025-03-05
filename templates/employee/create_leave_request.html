@@ -19,7 +19,6 @@
             height: 100vh;
         }
 
-        /* Sidebar styles */
         #sidebar {
             width: 250px;
             background-color: #34495e;
@@ -59,7 +58,6 @@
             color: #3498db;
         }
 
-        /* Main content */
         .main-content {
             margin-left: 270px;
             padding: 20px;
@@ -89,8 +87,8 @@
             font-weight: bold;
         }
 
-        input[type="text"],
         input[type="date"],
+        select,
         textarea {
             width: 100%;
             padding: 10px;
@@ -125,8 +123,6 @@
     </style>
 </head>
 <body>
-
-    <!-- Sidebar (Employee Dashboard) -->
     <div id="sidebar">
         <h1><i class="fas fa-user-tie"></i> Employee Dashboard</h1>
         <ul>
@@ -138,14 +134,18 @@
         </ul>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <div class="container">
             <h1>Apply for Leave</h1>
             <form method="POST" id="leave-form">
                 {% csrf_token %}
                 <label for="leave_type">Leave Type:</label>
-                <input type="text" name="leave_type" required>
+                <select name="leave_type" required>
+                    <option value="" disabled selected>Select a Leave Type</option>
+                    <option value="Medical">Medical</option>
+                    <option value="Family">Family</option>
+                    <option value="Personal">Personal</option>
+                </select>
                 
                 <label for="start_date">Start Date:</label>
                 <input type="date" name="start_date" id="start_date" required>

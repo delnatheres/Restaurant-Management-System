@@ -151,8 +151,17 @@
     <div class="main-content">
         <div class="container">
             <h2>Payment Details</h2>
-            <form id="order-form" method="POST" action="{% url 'place_order' %}">
+            <form id="order-form" method="POST" action="{% url 'check_out' %}">
                 {% csrf_token %}
+                <div class="form-group">
+                    <label for="payment_method">Payment Method:</label>
+                    <select class="form-control" name="payment_method" id="payment_method" required>
+                        <option value="credit_card">Credit Card</option>
+                        <option value="debit_card">Debit Card</option>
+                        <option value="paypal">PayPal</option>
+                        <option value="razorpay">Razorpay</option>
+                    </select>
+                </div>
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="customer_name" value="{{ user.name }}" required>
 
@@ -165,7 +174,7 @@
                 <label for="place">Place:</label>
                 <input type="text" id="place" name="place" value="{{ user.place }}" required>
 
-                <button type="button" id="pay-now">Proceed to Payment</button>
+                <button type="submit" class="btn btn-primary">Proceed to Payment</button>
             </form>
         </div>
 
@@ -194,7 +203,8 @@
                 return;
             }
 
-            window.location.href = "{% url 'payment_view' %}";
+            // Instead of redirecting here, the form will be submitted to the server
+            document.getElementById('order-form').submit();  // Submit the form
         });
     </script>
 </body>

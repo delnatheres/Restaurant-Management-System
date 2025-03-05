@@ -75,7 +75,7 @@ urlpatterns = [
     path('create_leave_request/<int:employee_id>/', views.create_leave_request, name='create_leave_request'),
     path('create_order/', views.create_order, name='create_order'),
     path('verify_payment/', views.verify_payment, name='verify_payment'),
-    path('payment/', views.payment_view, name='payment_view'),
+    path('payment/<int:order_id>/', views.payment_view, name='payment_view'),
     path('reserve_table/', views.reserve_table, name='reserve_table'),
     path('reserve/', views.reserve_table, name='reserve_table'),
     path('view-reservation/', views.view_reservation, name='view_reservation'),
@@ -92,11 +92,11 @@ urlpatterns = [
     path('customer-feedback/', views.view_feedback, name='admin_customer_feedback'),
     path('customer_feedback/', views.customer_feedback, name='customer_feedback'),
     path('view-reviews/', views.view_reviews, name='view_reviews'),
+    path('process_payment/<int:order_id>/', views.process_payment, name='process_payment'),
+    path('payment-failure/', views.payment_failure, name='payment_failure'),
+    path('guidelines/', views.guidelines, name='guidelines'),
 
 
-
-
-    
 ]
 if settings.DEBUG:
   urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
