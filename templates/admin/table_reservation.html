@@ -215,7 +215,7 @@
 
                 {% if reservations %}
                     <table class="table reservation-table">
-                        <thead>
+                        <head>
                             <tr>
                                 <th>SL NO</th>
                                 <th>Name</th>
@@ -225,10 +225,10 @@
                                 <th>Time</th>
                                 <th>Guests</th>
                                 <th>Special Requests</th>
-                                <th>Actions</th>
+                                <!-- <th>Actions</th> -->
                             </tr>
-                        </thead>
-                        <tbody>
+                        </head>
+                        <body>
                             {% for reservation in reservations %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
@@ -240,12 +240,12 @@
                                     <td>{{ reservation.number_of_guests }}</td>
                                     <td>{{ reservation.special_requests|default:"None" }}</td>
                                     <td>
-                                        <form method="post" action="{% url 'update_reservation_status' %}" class="d-flex justify-content-center gap-2">
+                                        <!-- <form method="post" action="{% url 'update_reservation_status' %}" class="d-flex justify-content-center gap-2">
                                             {% csrf_token %}
                                             <input type="hidden" name="reservation_id" value="{{ reservation.id }}">
                                             <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
                                             <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
-                                        </form>
+                                        </form> -->
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -259,22 +259,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById("logoutBtn").addEventListener("click", function(event) {
-            event.preventDefault();
-            Swal.fire({
-                title: 'Are you sure you want to logout?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, logout!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "{% url 'login' %}";
-                }
-            });
-        });
-    </script>
+    
 </body>
 </html>

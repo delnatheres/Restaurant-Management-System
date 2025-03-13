@@ -97,6 +97,13 @@ urlpatterns = [
     path('guidelines/', views.guidelines, name='guidelines'),
 
 
+
+
+    path('',views. upload_food_image, name='upload_food_image'),
+    path('upload/', views.upload_food_image, name='upload'),
+    path('upload/', views.upload_food_image, name='upload_food_image'),
+
+
 ]
 if settings.DEBUG:
   urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

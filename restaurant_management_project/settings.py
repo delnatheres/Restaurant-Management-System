@@ -62,29 +62,29 @@ WSGI_APPLICATION = 'restaurant_management_project.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'mydbb',
-#         'USER': 'root',
-#         'PASSWORD': '',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
-
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mydb_fatridemix',
-        'USER': 'mydb_fatridemix',
-        'PASSWORD': '3de3a4545c09cf5e043c8581d395bcb57abbd0cc',
-        'HOST': 'mzjon.h.filess.io',
-        'PORT': '3307',
+        'NAME': 'mydbb',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
+
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'mydb_fatridemix',
+#         'USER': 'mydb_fatridemix',
+#         'PASSWORD': '3de3a4545c09cf5e043c8581d395bcb57abbd0cc',
+#         'HOST': 'mzjon.h.filess.io',
+#         'PORT': '3307',
+#     }
+# }
 
 
 

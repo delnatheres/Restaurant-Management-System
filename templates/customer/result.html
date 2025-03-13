@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Price Prediction</title>
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            background: url("{% static 'images/sky1.webp' %}") no-repeat center center/cover;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Centered content */
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+        }
+
+        /* Heading style */
+        h2 {
+            color: #222;
+        }
+
+        /* Paragraph styling */
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* Simple button */
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-decoration: none;
+            color: white;
+            background: #007BFF;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Food Price Prediction</h2>
+        <p>The predicted price of the food item is:</p>
+        <p><strong>{{ price }}</strong></p>
+        <p>If you'd like to check another food item, click below:</p>
+        <a href="{% url 'upload_food_image' %}" class="btn">Upload Another Image</a>
+    </div>
+
+</body>
+</html>

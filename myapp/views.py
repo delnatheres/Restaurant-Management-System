@@ -1802,6 +1802,8 @@ def analyze_single_review(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
+
+
 @csrf_exempt
 def process_payment(request, order_id):
     print("Received request for order ID:", order_id)
@@ -1838,4 +1840,79 @@ from django.shortcuts import render
 
 def guidelines(request):
     return render(request, 'customer/guidelines.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import os
+import re
+import google.generativeai as genai
+from PIL import Image
+from django.shortcuts import render
+from django.conf import settings
+
+# Set up Gemini API
+API_KEY = "AIzaSyBnNAb8qvTChM3TVTPKqIYEug3SlSzSO3Q"  # Ensure your API key is valid
+genai.configure(api_key=API_KEY)
+
+def predict_food_price(image_path):
+    """Send image to Gemini AI and extract price prediction in INR (₹)."""
+    try:
+        model = genai.GenerativeModel("gemini-1.5-flash")  # Use latest Gemini model
+
+        # Load the image using PIL
+        img = Image.open(image_path)
+
+        # Send the image to Gemini for prediction
+        response = model.generate_content(["Predict the price of this food item in Indian Rupees (₹):", img])
+
+        if response and response.text:
+            # Extract numerical price using regex (₹xx.xx format)
+            price_match = re.search(r"₹\s?\d+(,\d{2,3})*(\.\d{1,2})?", response.text)
+
+            if price_match:
+                return price_match.group()  # Return extracted price like "₹150.99"
+            else:
+                return "Price not detected, try another image."
+        else:
+            return "No response from AI."
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+def upload_food_image(request):
+    """Handle image upload and return predicted price in INR."""
+    if request.method == "POST" and request.FILES.get("food_image"):
+        food_image = request.FILES["food_image"]
+        image_path = os.path.join(settings.MEDIA_ROOT, "food_images", food_image.name)
+
+        # Save the uploaded image
+        with open(image_path, "wb") as img_file:
+            for chunk in food_image.chunks():
+                img_file.write(chunk)
+
+        # Get predicted price
+        predicted_price = predict_food_price(image_path)
+
+        return render(request, "customer/result.html", {"price": predicted_price})
+
+    return render(request, "customer/upload.html")
 
