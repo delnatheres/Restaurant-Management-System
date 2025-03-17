@@ -70,6 +70,7 @@ urlpatterns = [
     path('order/<int:item_id>/', views.place_order, name='place_order'),
     path('order-history/', views.order_history, name='order_history'),
     path('view-order/', views.view_order, name='view_order'),
+    path('emp-view-order/',views.emp_view_order, name="emp_view_order"),
     path('dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
     path('employee_dashboard/<int:employee_id>/', views.employee_dashboard, name='employee_dashboard'),
     path('create_leave_request/<int:employee_id>/', views.create_leave_request, name='create_leave_request'),
@@ -95,16 +96,14 @@ urlpatterns = [
     path('process_payment/<int:order_id>/', views.process_payment, name='process_payment'),
     path('payment-failure/', views.payment_failure, name='payment_failure'),
     path('guidelines/', views.guidelines, name='guidelines'),
-
-
-
-
     path('',views. upload_food_image, name='upload_food_image'),
     path('upload/', views.upload_food_image, name='upload'),
     path('upload/', views.upload_food_image, name='upload_food_image'),
+    
 
 
 ]
 if settings.DEBUG:
   urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
   urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+  

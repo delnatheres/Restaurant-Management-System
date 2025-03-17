@@ -1232,16 +1232,15 @@ def order_history(request):
 
 
 
-def view_order(request):
-    # Fetch all orders ordered by date
-    orders = Order.objects.all().order_by('-ordered_at')  
-    return render(request, 'admin/view_order.html', {'orders': orders})
 
 def view_order(request):
     # Fetch all orders ordered by date
+    orders = Order.objects.all().order_by('-ordered_at')  
+    return render(request, 'admin/view_orders.html', {'orders': orders})
+
+def emp_view_order(request):
     orders = Order.objects.all().order_by('-ordered_at')  
     return render(request, 'employee/view_order.html', {'orders': orders})
-
 
 
 
@@ -1474,7 +1473,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Configure the Generative AI client
-API_KEY = "AIzaSyBnNAb8qvTChM3TVTPKqIYEug3SlSzSO3Q"
+API_KEY = "AIzaSyDWn4zpv79RDS6Yz2JkEto_-7Hq3dYlvFg"
 genai.configure(api_key=API_KEY)
 
 # Update the system prompt to specify Indian Rupees
@@ -1523,7 +1522,7 @@ def chatbot(request):
 
         try:
             # Create the model
-            model = genai.GenerativeModel("gemini-pro")
+            model = genai.GenerativeModel("gemini-1.5-pro-latest")
 
             # Add restaurant-specific context with Indian pricing
             restaurant_context = """
@@ -1716,7 +1715,7 @@ import google.generativeai as genai
 from .models import Feedback
 
 # Configure the Gemini API
-genai.configure(api_key='AIzaSyBnNAb8qvTChM3TVTPKqIYEug3SlSzSO3Q')
+genai.configure(api_key='AIzaSyDWn4zpv79RDS6Yz2JkEto_-7Hq3dYlvFg')
 model = genai.GenerativeModel('gemini-1.5-pro')
 
 def view_reviews(request):
@@ -1848,21 +1847,6 @@ def guidelines(request):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import os
 import re
 import google.generativeai as genai
@@ -1870,49 +1854,65 @@ from PIL import Image
 from django.shortcuts import render
 from django.conf import settings
 
-# Set up Gemini API
-API_KEY = "AIzaSyBnNAb8qvTChM3TVTPKqIYEug3SlSzSO3Q"  # Ensure your API key is valid
+# Google AI API Key
+API_KEY = "AIzaSyDWn4zpv79RDS6Yz2JkEto_-7Hq3dYlvFg"
 genai.configure(api_key=API_KEY)
 
-def predict_food_price(image_path):
-    """Send image to Gemini AI and extract price prediction in INR (₹)."""
+def predict_market_price(image_path):
+    """Send image to Gemini AI and extract market price prediction in INR (₹)."""
     try:
         model = genai.GenerativeModel("gemini-1.5-flash")  # Use latest Gemini model
-
-        # Load the image using PIL
         img = Image.open(image_path)
+        response = model.generate_content(["Predict the market price of this food item in Indian Rupees (₹):", img])
 
-        # Send the image to Gemini for prediction
-        response = model.generate_content(["Predict the price of this food item in Indian Rupees (₹):", img])
+        if response and hasattr(response, 'text'):
+            ai_response = response.text.strip()
+            print("AI Response:", ai_response)  # Debugging print statement
 
-        if response and response.text:
-            # Extract numerical price using regex (₹xx.xx format)
-            price_match = re.search(r"₹\s?\d+(,\d{2,3})*(\.\d{1,2})?", response.text)
-
-            if price_match:
-                return price_match.group()  # Return extracted price like "₹150.99"
-            else:
-                return "Price not detected, try another image."
+            # Extract price from AI response
+            price_match = re.search(r"₹\s?\d+(,\d{2,3})*(\.\d{1,2})?", ai_response)
+            return price_match.group() if price_match else "Price not detected"
         else:
             return "No response from AI."
     except Exception as e:
         return f"Error: {str(e)}"
 
 def upload_food_image(request):
-    """Handle image upload and return predicted price in INR."""
+    """Handle image upload, predicted price, and AI market price generation."""
     if request.method == "POST" and request.FILES.get("food_image"):
         food_image = request.FILES["food_image"]
-        image_path = os.path.join(settings.MEDIA_ROOT, "food_images", food_image.name)
+        predicted_price = request.POST.get("predicted_price")  # Get user-entered price
 
         # Save the uploaded image
+        image_dir = os.path.join(settings.MEDIA_ROOT, "food_images")
+        os.makedirs(image_dir, exist_ok=True)  # Ensure directory exists
+        image_path = os.path.join(image_dir, food_image.name)
+
+        # Save image
         with open(image_path, "wb") as img_file:
             for chunk in food_image.chunks():
                 img_file.write(chunk)
 
-        # Get predicted price
-        predicted_price = predict_food_price(image_path)
+        # Generate image URL
+        image_url = settings.MEDIA_URL + "food_images/" + food_image.name
 
-        return render(request, "customer/result.html", {"price": predicted_price})
+        # Get AI-predicted market price
+        market_price = predict_market_price(image_path)
+
+        return render(request, "customer/result.html", {
+            "predicted_price": predicted_price,
+            "market_price": market_price,
+            "image_url": image_url
+        })
 
     return render(request, "customer/upload.html")
+
+
+
+
+
+
+
+
+
 
